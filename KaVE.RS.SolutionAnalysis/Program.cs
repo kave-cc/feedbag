@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using KaVE.Commons.Utils.IO;
 using KaVE.Commons.Utils.ObjectUsageExport;
-using KaVE.FeedbackProcessor;
 using KaVE.RS.SolutionAnalysis.CompletionEventStatistics;
 using KaVE.RS.SolutionAnalysis.CompletionEventToMicroCommits;
 using KaVE.RS.SolutionAnalysis.CSharpVsFSharp;
@@ -34,6 +33,7 @@ namespace KaVE.RS.SolutionAnalysis
     {
         //private const string DirRoot = @"C:\Users\Jonas\Desktop\SST-2016-02-19\Github";
         private const string DirRoot = @"E:\";
+
         private const string DirEventsAll = DirRoot + @"Events\All\";
 
         private const string DirEventsAll_SortedByUser = DirRoot + @"Events\All-SortedByUser\";
@@ -58,9 +58,6 @@ namespace KaVE.RS.SolutionAnalysis
 
             // new JustReadRunner(DirEventsAll).Run();
             //new JavaNamingTestGenerator().Run();
-            new MultiRunner().Run();
-
-            return;
 
             /* data preparation */
             //RunFailingRepoFinder();
@@ -190,9 +187,7 @@ namespace KaVE.RS.SolutionAnalysis
             {
                 Console.WriteLine(@"cleaning: {0}", dir);
                 if (Directory.Exists(dir))
-                {
                     Directory.Delete(dir, true);
-                }
                 Directory.CreateDirectory(dir);
             }
         }

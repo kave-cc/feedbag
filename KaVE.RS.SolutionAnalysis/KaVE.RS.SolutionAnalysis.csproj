@@ -434,10 +434,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KaVE.FeedbackProcessor\KaVE.FeedbackProcessor.csproj">
-      <Project>{7b7aea61-25f5-4938-bee7-ed26ae7be477}</Project>
-      <Name>KaVE.FeedbackProcessor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KaVE.RS.Commons\KaVE.RS.Commons.csproj">
       <Project>{B2235734-D3E5-498F-87E2-E9780DBE0D8D}</Project>
       <Name>KaVE.RS.Commons</Name>
