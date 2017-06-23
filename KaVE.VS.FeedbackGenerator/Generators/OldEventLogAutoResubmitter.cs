@@ -18,9 +18,9 @@ using System.IO;
 using System.Threading.Tasks;
 using JetBrains.Application;
 using KaVE.Commons.Model.Events;
-using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.JetBrains.Annotations;
+using KaVE.RS.Commons;
 using KaVE.VS.FeedbackGenerator.MessageBus;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 
@@ -40,7 +40,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators
             // created and is subscribed to the message bus.
             [NotNull] EventLogger eventLogger,
             [NotNull] ILogger logger,
-            [NotNull] VersionUtil versionUtil)
+            [NotNull] KaVEVersionUtil versionUtil)
         {
             Task.Factory.StartNew(
                 () =>

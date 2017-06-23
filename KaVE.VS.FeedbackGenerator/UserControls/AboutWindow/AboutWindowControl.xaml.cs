@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-using KaVE.Commons.Utils;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Navigation;
+using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
 using KaVE.RS.Commons.Utils;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
@@ -26,24 +27,20 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.AboutWindow
 {
     public partial class AboutWindowControl
     {
-        private string _linkPrefix;
-
-        public string VersionString { get; private set; }
-        public string DebugInfoString { get; private set; }
-        public string LogoLink { get; private set; }
+        private readonly string _linkPrefix;
 
         public AboutWindowControl()
         {
             InitializeComponent();
             DataContext = this;
 
-            var versionUtil = Registry.GetComponent<VersionUtil>();
+            var versionUtil = Registry.GetComponent<KaVEVersionUtil>();
             _linkPrefix = Registry.GetComponent<SettingsStore>().GetSettings<ExportSettings>().WebAccessPrefix;
 
             VersionString = string.Format(
-                "{0} ({1:s})",
+                "{0} (installed at {1:s})",
                 versionUtil.GetCurrentInformalVersion(),
-                File.GetLastWriteTime(typeof (AboutWindowControl).Assembly.Location));
+                File.GetLastWriteTime(typeof(AboutWindowControl).Assembly.Location));
 
             DebugInfoString = string.Format(
                 "Current Culture: {0}, Current UI Culture: {1}",
@@ -55,9 +52,13 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.AboutWindow
                 "http://www.kave.cc/_/rsrc/1398356839176/config/kave-logoe-with-title.png.1398356838759.png");
         }
 
+        public string VersionString { get; private set; }
+        public string DebugInfoString { get; private set; }
+        public string LogoLink { get; private set; }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(string.Concat(_linkPrefix, e.Uri.ToString()));
+            Process.Start(string.Concat(_linkPrefix, e.Uri.ToString()));
         }
     }
 }

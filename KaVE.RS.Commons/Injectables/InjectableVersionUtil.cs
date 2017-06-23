@@ -15,10 +15,9 @@
  */
 
 using JetBrains.Application;
-using KaVE.Commons.Utils;
 
 namespace KaVE.RS.Commons.Injectables
 {
     [ShellComponent]
-    public class InjectableVersionUtil : VersionUtil {}
+    public class InjectableVersionUtil : KaVEVersionUtil { }
 }

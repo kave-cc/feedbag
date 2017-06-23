@@ -17,6 +17,7 @@
 using JetBrains.Application;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;
+using KaVE.RS.Commons;
 using KaVE.VS.FeedbackGenerator.VsIntegration;
 
 namespace KaVE.VS.FeedbackGenerator
@@ -34,9 +35,9 @@ namespace KaVE.VS.FeedbackGenerator
         public const string ExtensionId = "KaVE.VsFeedbackGenerator";
 
         private readonly IIDESession _ideSession;
-        private readonly VersionUtil _versionUtil;
+        private readonly KaVEVersionUtil _versionUtil;
 
-        public RSEnv(IIDESession ideSession, VersionUtil versionUtil)
+        public RSEnv(IIDESession ideSession, KaVEVersionUtil versionUtil)
         {
             _ideSession = ideSession;
             _versionUtil = versionUtil;
