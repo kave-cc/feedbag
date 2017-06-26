@@ -22,14 +22,14 @@ namespace KaVE.RS.Commons
 {
     public class KaVEVersionUtil
     {
-        private static Assembly GetAssembly()
+        private static Assembly MyAssembly
         {
-            return typeof(KaVEVersionUtil).Assembly;
+            get { return typeof(KaVEVersionUtil).Assembly; }
         }
 
         public virtual Version GetCurrentVersion()
         {
-            return GetAssembly().GetName().Version;
+            return MyAssembly.GetName().Version;
         }
 
         public virtual string GetCurrentInformalVersion()
@@ -37,7 +37,7 @@ namespace KaVE.RS.Commons
             try
             {
                 var attributeType = typeof(AssemblyInformationalVersionAttribute);
-                var versions = GetAssembly().GetCustomAttributes(attributeType, true);
+                var versions = MyAssembly.GetCustomAttributes(attributeType, true);
                 // ReSharper disable once PossibleNullReferenceException
                 return (versions[0] as AssemblyInformationalVersionAttribute).InformationalVersion;
             }

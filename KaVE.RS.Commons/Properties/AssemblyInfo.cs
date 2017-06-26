@@ -15,26 +15,32 @@
  */
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using JetBrains.Application.BuildScript.Application.Zones;
 
-[assembly: AssemblyTitle("KaVE.Commons.ReSharper")]
+[assembly: AssemblyTitle("KaVE.RS.Commons")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KaVE.Commons.ReSharper")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyProduct("KaVE.RS.Commons")]
+[assembly: AssemblyCopyright("Copyright © KaVE Project 2011-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
 [assembly: ComVisible(false)]
+[assembly: InternalsVisibleTo("KaVE.RS.Commons.Tests_Integration")]
+[assembly: InternalsVisibleTo("KaVE.RS.Commons.Tests_Unit")]
+
 [assembly: Guid("76ae1118-f80a-4fb9-b8f3-c1e88beefdd4")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+
+// our syntax: 0.<build-num>[-<variant>], see KaVE.RS.Commons.KaVEVersionUtil
+[assembly: AssemblyVersion("0.0")]
+[assembly: AssemblyInformationalVersion("0.0-Development")]
 
 // ReSharper disable once CheckNamespace
-
 namespace KaVE.RS.Commons
 {
     [ZoneMarker]
-    public class ZoneMarker {}
+    public class ZoneMarker { }
 }
