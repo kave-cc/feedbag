@@ -19,7 +19,7 @@ using NUnit.Framework;
 
 namespace KaVE.RS.Commons.Tests_Unit.KaVEVersionUtilTestSuite
 {
-    internal class DefaultTest
+    internal class ReleaseTest
     {
         [Test]
         public void CurrentVersion()
@@ -36,14 +36,14 @@ namespace KaVE.RS.Commons.Tests_Unit.KaVEVersionUtilTestSuite
             var actual = new KaVEVersionUtil().GetCurrentInformalVersion();
             Assert.AreNotEqual("0.0.0-Development", actual);
             Assert.True(actual.StartsWith("0."));
-            Assert.True(actual.EndsWith("-Default"));
+            Assert.True(actual.EndsWith("-Release"));
         }
 
         [Test]
         public void CurrentVariant()
         {
             var actual = new KaVEVersionUtil().GetCurrentVariant();
-            var expected = Variant.Default;
+            var expected = Variant.Release;
             Assert.AreEqual(expected, actual);
         }
 
@@ -53,7 +53,7 @@ namespace KaVE.RS.Commons.Tests_Unit.KaVEVersionUtilTestSuite
             var actual = new ExtendedVersionUtilInAssemblyWithoutVersion().GetCurrentInformalVersion();
             Assert.AreNotEqual("0.0-Development", actual);
             Assert.True(actual.StartsWith("0."));
-            Assert.True(actual.EndsWith("-Default"));
+            Assert.True(actual.EndsWith("-Release"));
         }
 
         private class ExtendedVersionUtilInAssemblyWithoutVersion : KaVEVersionUtil { }

@@ -22,13 +22,10 @@ namespace KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite
     // WARNING: Do not change classname, as it is used to identify settings
     public class ExportSettings
     {
-        [SettingsEntry(true,"KaVE FeedbackGenerator IsDatev")]
-        public bool IsDatev;
-
-        [SettingsEntry("https://licsrv1.zd.datev.de/feedback-server/", "KaVE FeedbackGenerator UploadUrl")]
+        [SettingsEntry("http://upload.kave.cc/test/", "KaVE FeedbackGenerator UploadUrl")]
         public string UploadUrl;
 
-        [SettingsEntry("http://www3.bk.datev.de/eprtl/dyn.ica?", "KaVE FeedbackGenerator WebAccessPrefix")]
+        [SettingsEntry("", "KaVE FeedbackGenerator WebAccessPrefix")]
         public string WebAccessPrefix;
     }
 }
