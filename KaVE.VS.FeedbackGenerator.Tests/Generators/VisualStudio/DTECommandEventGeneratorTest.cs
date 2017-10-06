@@ -233,7 +233,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
             WhenCommandEnds(command);
         }
 
-        private DateTime GivenNowIs(DateTime time)
+        private DateTimeOffset GivenNowIs(DateTimeOffset time)
         {
             var triggeredAt = time;
             TestDateUtils.Now = triggeredAt;

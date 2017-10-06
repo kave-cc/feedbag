@@ -61,7 +61,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             get { return Event.TriggeredBy.ToString(); }
         }
 
-        public DateTime? StartDateTime
+        public DateTimeOffset? StartDateTime
         {
             get { return Event.TriggeredAt; }
         }

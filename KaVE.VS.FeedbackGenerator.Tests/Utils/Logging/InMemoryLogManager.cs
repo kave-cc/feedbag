@@ -26,7 +26,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 {
     internal class InMemoryLogManager : ILogManager, IEnumerable<ILog>
     {
-        private IDictionary<DateTime, ILog> _logs = new Dictionary<DateTime, ILog>();
+        private IDictionary<DateTimeOffset, ILog> _logs = new Dictionary<DateTimeOffset, ILog>();
 
         public event LogEventHandler LogCreated = delegate { };
 
@@ -35,12 +35,12 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
             get { return _logs.Values.ToList(); }
         }
 
-        public void Add(DateTime logDate, params IDEEvent[] logEntries)
+        public void Add(DateTimeOffset logDate, params IDEEvent[] logEntries)
         {
             Add(logDate, logEntries.ToList());
         }
 
-        public void Add(DateTime logDate, IEnumerable<IDEEvent> logEntries)
+        public void Add(DateTimeOffset logDate, IEnumerable<IDEEvent> logEntries)
         {
             var log = new InMemoryLog {Date = logDate};
             logEntries.ForEach(log.Append);
@@ -66,7 +66,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
             get { throw new NotImplementedException(); }
         }
 
-        public void DeleteLogsOlderThan(DateTime time)
+        public void DeleteLogsOlderThan(DateTimeOffset time)
         {
             _logs.Where(entry => entry.Key < time).ForEach(entry => entry.Value.Delete());
             _logs = _logs.Where(entry => entry.Key >= time).ToDictionary(e => e.Key, e => e.Value);
@@ -94,7 +94,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
             public event LogEntriesEventHandler EntriesRemoved;
             public event LogEventHandler Deleted = delegate { };
 
-            public DateTime Date { get; internal set; }
+            public DateTimeOffset Date { get; internal set; }
 
             private readonly IList<IDEEvent> _entries = new List<IDEEvent>();
 
@@ -128,7 +128,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
                 throw new NotImplementedException();
             }
 
-            public void RemoveEntriesOlderThan(DateTime time)
+            public void RemoveEntriesOlderThan(DateTimeOffset time)
             {
                 throw new NotImplementedException();
             }

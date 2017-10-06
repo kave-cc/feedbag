@@ -69,10 +69,10 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
         private void RegisterCallback()
         {
             var nextNotificationTime = CalculateNextNotificationTime();
-            _callbackManager.RegisterCallback(ShowNotificationAndUpdateSettings, nextNotificationTime, RegisterCallback);
+            _callbackManager.RegisterCallback(ShowNotificationAndUpdateSettings, nextNotificationTime.DateTime, RegisterCallback);
         }
 
-        private DateTime CalculateNextNotificationTime()
+        private DateTimeOffset CalculateNextNotificationTime()
         {
             var settings = _settingsStore.GetSettings<UploadSettings>();
             var nextNotification = CreateRandomDateInWorkingHoursOfDayAfter(settings.LastNotificationDate);
@@ -89,7 +89,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             return tomorrow;
         }
 
-        private static DateTime CreateRandomDateInWorkingHoursOfDayAfter(DateTime baseDate)
+        private static DateTime CreateRandomDateInWorkingHoursOfDayAfter(DateTimeOffset baseDate)
         {
             var newDate = new DateTime(
                 baseDate.Year,

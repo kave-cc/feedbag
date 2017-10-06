@@ -36,7 +36,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Activity
         private readonly IFocusHelper _focusHelper;
 
         private ActivityEvent _currentEvent;
-        private DateTime _lastActivity;
+        private DateTimeOffset _lastActivity;
 
         public MouseActivityEventGenerator([NotNull] IRSEnv env,
             [NotNull] IMessageBus messageBus,
@@ -87,9 +87,9 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Activity
             return _currentEvent != null;
         }
 
-        private bool IsInactive(DateTime now)
+        private bool IsInactive(DateTimeOffset now)
         {
-            return (now - _lastActivity) > InactivitySpanToBreakActivityPeriod;
+            return now - _lastActivity > InactivitySpanToBreakActivityPeriod;
         }
     }
 }

@@ -122,7 +122,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
             // Somewhere between raising StatusChanged and the BusyMessage-PropertyChanged the events get mixed up (the
             // number of received property changes is always correct, but sometimes the order is mixed up and sometimes
             // one message is missing and another duplicated). The Thread.Sleep seems to solve this problem... - Sven
-            _mockExporter.Setup(e => e.Export(It.IsAny<DateTime>(), It.IsAny<IPublisher>()))
+            _mockExporter.Setup(e => e.Export(It.IsAny<DateTimeOffset>(), It.IsAny<IPublisher>()))
                          .Callback(
                              () =>
                              {
@@ -156,7 +156,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
 
             _mockExporter.Verify(
                 exporter =>
-                    exporter.Export(It.IsAny<DateTime>(), It.IsAny<FilePublisher>()));
+                    exporter.Export(It.IsAny<DateTimeOffset>(), It.IsAny<FilePublisher>()));
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
 
             _mockExporter.Verify(
                 exporter =>
-                    exporter.Export(It.IsAny<DateTime>(), It.IsAny<HttpPublisher>()));
+                    exporter.Export(It.IsAny<DateTimeOffset>(), It.IsAny<HttpPublisher>()));
         }
 
         [Test]
@@ -183,8 +183,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
 
             HttpPublisher httpPublisher = null;
             _mockExporter
-                .Setup(exporter => exporter.Export(It.IsAny<DateTime>(), It.IsAny<HttpPublisher>()))
-                .Callback<DateTime, IPublisher>(
+                .Setup(exporter => exporter.Export(It.IsAny<DateTimeOffset>(), It.IsAny<HttpPublisher>()))
+                .Callback<DateTimeOffset, IPublisher>(
                     (exportTime, publisher) => httpPublisher = (HttpPublisher) publisher);
 
             WhenExportIsExecuted(UploadWizardControl.ExportType.HttpUpload);
@@ -270,7 +270,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         public void FailingExportNotificationHasCorrectMessage()
         {
             _mockExporter.Setup(
-                e => e.Export(It.IsAny<DateTime>(), It.IsAny<IPublisher>()))
+                e => e.Export(It.IsAny<DateTimeOffset>(), It.IsAny<IPublisher>()))
                          .Throws(new AssertException("TEST"));
 
             WhenExportIsExecuted();
@@ -289,7 +289,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         {
             var exception = new AssertException("TEST");
             _mockExporter.Setup(
-                e => e.Export(It.IsAny<DateTime>(), It.IsAny<IPublisher>())).Throws(exception);
+                e => e.Export(It.IsAny<DateTimeOffset>(), It.IsAny<IPublisher>())).Throws(exception);
 
             WhenExportIsExecuted();
 
@@ -312,11 +312,11 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         [Test]
         public void PassesExportTimeToExporter()
         {
-            _testDateUtils.Now = DateTime.Now;
+            _testDateUtils.Now = DateTimeOffset.Now;
             var invoked = false;
             _mockExporter.Setup(
                 e => e.Export(_testDateUtils.Now, It.IsAny<IPublisher>()))
-                         .Callback<DateTime, IPublisher>((export, p) => invoked = true);
+                         .Callback<DateTimeOffset, IPublisher>((export, p) => invoked = true);
 
             WhenExportIsExecuted();
 
@@ -326,7 +326,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         [Test]
         public void DeletesEventsBeforeExportTime()
         {
-            _testDateUtils.Now = DateTime.Now;
+            _testDateUtils.Now = DateTimeOffset.Now;
 
             WhenExportIsExecuted();
 

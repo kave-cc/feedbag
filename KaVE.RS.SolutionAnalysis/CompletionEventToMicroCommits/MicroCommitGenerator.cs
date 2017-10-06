@@ -131,7 +131,7 @@ namespace KaVE.RS.SolutionAnalysis.CompletionEventToMicroCommits
 
         public string GetTemporalIndex(CompletionEvent @event)
         {
-            var date = @event.TriggeredAt ?? DateTime.MinValue;
+            var date = @event.TriggeredAt ?? DateTimeOffset.MinValue;
             var dateStr = string.Format("{0:0000}{1:00}{2:00}", date.Year, date.Month, date.Day);
             var encTypeStr = @event.Context2.SST.EnclosingType.GetHashCode();
             return string.Format("{0}_{1}_{2}", @event.IDESessionUUID, dateStr, encTypeStr);
@@ -139,8 +139,8 @@ namespace KaVE.RS.SolutionAnalysis.CompletionEventToMicroCommits
 
         public Tuple<Context, Context> FindFirstAndLast(IList<CompletionEvent> es)
         {
-            var earliestDate = DateTime.MaxValue;
-            var latestDate = DateTime.MinValue;
+            var earliestDate = DateTimeOffset.MaxValue;
+            var latestDate = DateTimeOffset.MinValue;
             Context earliest = null;
             Context latest = null;
 

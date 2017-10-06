@@ -39,7 +39,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
         private readonly IDateUtils _dateUtils;
         private readonly ILogger _logger;
         private readonly BackgroundWorker _exportWorker;
-        private DateTime _exportTime;
+        private DateTimeOffset _exportTime;
         private UploadWizardControl.ExportType _exportType;
 
         private readonly InteractionRequest<Notification> _errorNotificationRequest;

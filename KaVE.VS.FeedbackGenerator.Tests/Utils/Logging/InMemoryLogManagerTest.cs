@@ -16,12 +16,10 @@
 
 using System;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
-using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 {
-    [TestFixture]
-    class InMemoryLogManagerTest : LogManagerContractTest
+    internal class InMemoryLogManagerTest : LogManagerContractTest
     {
         private InMemoryLogManager _inMemoryLogManager;
 
@@ -31,7 +29,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
             return _inMemoryLogManager;
         }
 
-        protected override void GivenLogsExist(params DateTime[] logDates)
+        protected override void GivenLogsExist(params DateTimeOffset[] logDates)
         {
             _inMemoryLogManager.DeleteAllLogs();
             foreach (var logDate in logDates)

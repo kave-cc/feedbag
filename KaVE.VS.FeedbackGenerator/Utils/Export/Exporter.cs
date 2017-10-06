@@ -36,7 +36,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Export
         /// <summary>
         ///     Exports all events before the given export time. Returns the number of exported events.
         /// </summary>
-        int Export(DateTime to, IPublisher publisher);
+        int Export(DateTimeOffset to, IPublisher publisher);
     }
 
     [ShellComponent]
@@ -59,7 +59,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Export
         public event Action<int> ExportProgressChanged;
         public event Action ExportEnded;
 
-        public int Export(DateTime to, IPublisher publisher)
+        public int Export(DateTimeOffset to, IPublisher publisher)
         {
             OnExportStarted();
             try
@@ -89,7 +89,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Export
             }
         }
 
-        private IEnumerable<IDEEvent> LoadEventsToExport(DateTime exportTime)
+        private IEnumerable<IDEEvent> LoadEventsToExport(DateTimeOffset exportTime)
         {
             return
                 _logManager.Logs.SelectMany(log => log.ReadAll())

@@ -84,8 +84,8 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Merging
         }
 
         private static IKaVEList<IProposalSelection> GetRebasedSelections(ICompletionEvent evt2,
-            DateTime? oldBaseTime,
-            DateTime? newBaseTime)
+            DateTimeOffset? oldBaseTime,
+            DateTimeOffset? newBaseTime)
         {
             var rebaseOffset = newBaseTime - oldBaseTime;
             return Lists.NewListFrom<IProposalSelection>(

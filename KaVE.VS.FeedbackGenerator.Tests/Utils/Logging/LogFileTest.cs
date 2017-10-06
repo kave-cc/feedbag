@@ -36,7 +36,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
         private Mock<IIoUtils> _mockIoUtils;
         private const string TestTempFilePath = @"C:\Test\Tmp\File";
         private const string TestLogFilePath = @"C:\My\Log\Dir\Log_2014-03-21";
-        private static readonly DateTime TestLogFileDate = new DateTime(2014, 3, 21);
+        private static readonly DateTimeOffset TestLogFileDate = new DateTimeOffset(new DateTime(2014, 3, 21));
 
         private const string TestConcurrentAccessExceptionMessage =
             "The process cannot access the file '" + TestLogFilePath +
@@ -292,7 +292,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
         }
 
         [Test, Timeout(2000),
-         ExpectedException(typeof (IOException), ExpectedMessage = TestConcurrentAccessExceptionMessage)]
+         ExpectedException(typeof(IOException), ExpectedMessage = TestConcurrentAccessExceptionMessage)]
         public void ShouldFailOnConcurrentAccessExceptionEventually()
         {
             _mockIoUtils.Setup(iou => iou.OpenFile(TestLogFilePath, It.IsAny<FileMode>(), FileAccess.Read))

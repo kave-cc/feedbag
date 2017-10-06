@@ -87,7 +87,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
             get { return Logs.Select(log => log.SizeInBytes).Sum(); }
         }
 
-        public void DeleteLogsOlderThan(DateTime time)
+        public void DeleteLogsOlderThan(DateTimeOffset time)
         {
             foreach (var log in Logs)
             {

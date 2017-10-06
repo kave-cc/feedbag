@@ -67,7 +67,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             _events.RemoveAll(vm => entries.Contains(vm.Event));
         }
 
-        public DateTime StartDate
+        public DateTimeOffset StartDate
         {
             get { return Log.Date; }
         }

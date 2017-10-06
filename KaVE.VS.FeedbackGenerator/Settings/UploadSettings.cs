@@ -26,21 +26,21 @@ namespace KaVE.VS.FeedbackGenerator.Settings
         private const string DateTimeMinValue = "0001-01-01T00:00:00";
 
         [SettingsEntry(DateTimeMinValue, "Timestamp of the last time the upload-reminder popup was shown to the user.")]
-        public DateTime LastNotificationDate;
+        public DateTimeOffset LastNotificationDate;
 
         [SettingsEntry(DateTimeMinValue, "Timestamp of the last time an export was done.")]
-        public DateTime LastUploadDate;
+        public DateTimeOffset LastUploadDate;
 
         public bool IsInitialized()
         {
-            var hasUninitializedField = LastNotificationDate == DateTime.MinValue ||
-                                        LastUploadDate == DateTime.MinValue;
+            var hasUninitializedField = LastNotificationDate == DateTimeOffset.MinValue ||
+                                        LastUploadDate == DateTimeOffset.MinValue;
             return !hasUninitializedField;
         }
 
         public void Initialize()
         {
-            var now = DateTime.Now;
+            var now = DateTimeOffset.Now;
             LastUploadDate = now;
             LastNotificationDate = now;
         }

@@ -61,12 +61,16 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Settings
             var uut = new UploadSettings();
 
             uut.Initialize();
-            var dateTime = DateTime.Now;
+            var now = DateTimeOffset.Now;
 
             Assert.IsTrue(uut.IsInitialized());
-            var comparer = new SimilarDateTimeComparer(50);
-            Assert.IsTrue(comparer.Equal(dateTime, uut.LastNotificationDate));
-            Assert.IsTrue(comparer.Equal(dateTime, uut.LastUploadDate));
+            Assert.IsTrue(GetDiffInMs(uut.LastNotificationDate, now) < 50);
+            Assert.IsTrue(GetDiffInMs(uut.LastUploadDate, now) < 50);
+        }
+
+        private static double GetDiffInMs(DateTimeOffset a, DateTimeOffset b)
+        {
+            return Math.Abs((a-b).TotalMilliseconds);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.FeedbackViewModelTestSu
         [Test]
         public void ShouldProvideLogDateAsSessionDate()
         {
-            var expected = DateTime.Today;
+            var expected = new DateTimeOffset(DateTime.Today);
             _mockLog.Setup(log => log.Date).Returns(expected);
 
             var actual = _uut.StartDate;

@@ -15,23 +15,20 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Util;
-using KaVE.Commons.Utils.Collections;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 {
-    [TestFixture]
     internal abstract class LogManagerContractTest
     {
-        protected static readonly DateTime Today = DateTime.Today;
-        protected static readonly DateTime Yesterday = DateTime.Today.AddDays(-1);
-        protected static readonly DateTime TwoDaysAgo = DateTime.Today.AddDays(-2);
-        protected static readonly DateTime SomeDay = new DateTime(2015, 05, 23);
+        protected static readonly DateTimeOffset Today = new DateTimeOffset(DateTime.Today);
+        protected static readonly DateTimeOffset Yesterday = new DateTimeOffset(DateTime.Today.AddDays(-1));
+        protected static readonly DateTimeOffset TwoDaysAgo = new DateTimeOffset(DateTime.Today.AddDays(-2));
+        protected static readonly DateTimeOffset SomeDay = new DateTimeOffset(new DateTime(2015, 05, 23));
 
         protected ILogManager Uut { get; private set; }
 
@@ -173,12 +170,12 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
         public void RaisesDeleteOnAllDeletedLogs()
         {
             GivenLogsExist(Today, Yesterday, TwoDaysAgo);
-            var actualLogs = new HashSet<DateTime>();
+            var actualLogs = new HashSet<DateTimeOffset>();
 
             Uut.Logs.ForEach(log => log.Deleted += theLog => actualLogs.Add(theLog.Date));
             Uut.DeleteAllLogs();
 
-            Assert.AreEqual(new[] { Today, Yesterday, TwoDaysAgo }, actualLogs);
+            Assert.AreEqual(new[] {Today, Yesterday, TwoDaysAgo}, actualLogs);
         }
 
         [Test]
@@ -206,12 +203,12 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
         public void RaisesDeleteOnlyOnDeletedLogs()
         {
             GivenLogsExist(Today, TwoDaysAgo);
-            var actualLogs = new HashSet<DateTime>();
+            var actualLogs = new HashSet<DateTimeOffset>();
 
             Uut.Logs.ForEach(log => log.Deleted += theLog => actualLogs.Add(theLog.Date));
             Uut.DeleteLogsOlderThan(Yesterday);
 
-            Assert.AreEqual(new[] { TwoDaysAgo }, actualLogs);
+            Assert.AreEqual(new[] {TwoDaysAgo}, actualLogs);
         }
 
         // TODO add test for partial deletion of log on same day
@@ -220,9 +217,9 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 
         protected void GivenNoLogsExist()
         {
-            GivenLogsExist(/* none */);
+            GivenLogsExist( /* none */);
         }
 
-        protected abstract void GivenLogsExist(params DateTime[] logDates);
+        protected abstract void GivenLogsExist(params DateTimeOffset[] logDates);
     }
 }

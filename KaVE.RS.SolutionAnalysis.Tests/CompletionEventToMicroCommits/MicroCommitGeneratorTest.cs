@@ -246,7 +246,7 @@ namespace KaVE.RS.SolutionAnalysis.Tests.CompletionEventToMicroCommits
             return new TestTypeName(hashcode);
         }
 
-        private void AssertIndex(string sessionId, DateTime? date, ITypeName type, string expected)
+        private void AssertIndex(string sessionId, DateTimeOffset? date, ITypeName type, string expected)
         {
             var e = new CompletionEvent
             {

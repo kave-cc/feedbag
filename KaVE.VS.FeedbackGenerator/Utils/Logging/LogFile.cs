@@ -51,7 +51,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
 
         public string Path { get; private set; }
 
-        public DateTime Date
+        public DateTimeOffset Date
         {
             get
             {
@@ -172,7 +172,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
             RemoveEntries(e => entries.Contains(e));
         }
 
-        public void RemoveEntriesOlderThan(DateTime time)
+        public void RemoveEntriesOlderThan(DateTimeOffset time)
         {
             RemoveEntries(ideEvent => ideEvent.TriggeredAt <= time);
         }

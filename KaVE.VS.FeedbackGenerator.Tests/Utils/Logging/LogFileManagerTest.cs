@@ -187,7 +187,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 
         private void GivenLogsExistWithSizeInBytes(params int[] sizesInBytes)
         {
-            var dates = new DateTime[sizesInBytes.Length];
+            var dates = new DateTimeOffset[sizesInBytes.Length];
             for (var i = 0; i < sizesInBytes.Length; i++)
             {
                 dates[i] = DateTime.Today.AddDays(-i);
@@ -200,23 +200,23 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 
         private void GivenLogsExist(int numberOfLogs)
         {
-            var dates = Enumerable.Range(1, numberOfLogs).Select(i => DateTime.Today.AddDays(-i)).ToArray();
+            var dates = Enumerable.Range(1, numberOfLogs).Select(i => (DateTimeOffset)DateTime.Today.AddDays(-i)).ToArray();
             GivenLogsExist(dates);
         }
 
-        protected override void GivenLogsExist(params DateTime[] dates)
+        protected override void GivenLogsExist(params DateTimeOffset[] dates)
         {
             _existingLogsPaths = ToLogPaths(dates);
             _ioUtilMock.Setup(io => io.GetFiles(_baseDirectory, "Log_*")).Returns(() => _existingLogsPaths.ToArray());
             _ioUtilMock.Setup(io => io.FileExists(It.IsAny<string>())).Returns<string>(_existingLogsPaths.Contains);
         }
 
-        private ICollection<string> ToLogPaths(params DateTime[] dates)
+        private ICollection<string> ToLogPaths(params DateTimeOffset[] dates)
         {
             return dates.Select(GetLogPath).ToList();
         }
 
-        private string GetLogPath(DateTime date)
+        private string GetLogPath(DateTimeOffset date)
         {
             var filename = "Log_" + date.ToString("yyyy-MM-dd");
             return Path.Combine(_baseDirectory, filename);

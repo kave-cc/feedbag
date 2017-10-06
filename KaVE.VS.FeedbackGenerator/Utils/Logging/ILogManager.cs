@@ -50,7 +50,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
         /// <summary>
         ///     The day this log represents.
         /// </summary>
-        DateTime Date { get; }
+        DateTimeOffset Date { get; }
 
         long SizeInBytes { get; }
 
@@ -64,7 +64,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
 
         void RemoveRange(IEnumerable<IDEEvent> entries);
 
-        void RemoveEntriesOlderThan(DateTime time);
+        void RemoveEntriesOlderThan(DateTimeOffset time);
 
         void Delete();
     }
@@ -89,7 +89,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
 
         long LogsSizeInBytes { get; }
 
-        void DeleteLogsOlderThan(DateTime time);
+        void DeleteLogsOlderThan(DateTimeOffset time);
 
         void DeleteAllLogs();
     }
