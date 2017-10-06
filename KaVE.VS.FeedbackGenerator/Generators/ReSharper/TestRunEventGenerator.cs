@@ -149,7 +149,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
         {
             var testRunEvent = Create<TestRunEvent>();
             testRunEvent.WasAborted = aborted;
-            testRunEvent.TriggeredAt = launchTime;
+            testRunEvent.TriggeredAt = launchTime.ToLocalTime();
 
             foreach (var result in results)
             {
@@ -169,7 +169,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
                 var singleTestResult = new TestCaseResult
                 {
                     TestMethod = methodName,
-                    StartTime = TimeZone.CurrentTimeZone.ToLocalTime(result.Value.StartTime), // R# bug, time is utc
+                    StartTime = result.Value.StartTime.ToLocalTime(),
                     Duration = result.Value.Duration,
                     Parameters = GetParameterSubstringFromShortName(result.Key.ShortName),
                     Result = TranslateStatus(result.Value.Status)
