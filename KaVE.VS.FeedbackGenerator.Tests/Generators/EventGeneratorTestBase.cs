@@ -33,7 +33,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
 {
     internal abstract class EventGeneratorTestBase
     {
-        private IList<IDEEvent> _publishedEvents;
+        private IList<IIDEEvent> _publishedEvents;
         private AutoResetEvent _eventReceptionLock;
         protected TestRSEnv TestRSEnv { get; private set; }
         protected TestIDESession TestIDESession { get; private set; }
@@ -50,11 +50,11 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
             MockLogger = new Mock<ILogger>();
             Registry.RegisterComponent(MockLogger.Object);
 
-            _publishedEvents = new List<IDEEvent>();
+            _publishedEvents = new List<IIDEEvent>();
             _eventReceptionLock = new AutoResetEvent(false);
             MockTestMessageBus = new Mock<IMessageBus>();
-            MockTestMessageBus.Setup(bus => bus.Publish(It.IsAny<IDEEvent>())).Callback(
-                (IDEEvent ideEvent) => ProcessEvent(ideEvent));
+            MockTestMessageBus.Setup(bus => bus.Publish(It.IsAny<IIDEEvent>())).Callback(
+                (IIDEEvent ideEvent) => ProcessEvent(ideEvent));
         }
 
         [TearDown]
@@ -63,14 +63,9 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
             Registry.Clear();
         }
 
-        private readonly IThreading _testThreading = new Invocator(Lifetimes.Define("testlifetime").Lifetime);
+        protected IThreading TestThreading { get; } = new Invocator(Lifetimes.Define("testlifetime").Lifetime);
 
-        protected IThreading TestThreading
-        {
-            get { return _testThreading; }
-        }
-
-        private void ProcessEvent(IDEEvent ideEvent)
+        private void ProcessEvent(IIDEEvent ideEvent)
         {
             lock (_publishedEvents)
             {
@@ -96,8 +91,13 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
             Assert.AreEqual(expectedNum, _publishedEvents.Count);
         }
 
+        protected void AssertEvents(params IIDEEvent[] es)
+        {
+            Assert.AreEqual(es, GetPublishedEvents());
+        }
+
         [NotNull]
-        protected IEnumerable<IDEEvent> GetPublishedEvents()
+        protected IEnumerable<IIDEEvent> GetPublishedEvents()
         {
             return _publishedEvents.ToList();
         }
