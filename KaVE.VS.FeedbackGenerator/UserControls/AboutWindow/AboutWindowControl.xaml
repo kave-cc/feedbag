@@ -44,7 +44,7 @@ limitations under the License.
             
             <TextBlock VerticalAlignment="Center" Grid.Column="0">
                 <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="http://kave.cc">Website</Hyperlink> | 
-                <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/stg-tud/kave">GitHub</Hyperlink>
+                <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/kave-cc">GitHub</Hyperlink>
             </TextBlock>
             
             <Label Grid.Column="1" Foreground="Gray" VerticalAlignment="Center" 
