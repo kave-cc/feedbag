@@ -23,8 +23,13 @@ using KaVE.VS.FeedbackGenerator.MessageBus;
 
 namespace KaVE.VS.FeedbackGenerator.Generators
 {
+    public interface IGenericCommandGenerator
+    {
+        void Fire(string cmdId);
+    }
+
     [ShellComponent]
-    public class GenericCommandGenerator : EventGeneratorBase
+    public class GenericCommandGenerator : EventGeneratorBase, IGenericCommandGenerator
     {
         public GenericCommandGenerator([NotNull] IRSEnv env,
             [NotNull] IMessageBus messageBus,

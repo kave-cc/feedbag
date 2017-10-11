@@ -22,8 +22,23 @@ using KaVE.VS.FeedbackGenerator.MessageBus;
 
 namespace KaVE.VS.FeedbackGenerator.Generators
 {
+    // ReSharper disable once InconsistentNaming
+    public interface IKaVECommandGenerator
+    {
+        void FireDeleteDays();
+        void FireDeleteEvents();
+        void FireGotoHomepage();
+        void FireGotoUploadPage();
+        void FireOpenAboutDialog();
+        void FireOpenExportDialog();
+        void FireOpenOptions();
+        void FireExportIntoZip();
+        void FireExportToServer();
+        void FireReloadEvents();
+    }
+
     [ShellComponent]
-    public class KaVECommandGenerator : GenericCommandGenerator
+    public class KaVECommandGenerator : GenericCommandGenerator, IKaVECommandGenerator
     {
         public KaVECommandGenerator([NotNull] IRSEnv env,
             [NotNull] IMessageBus messageBus,
