@@ -406,6 +406,7 @@
     <Compile Include="CodeCompletion\CodeCompletionLifecycleManagerTest.cs" />
     <Compile Include="CodeCompletion\PBNProposalItemsProviderTest.cs" />
     <Compile Include="CodeCompletion\RandomizedModelEnablerTest.cs" />
+    <Compile Include="Generators\GenericCommandGeneratorTest.cs" />
     <Compile Include="Generators\Git\GitEventGeneratorIntegrationTest.cs" />
     <Compile Include="Generators\Git\GitEventGeneratorUnitTest.cs" />
     <Compile Include="Generators\Git\GitLogFileChangedRegistrationTest.cs" />
