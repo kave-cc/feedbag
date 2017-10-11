@@ -83,6 +83,13 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
         }
 
         [Test]
+        public void FireOpenEventManager()
+        {
+            _sut.FireOpenEventManager();
+            AssertEvents(Cmd("KaVE.FeedBaG.OpenEventManager"));
+        }
+
+        [Test]
         public void FireOpenExportDialog()
         {
             _sut.FireOpenExportDialog();

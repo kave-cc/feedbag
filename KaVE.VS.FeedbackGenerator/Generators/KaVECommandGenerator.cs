@@ -30,6 +30,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators
         void FireGotoHomepage();
         void FireGotoUploadPage();
         void FireOpenAboutDialog();
+        void FireOpenEventManager();
         void FireOpenExportDialog();
         void FireOpenOptions();
         void FireExportIntoZip();
@@ -68,6 +69,11 @@ namespace KaVE.VS.FeedbackGenerator.Generators
         public void FireOpenAboutDialog()
         {
             Fire("KaVE.FeedBaG.OpenAboutDialog");
+        }
+
+        public void FireOpenEventManager()
+        {
+            Fire("KaVE.FeedBaG.OpenEventManager");
         }
 
         public void FireOpenExportDialog()
