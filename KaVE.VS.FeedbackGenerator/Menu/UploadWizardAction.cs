@@ -17,40 +17,45 @@
 using System.IO;
 using System.Linq;
 using JetBrains.ActionManagement;
+using JetBrains.Application;
 using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised;
 using KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using NuGet;
 
 namespace KaVE.VS.FeedbackGenerator.Menu
 {
     [Action(Id, "Export Feedback...", Id = 12193486)]
-    public class UploadWizardAction : IExecutableAction
+    public class UploadWizardAction : MenuActionBase
     {
         internal const string Id = "KaVE.VS.FeedbackGenerator.UploadWizard";
+    }
 
-        private readonly ISettingsStore _settingsStore;
+    [ShellComponent]
+    public class UploadWizardActionHandler : MenuActionHandlerBase<UploadWizardAction>
+    {
         private readonly IUploadWizardWindowCreator _uploadWizardWindowCreator;
         private readonly ILogManager _logManager;
+        private readonly IKaVECommandGenerator _cmdGen;
         private readonly IUserProfileSettingsUtils _userProfileSettingsUtils;
 
-        public UploadWizardAction()
+        public UploadWizardActionHandler(IUploadWizardWindowCreator uploadWizardWindowCreator,
+            IUserProfileSettingsUtils userProfileSettingsUtils,
+            ILogManager logManager,
+            IKaVECommandGenerator cmdGen,
+            IActionManager am) : base(am)
         {
-            _settingsStore = Registry.GetComponent<ISettingsStore>();
-            _uploadWizardWindowCreator = Registry.GetComponent<IUploadWizardWindowCreator>();
-            _userProfileSettingsUtils = Registry.GetComponent<IUserProfileSettingsUtils>();
-            _logManager = Registry.GetComponent<ILogManager>();
+            _uploadWizardWindowCreator = uploadWizardWindowCreator;
+            _userProfileSettingsUtils = userProfileSettingsUtils;
+            _logManager = logManager;
+            _cmdGen = cmdGen;
         }
 
-        public bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
+        public override void Execute(IDataContext context, DelegateExecute nextExecute)
         {
-            return true;
-        }
-
-        public void Execute(IDataContext context, DelegateExecute nextExecute)
-        {
+            _cmdGen.FireOpenExportDialog();
             _userProfileSettingsUtils.EnsureProfileId();
 
             if (!_userProfileSettingsUtils.HasBeenAskedToFillProfile())

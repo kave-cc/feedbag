@@ -15,9 +15,13 @@
  */
 
 using System.Collections.Generic;
+using JetBrains.ActionManagement;
 using JetBrains.Application.DataContext;
+using JetBrains.UI.ActionsRevised.Handlers;
+using JetBrains.UI.ActionsRevised.Loader;
 using KaVE.RS.Commons.Settings;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Menu;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
@@ -26,16 +30,17 @@ using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Menu
 {
-    public class UploadWizardActionTest
+    public class UploadWizardActionHandlerTest
     {
         private Mock<ISettingsStore> _mockSettingsStore;
         private IUploadWizardWindowCreator _windowCreator;
         private Mock<ILogManager> _mockLogManager;
 
-        private UploadWizardAction _uut;
+        private UploadWizardActionHandler _uut;
         private UserProfileSettings _userProfileSettings;
         private IUserProfileSettingsUtils _userProfileSettingsUtil;
         private ExportSettings _exportSettings;
+        private IActionManager _am;
 
         [SetUp]
         public void Setup()
@@ -59,7 +64,25 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Menu
             Registry.RegisterComponent(_windowCreator);
             Registry.RegisterComponent(_mockLogManager.Object);
 
-            _uut = new UploadWizardAction();
+
+            _am = MockActionManager();
+
+            _uut = new UploadWizardActionHandler(
+                _windowCreator,
+                _userProfileSettingsUtil,
+                _mockLogManager.Object,
+                Mock.Of<IKaVECommandGenerator>(),
+                _am);
+        }
+
+        private static IActionManager MockActionManager()
+        {
+            var am = Mock.Of<IActionManager>();
+            var ad = Mock.Of<IActionDefs>();
+            Mock.Get(am).SetupGet(a => a.Defs).Returns(ad);
+            var ah = Mock.Of<IActionHandlers>();
+            Mock.Get(am).SetupGet(a => a.Handlers).Returns(ah);
+            return am;
         }
 
         [TearDown]

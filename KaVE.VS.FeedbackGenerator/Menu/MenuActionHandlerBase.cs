@@ -1,5 +1,5 @@
-﻿/*
- * Copyright 2014 Technische Universität Darmstadt
+/*
+ * Copyright 2017 University of Zurich
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
+using JetBrains.ActionManagement;
+using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised;
-using JetBrains.UI.MenuGroups;
-using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 
 namespace KaVE.VS.FeedbackGenerator.Menu
 {
-    [ActionGroup(Id, ActionGroupInsertStyles.Submenu, Id = 12345678, Text = "&KaVE")]
-    public class KaVEMenu : IAction, IInsertLast<VsMainMenuGroup>
+    public abstract class MenuActionHandlerBase<T> : IExecutableAction where T : IExecutableAction
     {
-        public const string Id = "KaVE.Menu";
+        protected MenuActionHandlerBase(IActionManager am)
+        {
+            var actId = am.Defs.GetActionDef<T>();
+            am.Handlers.AddHandler(actId, this);
+        }
 
-        public KaVEMenu(SessionManagerWindowAction b,
-            UploadWizardAction d,
-            OptionPageAction c,
-            IntelligentCodeCompletionAction e,
-            AboutAction a) { }
+        public virtual bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
+        {
+            return true;
+        }
+
+        public abstract void Execute(IDataContext context, DelegateExecute nextExecute);
     }
 }

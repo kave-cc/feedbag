@@ -421,6 +421,8 @@
     <Compile Include="Generators\ReSharper\TestRunEventGenerator.cs" />
     <Compile Include="Generators\VisualStudio\SystemEventGenerator.cs" />
     <Compile Include="Menu\IntelligentCodeCompletionAction.cs" />
+    <Compile Include="Menu\MenuActionBase.cs" />
+    <Compile Include="Menu\MenuActionHandlerBase.cs" />
     <Compile Include="SessionManager\Anonymize\TestRunEventAnonymizer.cs" />
     <Compile Include="Settings\FirstStartNotificator.cs" />
     <Compile Include="UserControls\AboutWindow\AboutWindowControl.xaml.cs">

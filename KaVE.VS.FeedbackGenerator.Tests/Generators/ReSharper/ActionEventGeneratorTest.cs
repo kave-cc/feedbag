@@ -15,6 +15,7 @@
  */
 
 using KaVE.Commons.Model.Events;
+using KaVE.Commons.Utils;
 using KaVE.VS.FeedbackGenerator.Generators.ReSharper;
 using NUnit.Framework;
 
@@ -51,7 +52,9 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.ReSharper
             _uut.TrackActivity(activityGroup, activityId, count);
 
             var publishedEvent = GetSinglePublished<CommandEvent>();
-            Assert.AreEqual(string.Format("{0}:{1}:{2}", activityGroup, count, activityId), publishedEvent.CommandId);
+            Assert.AreEqual(
+                string.Format("{0}:{1}:{2}", activityGroup, count, activityId),
+                publishedEvent.CommandId);
         }
     }
 }

@@ -68,9 +68,10 @@ namespace KaVE.VS.FeedbackGenerator.Menu
 
         public void OpenUserProfile()
         {
-            new UserProfileDialog(_actionExecutor, UploadWizardPolicy.OpenUploadWizardOnFinish, _userSettingsUtil).Show(
-                
-                );
+            new UserProfileDialog(
+                _actionExecutor,
+                UploadWizardPolicy.OpenUploadWizardOnFinish,
+                _userSettingsUtil).Show();
         }
 
         public void OpenUploadWizard()

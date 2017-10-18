@@ -15,24 +15,26 @@
  */
 
 using JetBrains.ActionManagement;
+using JetBrains.Application;
 using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised;
 
 namespace KaVE.VS.FeedbackGenerator.Menu
 {
     [Action(Id, "Intelligent Code Completion...", Id = 8213945)]
-    public class IntelligentCodeCompletionAction : IExecutableAction
+    public class IntelligentCodeCompletionAction : MenuActionBase
     {
         public const string Id = "KaVE.VsFeedbackGenerator.IntelligentCodeCompletion";
+    }
+
+    [ShellComponent]
+    public class IntelligentCodeCompletionActionHandler : MenuActionHandlerBase<IntelligentCodeCompletionAction>
+    {
         public const string Url = "http://www.kave.cc/intelligent-code-completion";
 
-        public bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
-        {
-            // return true or false to enable/disable this action
-            return true;
-        }
+        public IntelligentCodeCompletionActionHandler(IActionManager am) : base(am) { }
 
-        public void Execute(IDataContext context, DelegateExecute nextExecute)
+        public override void Execute(IDataContext context, DelegateExecute nextExecute)
         {
             System.Diagnostics.Process.Start(Url);
         }

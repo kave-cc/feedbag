@@ -15,31 +15,35 @@
  */
 
 using JetBrains.ActionManagement;
+using JetBrains.Application;
 using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised;
 using JetBrains.UI.Options;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.Menu
 {
     [Action(Id, "Options...", Id = 123451)]
-    public class OptionPageAction : IExecutableAction
+    public class OptionPageAction : MenuActionBase
     {
-        internal const string Id = "KaVE.Options";
+        public const string Id = "KaVE.Options";
+    }
+
+    [ShellComponent]
+    public class OptionPageActionHandler : MenuActionHandlerBase<OptionPageAction>
+    {
+        private readonly IKaVECommandGenerator _gen;
         private readonly IActionManager _actionManager;
 
-        public OptionPageAction()
+        public OptionPageActionHandler(IKaVECommandGenerator gen, IActionManager am) : base(am)
         {
-            _actionManager = Registry.GetComponent<IActionManager>();
+            _gen = gen;
+            _actionManager = am;
         }
 
-        public bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
+        public override void Execute(IDataContext context, DelegateExecute nextExecute)
         {
-            return true;
-        }
-
-        public void Execute(IDataContext context, DelegateExecute nextExecute)
-        {
+            _gen.FireOpenOptions();
             _actionManager.ExecuteAction<ShowOptionsAction>();
         }
     }

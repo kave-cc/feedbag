@@ -15,25 +15,33 @@
  */
 
 using JetBrains.ActionManagement;
+using JetBrains.Application;
 using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.UserControls.AboutWindow;
 
 namespace KaVE.VS.FeedbackGenerator.Menu
 {
     [Action(Id, "About KaVE", Id = 21394587)]
-    public class AboutAction : IExecutableAction
+    public class AboutAction : MenuActionBase
     {
         public const string Id = "KaVE.VsFeedbackGenerator.About";
+    }
 
-        public bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
+    [ShellComponent]
+    public class AboutActionHandler : MenuActionHandlerBase<AboutAction>
+    {
+        private readonly IKaVECommandGenerator _cmdGen;
+
+        public AboutActionHandler(IActionManager am, IKaVECommandGenerator cmdGen) : base(am)
         {
-            // return true or false to enable/disable this action
-            return true;
+            _cmdGen = cmdGen;
         }
 
-        public void Execute(IDataContext context, DelegateExecute nextExecute)
+        public override void Execute(IDataContext context, DelegateExecute nextExecute)
         {
+            _cmdGen.FireOpenAboutDialog();
             new AboutWindowControl().Show();
         }
     }
