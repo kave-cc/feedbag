@@ -22,6 +22,7 @@ using JetBrains;
 using JetBrains.Annotations;
 using KaVE.Commons.Utils.Collections;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 using KaVE.VS.FeedbackGenerator.Utils.Export;
@@ -33,6 +34,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
     public sealed class FeedbackViewModel : ViewModelBase<FeedbackViewModel>
     {
         private readonly ILogManager _logManager;
+        private readonly IKaVECommandGenerator _cmdGen;
         private ICollection<SessionViewModel> _sessions = new DispatchingObservableCollection<SessionViewModel>();
 
         private ICollection<SessionViewModel> _selectedSessions =
@@ -47,16 +49,18 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             get { return _confirmationRequest; }
         }
 
-        public FeedbackViewModel(ILogManager logManager, IExporter exporter)
+        public FeedbackViewModel(ILogManager logManager, IExporter exporter, IKaVECommandGenerator cmdGen)
         {
             _logManager = logManager;
+            _cmdGen = cmdGen;
 
             SetupRefresh();
             _logManager.LogCreated += OnLogCreated;
 
             exporter.ExportStarted += () => SetBusy(Properties.UploadWizard.Export_BusyMessage);
             exporter.ExportEnded += SetIdle;
-            exporter.ExportProgressChanged += msg => SetBusy(string.Format("{0} ({1}%)", Properties.UploadWizard.Export_BusyMessage, msg));
+            exporter.ExportProgressChanged +=
+                msg => SetBusy(string.Format("{0} ({1}%)", Properties.UploadWizard.Export_BusyMessage, msg));
         }
 
         private void OnLogCreated(ILog log)
@@ -89,7 +93,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
         private IList<SessionViewModel> OnRefresh(BackgroundWorker worker)
         {
             var logs = _logManager.Logs.ToList();
-            var progressPerFile = logs.IsEmpty() ? 0 : 100/logs.Count;
+            var progressPerFile = logs.IsEmpty() ? 0 : 100 / logs.Count;
             var progress = 0;
             worker.ReportProgress(progress);
             return
@@ -109,7 +113,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             var viewModel = Sessions.FirstOrDefault(session => session.Log.Equals(log));
             if (viewModel == null)
             {
-                viewModel = new SessionViewModel(log);
+                viewModel = new SessionViewModel(log, _cmdGen);
                 viewModel.ConfirmationRequest.Raised += (sender, args) => _confirmationRequest.Delegate(args);
                 RegisterSubViewModel(viewModel);
             }
@@ -214,6 +218,8 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             {
                 return;
             }
+
+            _cmdGen.FireDeleteDays();
 
             // Removing sessions while iterating here, leads to strange
             // Schroeding bugs in production mode (seems some UI-update

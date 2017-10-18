@@ -21,6 +21,7 @@ using JetBrains.UI.ToolWindowManagement;
 using KaVE.JetBrains.Annotations;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Utils.Export;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 
@@ -38,7 +39,8 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
             ActionExecutor actionExecutor,
             ILogManager logManager,
             IExporter exporter,
-            ISettingsStore settingsStore)
+            ISettingsStore settingsStore,
+            IKaVECommandGenerator cmdGen)
         {
             // objects are kept in fields to prevent garbage collection
             _toolWindowClass = toolWindowManager.Classes[descriptor];
@@ -48,9 +50,10 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
                 {
                     var visibilitySignal = _toolWindowClass.Visible.Change;
                     var control = new SessionManagerControl(
-                        new FeedbackViewModel(logManager, exporter),
+                        new FeedbackViewModel(logManager, exporter, cmdGen),
                         actionExecutor,
-                        settingsStore);
+                        settingsStore,
+                        cmdGen);
                     visibilitySignal.Advise(lt, control.OnVisibilityChanged);
                     var wrapper = new EitherControl(control);
                     return wrapper.BindToLifetime(lt);

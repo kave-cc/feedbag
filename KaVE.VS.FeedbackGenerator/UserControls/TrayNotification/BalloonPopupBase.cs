@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Menu;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.TrayNotification
@@ -26,6 +27,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.TrayNotification
     {
         protected void OpenUploadWizard()
         {
+            Registry.GetComponent<IKaVECommandGenerator>().FireOpenEventManager();
             ClosePopup();
             var actionexec = Registry.GetComponent<ActionExecutor>();
             actionexec.ExecuteActionGuarded<UploadWizardAction>();

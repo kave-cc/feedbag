@@ -21,6 +21,7 @@ using JetBrains.UI.Options;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.Menu;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
@@ -32,10 +33,12 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
         private readonly FeedbackViewModel _feedbackViewModel;
         private readonly ActionExecutor _actionExec;
         private readonly ISettingsStore _settingsStore;
+        private readonly IKaVECommandGenerator _cmdGen;
 
         public SessionManagerControl(FeedbackViewModel feedbackViewModel,
             ActionExecutor actionExec,
-            ISettingsStore settingsStore)
+            ISettingsStore settingsStore,
+            IKaVECommandGenerator cmdGen)
         {
             DataContext = feedbackViewModel;
             _feedbackViewModel = feedbackViewModel;
@@ -43,6 +46,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
             _feedbackViewModel.ConfirmationRequest.Raised += new ConfirmationRequestHandler(this).Handle;
 
             _settingsStore = settingsStore;
+            _cmdGen = cmdGen;
 
             InitializeComponent();
         }
@@ -59,6 +63,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
 
         private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
         {
+            _cmdGen.FireReloadEvents();
             RefreshControl();
         }
 
@@ -86,11 +91,13 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
 
         public void Export_OnClick(object sender, RoutedEventArgs e)
         {
+            // no _cmdGen invocation, as it is done in the UploadWizardAction
             _actionExec.ExecuteActionGuarded<UploadWizardAction>();
         }
 
         private void VisitUploadPageButton_OnClick(object sender, RoutedEventArgs e)
         {
+            _cmdGen.FireGotoUploadPage();
             var settingsStore = Registry.GetComponent<ISettingsStore>();
             var export = settingsStore.GetSettings<ExportSettings>();
 
@@ -99,12 +106,14 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
 
         private void VisitHomepageButton_OnClick(object sender, RoutedEventArgs e)
         {
+            _cmdGen.FireGotoHomepage();
             var prefix = _settingsStore.GetSettings<ExportSettings>().WebAccessPrefix;
             System.Diagnostics.Process.Start(prefix + "http://kave.cc");
         }
 
         private void OpenOptionPage_OnClick(object sender, RoutedEventArgs e)
         {
+            _cmdGen.FireOpenOptions();
             _actionExec.ExecuteActionGuarded<ShowOptionsAction>();
         }
 

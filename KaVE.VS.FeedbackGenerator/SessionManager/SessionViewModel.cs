@@ -22,6 +22,7 @@ using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Collections;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
@@ -32,6 +33,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
 {
     public class SessionViewModel : ViewModelBase<SessionViewModel>
     {
+        private readonly IKaVECommandGenerator _cmdGen;
         public ILog Log { get; private set; }
         private bool _isLoaded;
         private readonly BackgroundWorker<ICollection<EventViewModel>> _logLoader;
@@ -48,8 +50,9 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             get { return _confirmationRequest; }
         }
 
-        public SessionViewModel(ILog log)
+        public SessionViewModel(ILog log, IKaVECommandGenerator cmdGen)
         {
+            _cmdGen = cmdGen;
             Log = log;
             Log.EntriesRemoved += OnEntriesRemoved;
             Log.EntryAppended += OnEntryAdded;
@@ -189,7 +192,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
             {
                 return;
             }
-
+            _cmdGen.FireDeleteEvents();
             Log.RemoveRange(SelectedEvents.Select(evm => evm.Event));
         }
 

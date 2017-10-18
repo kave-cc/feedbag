@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+using JetBrains.ActionManagement;
+using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised;
 using JetBrains.UI.ToolWindowManagement;
+using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
 {
@@ -23,5 +27,11 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
     public class SessionManagerWindowAction : ActivateToolWindowActionHandler<SessionManagerWindowDescriptor>
     {
         public const string Id = "KaVE.SessionManager";
+
+        public override void Execute(IDataContext context, DelegateExecute nextExecute)
+        {
+            Registry.GetComponent<IKaVECommandGenerator>().FireOpenEventManager();
+            base.Execute(context, nextExecute);
+        }
     }
 }

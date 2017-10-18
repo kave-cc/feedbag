@@ -22,6 +22,7 @@ using KaVE.Commons.Utils.Assertion;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.Commons.Utils.Reflection;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.SessionManager;
 using KaVE.VS.FeedbackGenerator.Utils.Export;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
@@ -48,7 +49,10 @@ namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.FeedbackViewModelTestSu
             _mockLogManager = new Mock<ILogManager>();
             _mockExporter = new Mock<IExporter>();
 
-            _uut = new FeedbackViewModel(_mockLogManager.Object, _mockExporter.Object);
+            _uut = new FeedbackViewModel(
+                _mockLogManager.Object,
+                _mockExporter.Object,
+                Mock.Of<IKaVECommandGenerator>());
         }
 
         [TearDown]

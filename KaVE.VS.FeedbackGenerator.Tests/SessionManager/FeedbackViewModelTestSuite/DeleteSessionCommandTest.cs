@@ -21,6 +21,7 @@ using System.Threading;
 using JetBrains;
 using KaVE.Commons.Utils.IO;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.SessionManager;
 using KaVE.VS.FeedbackGenerator.Tests.Interactivity;
@@ -44,12 +45,20 @@ namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.FeedbackViewModelTestSu
         {
             Registry.RegisterComponent(new Mock<IIoUtils>().Object);
 
-            _mockLogs = new List<Mock<ILog>> {LogTestHelper.MockLog(), LogTestHelper.MockLog(), LogTestHelper.MockLog()};
+            _mockLogs = new List<Mock<ILog>>
+            {
+                LogTestHelper.MockLog(),
+                LogTestHelper.MockLog(),
+                LogTestHelper.MockLog()
+            };
 
             _mockLogFileManager = new Mock<ILogManager>();
             _mockLogFileManager.Setup(mgr => mgr.Logs).Returns(_mockLogs.Select(m => m.Object));
 
-            _uut = new FeedbackViewModel(_mockLogFileManager.Object, Mock.Of<IExporter>());
+            _uut = new FeedbackViewModel(
+                _mockLogFileManager.Object,
+                Mock.Of<IExporter>(),
+                Mock.Of<IKaVECommandGenerator>());
             _uut.Refresh();
             while (_uut.IsBusy)
             {
@@ -184,7 +193,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.FeedbackViewModelTestSu
             {
                 _confirmationRequestHelper.Callback();
             }
-            catch {}
+            catch { }
 
             Assert.AreEqual(selectedSession, _uut.Sessions.First());
         }

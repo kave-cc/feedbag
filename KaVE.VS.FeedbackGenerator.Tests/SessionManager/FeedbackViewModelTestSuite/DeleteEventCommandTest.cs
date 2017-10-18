@@ -20,6 +20,7 @@ using JetBrains;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.TestUtils;
 using KaVE.Commons.TestUtils.Model.Events;
+using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.SessionManager;
 using KaVE.VS.FeedbackGenerator.Tests.Interactivity;
@@ -29,7 +30,6 @@ using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.FeedbackViewModelTestSuite
 {
-    [TestFixture]
     internal class DeleteEventCommandTest
     {
         private SessionViewModel _uut;
@@ -45,7 +45,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.FeedbackViewModelTestSu
             _mockLog = LogTestHelper.MockLog();
             _mockLog.Setup(log => log.ReadAll()).Returns(_displayedEvents);
 
-            _uut = new SessionViewModel(_mockLog.Object);
+            _uut = new SessionViewModel(_mockLog.Object, Mock.Of<IKaVECommandGenerator>());
             // ReSharper disable once UnusedVariable
             var tmp = _uut.Events;
             AsyncTestHelper.WaitForCondition(() => !_uut.IsBusy);
