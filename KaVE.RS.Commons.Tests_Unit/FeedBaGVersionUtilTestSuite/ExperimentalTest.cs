@@ -34,7 +34,7 @@ namespace KaVE.RS.Commons.Tests_Unit.FeedBaGVersionUtilTestSuite
         {
             var actual = _sut.GetInformalVersion();
             Assert.That(actual.StartsWith("0."));
-            Assert.That(actual.EndsWith("-Release"));
+            Assert.That(actual.EndsWith("-Experimental"));
         }
 
         [Test]
