@@ -21,7 +21,6 @@ using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.VsIntegration
 {
-    [TestFixture]
     public class IDESessionTest
     {
         private IDESession _uut;

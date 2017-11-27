@@ -27,6 +27,7 @@ using KaVE.Commons.Utils.IO;
 using KaVE.Commons.Utils.Json;
 using KaVE.Commons.Utils.Streams;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.SessionManager.Anonymize;
 using KaVE.VS.FeedbackGenerator.Tests.Utils.Logging;
@@ -63,7 +64,10 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
             _publisher = Mock.Of<IPublisher>();
             Mock.Get(_publisher)
                 .Setup(
-                    p => p.Publish(It.IsAny<UserProfileEvent>(), It.IsAny<IEnumerable<IDEEvent>>(), It.IsAny<Action>()))
+                    p => p.Publish(
+                        It.IsAny<UserProfileEvent>(),
+                        It.IsAny<IEnumerable<IDEEvent>>(),
+                        It.IsAny<Action>()))
                 .Callback<UserProfileEvent, IEnumerable<IDEEvent>, Action>(
                     (upe, events, callback) =>
                     {

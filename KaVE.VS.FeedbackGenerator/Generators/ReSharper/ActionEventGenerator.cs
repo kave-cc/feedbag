@@ -20,7 +20,8 @@ using JetBrains.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
 {
@@ -31,7 +32,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
             [NotNull] IMessageBus messageBus,
             [NotNull] IDateUtils dateUtils,
             [NotNull] IThreading threading)
-            : base(env, messageBus, dateUtils, threading) {}
+            : base(env, messageBus, dateUtils, threading) { }
 
         public void TrackAction(string actionId)
         {

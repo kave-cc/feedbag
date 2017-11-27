@@ -21,7 +21,7 @@ using System.Linq;
 using JetBrains.Util;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.Commons.Utils.IO;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using Moq;
 using NUnit.Framework;
@@ -29,7 +29,6 @@ using ILogger = KaVE.Commons.Utils.Exceptions.ILogger;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 {
-    [TestFixture]
     internal class LogFileManagerTest : LogManagerContractTest
     {
         private string _baseDirectory;
@@ -200,7 +199,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
 
         private void GivenLogsExist(int numberOfLogs)
         {
-            var dates = Enumerable.Range(1, numberOfLogs).Select(i => (DateTimeOffset)DateTime.Today.AddDays(-i)).ToArray();
+            var dates = Enumerable.Range(1, numberOfLogs).Select(i => (DateTimeOffset) DateTime.Today.AddDays(-i))
+                                  .ToArray();
             GivenLogsExist(dates);
         }
 

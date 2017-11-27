@@ -29,7 +29,7 @@ using KaVE.Commons.Utils.Exceptions;
 using KaVE.RS.Commons.Analysis;
 using KaVE.RS.Commons.Analysis.CompletionTarget;
 using KaVE.RS.Commons.Analysis.Transformer;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 
 namespace KaVE.RS.Commons.Tests_Integration.Analysis
 {

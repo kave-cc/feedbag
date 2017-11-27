@@ -19,8 +19,8 @@ limitations under the License.
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userProfile="clr-namespace:KaVE.VS.FeedbackGenerator.UserControls.UserProfile"
-             xmlns:model="clr-namespace:KaVE.Commons.Model.Events.UserProfiles;assembly=KaVE.Commons"
              xmlns:valueConverter="clr-namespace:KaVE.VS.FeedbackGenerator.UserControls.ValueConverter"
+             xmlns:enums="clr-namespace:KaVE.Commons.Model.Events.Enums;assembly=KaVE.Commons"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="550">
 
@@ -155,23 +155,23 @@ limitations under the License.
             <StackPanel Orientation="Horizontal">
                 <Label Content="Low" Padding="0" Margin="0,0,5,0" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Negative3}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Negative3}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Negative2}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Negative2}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Negative1}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Negative1}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Neutral}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Neutral}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Positive1}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Positive1}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Positive2}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Positive2}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Positive3}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Positive3}}" />
                 <Label Content="High" Padding="0" Margin="5,0,0,0" />
                 <Label Content="-" Padding="0" Margin="7,0" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Unknown}}" />
+                             IsChecked="{Binding Path=ProgrammingGeneral, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Unknown}}" />
                 <Label Content="No answer" Padding="0" />
             </StackPanel>
 
@@ -182,23 +182,23 @@ limitations under the License.
             <StackPanel Orientation="Horizontal">
                 <Label Content="Low" Padding="0" Margin="0,0,5,0" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Negative3}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Negative3}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Negative2}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Negative2}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Negative1}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Negative1}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Neutral}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Neutral}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Positive1}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Positive1}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Positive2}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Positive2}}" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Positive3}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Positive3}}" />
                 <Label Content="High" Padding="0" Margin="5,0,0,0" />
                 <Label Content="-" Padding="0" Margin="7,0" />
                 <RadioButton Margin="2,3"
-                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Likert7Point.Unknown}}" />
+                             IsChecked="{Binding Path=ProgrammingCSharp, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:Likert7Point.Unknown}}" />
                 <Label Content="No answer" Padding="0" />
             </StackPanel>
 

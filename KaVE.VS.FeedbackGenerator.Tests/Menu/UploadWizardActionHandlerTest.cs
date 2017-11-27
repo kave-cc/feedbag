@@ -20,7 +20,7 @@ using JetBrains.Application.DataContext;
 using JetBrains.UI.ActionsRevised.Handlers;
 using JetBrains.UI.ActionsRevised.Loader;
 using KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Menu;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;

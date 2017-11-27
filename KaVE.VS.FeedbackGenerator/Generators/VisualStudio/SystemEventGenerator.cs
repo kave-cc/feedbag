@@ -19,7 +19,8 @@ using JetBrains.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 using Microsoft.Win32;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio

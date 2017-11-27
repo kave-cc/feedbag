@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using KaVE.Commons.Model.Events.Enums;
 using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.JetBrains.Annotations;
 using KaVE.RS.Commons.Settings;
@@ -201,22 +202,22 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UserProfile
 
         public IEnumerable EducationOptions
         {
-            get { return Enum.GetValues(typeof (Educations)); }
+            get { return Enum.GetValues(typeof(Educations)); }
         }
 
         public IEnumerable PositionOptions
         {
-            get { return Enum.GetValues(typeof (Positions)); }
+            get { return Enum.GetValues(typeof(Positions)); }
         }
 
         public IEnumerable YesNoOptions
         {
-            get { return Enum.GetValues(typeof (YesNoUnknown)); }
+            get { return Enum.GetValues(typeof(YesNoUnknown)); }
         }
 
         public IEnumerable LikertOptions
         {
-            get { return Enum.GetValues(typeof (Likert7Point)); }
+            get { return Enum.GetValues(typeof(Likert7Point)); }
         }
 
         [NotifyPropertyChangedInvocator]

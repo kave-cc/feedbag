@@ -15,20 +15,20 @@
  */
 
 using EnvDTE;
+using KaVE.VS.Commons.TestUtils.Generators;
 using Moq;
 using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
 {
-    [TestFixture]
     internal abstract class VisualStudioEventGeneratorTestBase : EventGeneratorTestBase
     {
         [SetUp]
         public void SetUpEnvironment()
         {
-            var mockEvents = new Mock<Events>();
-            MockEvents(mockEvents);
-            TestIDESession.MockDTE.Setup(dte => dte.Events).Returns(mockEvents.Object);
+            var events = Mock.Of<Events>();
+            MockEvents(Mock.Get(events));
+            Mock.Get(TestIDESession.DTE).Setup(dte => dte.Events).Returns(events);
         }
 
         protected abstract void MockEvents(Mock<Events> mockEvents);

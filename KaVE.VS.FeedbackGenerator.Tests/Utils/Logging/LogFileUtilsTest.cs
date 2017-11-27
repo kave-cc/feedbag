@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.TestUtils.Model.Events;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using Moq;
 using NUnit.Framework;
@@ -81,7 +81,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Utils.Logging
             var hashes = _sourceLogFileManager.Logs.SelectMany(l => l.ReadAll()).Select(e => e.GetHashCode()).ToList();
             Assert.AreEqual(6, hashes.Count);
             LogFileUtils.ResubmitLogs(_sourceLogFileManager, _messageBus);
-            foreach(var e in _receivedEvents)
+            foreach (var e in _receivedEvents)
             {
                 hashes.Remove(e.GetHashCode());
             }

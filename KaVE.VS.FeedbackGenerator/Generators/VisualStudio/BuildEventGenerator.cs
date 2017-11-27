@@ -21,7 +21,8 @@ using JetBrains.Threading;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Assertion;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 {
@@ -30,6 +31,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly BuildEvents _buildEvents;
+
         private BuildEvent _currentEvent;
         private BuildTarget _currentTarget;
 

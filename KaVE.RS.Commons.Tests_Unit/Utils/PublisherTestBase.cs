@@ -23,6 +23,7 @@ using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils.IO;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using Moq;
 using NUnit.Framework;
 
@@ -42,7 +43,7 @@ namespace KaVE.RS.Commons.Tests_Unit.Utils
         protected static IEnumerable<IDEEvent> TestEventSource(int count)
         {
             var baseDate = new DateTime(2014, 1, 1);
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 yield return new WindowEvent {TriggeredAt = baseDate.AddDays(i)};
             }

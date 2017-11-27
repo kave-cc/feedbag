@@ -81,6 +81,11 @@
       <HintPath>..\packages\JetBrains.Platform.Lib.DevExpress.2.0.20150224.0\lib\Net\DevExpress.XtraTreeList.v7.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\EnvDTE.8.0.1\lib\net10\EnvDTE.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.NRefactory, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
       <HintPath>..\packages\ICSharpCode.NRefactory.5.5.1\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
       <Private>True</Private>
@@ -111,14 +116,17 @@
     </Reference>
     <Reference Include="JetBrains.MSBuild.Logger, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1982a8b0ca24c5dc, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Platform.MSBuild.Logger.1.0.20170130.0\lib\net\JetBrains.MSBuild.Logger.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="JetBrains.System.Reflection.Metadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4fea49dae943e013, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.System.Reflection.Metadata.1.0.0\lib\net45\JetBrains.System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="KaVE.Commons, Version=0.0.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KaVE.Commons.0.0.6\lib\KaVE.Commons.dll</HintPath>
+    <Reference Include="KaVE.Commons, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KaVE.Commons.1.0.0-v20171127-141631\lib\KaVE.Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="KaVE.VS.Commons, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KaVE.VS.Commons.1.0.0-v20171127-141631\lib\KaVE.VS.Commons.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.3.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.MahApps.Metro.1.3.1\lib\net45\MahApps.Metro.dll</HintPath>
@@ -162,6 +170,11 @@
     </Reference>
     <Reference Include="Microsoft.Owin.StaticFiles, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.StaticFiles.3.0.1\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.VisualStudio.CommandBars.8.0.0.0\lib\Microsoft.VisualStudio.CommandBars.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -327,6 +340,11 @@
       <HintPath>..\packages\Sprache.JetBrains.2.1.0\lib\net40\Sprache.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\stdole.7.0.3301\lib\net10\stdole.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Concurrent" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -405,11 +423,16 @@
     <Compile Include="Analysis\TypeShapeAnalysis.cs" />
     <Compile Include="Analysis\Util\Scope.cs" />
     <Compile Include="Analysis\Util\UniqueVariableNameGenerator.cs" />
+    <Compile Include="CodeCompletion\ExamplePBNRecommender.cs" />
+    <Compile Include="CodeCompletion\SmileNetworkUtils.cs" />
+    <Compile Include="CodeCompletion\SmilePBNRecommender.cs" />
+    <Compile Include="CodeCompletion\SmilePBNRecommenderConstants.cs" />
+    <Compile Include="CodeCompletion\SmilePBNRecommenderStore.cs" />
+    <Compile Include="FeedBaGVersionUtil.cs" />
     <Compile Include="Injectables\InjectablePBNRecommenderStore.cs" />
     <Compile Include="Injectables\InjectableRandomizationUtils.cs" />
     <Compile Include="Injectables\InjectableTypePathUtil.cs" />
     <Compile Include="Injectables\InjectableVersionUtil.cs" />
-    <Compile Include="KaVEVersionUtil.cs" />
     <Compile Include="Properties\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -437,7 +460,6 @@
     <Compile Include="Utils\Naming\ReSharperTypeNameFactory.cs" />
     <Compile Include="Utils\ProposalProbabilityUtils.cs" />
     <Compile Include="Utils\PublisherUtils.cs" />
-    <Compile Include="Utils\Registry.cs" />
     <Compile Include="Utils\XamlFormattingUtil.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -457,39 +479,39 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Antlr2.Tools.2.7.6.4\build\Antlr2.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr2.Tools.2.7.6.4\build\Antlr2.Tools.targets'))" />
     <Error Condition="!Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20151217.1\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20151217.1\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Shell.108.0.20170407.122502\build\JetBrains.Platform.Core.Shell.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Shell.108.0.20170407.122502\build\JetBrains.Platform.Core.Shell.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Text.108.0.20170407.122855\build\JetBrains.Platform.Core.Text.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Text.108.0.20170407.122855\build\JetBrains.Platform.Core.Text.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.RdProtocol.108.0.20170407.122855\build\JetBrains.Platform.RdProtocol.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.RdProtocol.108.0.20170407.122855\build\JetBrains.Platform.RdProtocol.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Ide.108.0.20170407.122855\build\JetBrains.Platform.Core.Ide.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Ide.108.0.20170407.122855\build\JetBrains.Platform.Core.Ide.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Symbols.108.0.20170407.122855\build\JetBrains.Platform.Symbols.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Symbols.108.0.20170407.122855\build\JetBrains.Platform.Symbols.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Platform.Tests.Framework.108.0.20170407.122855\build\JetBrains.Platform.Tests.Framework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Tests.Framework.108.0.20170407.122855\build\JetBrains.Platform.Tests.Framework.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.Tasks.108.0.20170407.123304\build\JetBrains.Psi.Features.Tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.Tasks.108.0.20170407.123304\build\JetBrains.Psi.Features.Tasks.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.Core.108.0.20170407.123304\build\JetBrains.Psi.Features.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.Core.108.0.20170407.123304\build\JetBrains.Psi.Features.Core.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.src.108.0.20170407.123304\build\JetBrains.Psi.Features.src.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.src.108.0.20170407.123304\build\JetBrains.Psi.Features.src.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170407.123304\build\JetBrains.Psi.Features.UnitTesting.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170407.123304\build\JetBrains.Psi.Features.UnitTesting.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170407.123304\build\JetBrains.Psi.Features.test.Framework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170407.123304\build\JetBrains.Psi.Features.test.Framework.targets'))" />
-    <Error Condition="!Exists('..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170407.131329\build\JetBrains.ReSharper.SDK.Internal.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170407.131329\build\JetBrains.ReSharper.SDK.Internal.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Shell.108.0.20170613.153820\build\JetBrains.Platform.Core.Shell.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Shell.108.0.20170613.153820\build\JetBrains.Platform.Core.Shell.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Text.108.0.20170613.154401\build\JetBrains.Platform.Core.Text.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Text.108.0.20170613.154401\build\JetBrains.Platform.Core.Text.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.RdProtocol.108.0.20170613.154401\build\JetBrains.Platform.RdProtocol.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.RdProtocol.108.0.20170613.154401\build\JetBrains.Platform.RdProtocol.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Core.Ide.108.0.20170613.154401\build\JetBrains.Platform.Core.Ide.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Core.Ide.108.0.20170613.154401\build\JetBrains.Platform.Core.Ide.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Symbols.108.0.20170613.154401\build\JetBrains.Platform.Symbols.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Symbols.108.0.20170613.154401\build\JetBrains.Platform.Symbols.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Platform.Tests.Framework.108.0.20170613.154401\build\JetBrains.Platform.Tests.Framework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Platform.Tests.Framework.108.0.20170613.154401\build\JetBrains.Platform.Tests.Framework.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.Tasks.108.0.20170613.154830\build\JetBrains.Psi.Features.Tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.Tasks.108.0.20170613.154830\build\JetBrains.Psi.Features.Tasks.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.Core.108.0.20170613.154830\build\JetBrains.Psi.Features.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.Core.108.0.20170613.154830\build\JetBrains.Psi.Features.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.src.108.0.20170613.154830\build\JetBrains.Psi.Features.src.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.src.108.0.20170613.154830\build\JetBrains.Psi.Features.src.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170613.154830\build\JetBrains.Psi.Features.UnitTesting.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170613.154830\build\JetBrains.Psi.Features.UnitTesting.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170613.154830\build\JetBrains.Psi.Features.test.Framework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170613.154830\build\JetBrains.Psi.Features.test.Framework.targets'))" />
+    <Error Condition="!Exists('..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170613.162448\build\JetBrains.ReSharper.SDK.Internal.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170613.162448\build\JetBrains.ReSharper.SDK.Internal.targets'))" />
   </Target>
   <Import Project="..\packages\Antlr2.Tools.2.7.6.4\build\Antlr2.Tools.targets" Condition="Exists('..\packages\Antlr2.Tools.2.7.6.4\build\Antlr2.Tools.targets')" />
   <Import Project="..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20151217.1\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets" Condition="Exists('..\packages\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.2.0.20151217.1\build\JetBrains.Build.Platform.Tasks.ThemedIconsPacker.Targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Core.Shell.108.0.20170407.122502\build\JetBrains.Platform.Core.Shell.targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Shell.108.0.20170407.122502\build\JetBrains.Platform.Core.Shell.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Core.Text.108.0.20170407.122855\build\JetBrains.Platform.Core.Text.targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Text.108.0.20170407.122855\build\JetBrains.Platform.Core.Text.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.RdProtocol.108.0.20170407.122855\build\JetBrains.Platform.RdProtocol.targets" Condition="Exists('..\packages\JetBrains.Platform.RdProtocol.108.0.20170407.122855\build\JetBrains.Platform.RdProtocol.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Core.Ide.108.0.20170407.122855\build\JetBrains.Platform.Core.Ide.targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Ide.108.0.20170407.122855\build\JetBrains.Platform.Core.Ide.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170407.122855\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Symbols.108.0.20170407.122855\build\JetBrains.Platform.Symbols.targets" Condition="Exists('..\packages\JetBrains.Platform.Symbols.108.0.20170407.122855\build\JetBrains.Platform.Symbols.targets')" />
-  <Import Project="..\packages\JetBrains.Platform.Tests.Framework.108.0.20170407.122855\build\JetBrains.Platform.Tests.Framework.targets" Condition="Exists('..\packages\JetBrains.Platform.Tests.Framework.108.0.20170407.122855\build\JetBrains.Platform.Tests.Framework.targets')" />
-  <Import Project="..\packages\JetBrains.Psi.Features.Tasks.108.0.20170407.123304\build\JetBrains.Psi.Features.Tasks.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.Tasks.108.0.20170407.123304\build\JetBrains.Psi.Features.Tasks.targets')" />
-  <Import Project="..\packages\JetBrains.Psi.Features.Core.108.0.20170407.123304\build\JetBrains.Psi.Features.Core.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.Core.108.0.20170407.123304\build\JetBrains.Psi.Features.Core.targets')" />
-  <Import Project="..\packages\JetBrains.Psi.Features.src.108.0.20170407.123304\build\JetBrains.Psi.Features.src.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.src.108.0.20170407.123304\build\JetBrains.Psi.Features.src.targets')" />
-  <Import Project="..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170407.123304\build\JetBrains.Psi.Features.UnitTesting.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170407.123304\build\JetBrains.Psi.Features.UnitTesting.targets')" />
-  <Import Project="..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170407.123304\build\JetBrains.Psi.Features.test.Framework.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170407.123304\build\JetBrains.Psi.Features.test.Framework.targets')" />
-  <Import Project="..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170407.131329\build\JetBrains.ReSharper.SDK.Internal.targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170407.131329\build\JetBrains.ReSharper.SDK.Internal.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Framework.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Framework.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Core.Shell.108.0.20170613.153820\build\JetBrains.Platform.Core.Shell.targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Shell.108.0.20170613.153820\build\JetBrains.Platform.Core.Shell.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Core.Text.108.0.20170613.154401\build\JetBrains.Platform.Core.Text.targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Text.108.0.20170613.154401\build\JetBrains.Platform.Core.Text.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.RdProtocol.108.0.20170613.154401\build\JetBrains.Platform.RdProtocol.targets" Condition="Exists('..\packages\JetBrains.Platform.RdProtocol.108.0.20170613.154401\build\JetBrains.Platform.RdProtocol.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Core.Ide.108.0.20170613.154401\build\JetBrains.Platform.Core.Ide.targets" Condition="Exists('..\packages\JetBrains.Platform.Core.Ide.108.0.20170613.154401\build\JetBrains.Platform.Core.Ide.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets" Condition="Exists('..\packages\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.108.0.20170613.154401\build\JetBrains.Platform.Interop.dotMemoryUnit.Interop.Ide.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Symbols.108.0.20170613.154401\build\JetBrains.Platform.Symbols.targets" Condition="Exists('..\packages\JetBrains.Platform.Symbols.108.0.20170613.154401\build\JetBrains.Platform.Symbols.targets')" />
+  <Import Project="..\packages\JetBrains.Platform.Tests.Framework.108.0.20170613.154401\build\JetBrains.Platform.Tests.Framework.targets" Condition="Exists('..\packages\JetBrains.Platform.Tests.Framework.108.0.20170613.154401\build\JetBrains.Platform.Tests.Framework.targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.Tasks.108.0.20170613.154830\build\JetBrains.Psi.Features.Tasks.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.Tasks.108.0.20170613.154830\build\JetBrains.Psi.Features.Tasks.targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.Core.108.0.20170613.154830\build\JetBrains.Psi.Features.Core.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.Core.108.0.20170613.154830\build\JetBrains.Psi.Features.Core.targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.src.108.0.20170613.154830\build\JetBrains.Psi.Features.src.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.src.108.0.20170613.154830\build\JetBrains.Psi.Features.src.targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170613.154830\build\JetBrains.Psi.Features.UnitTesting.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.UnitTesting.108.0.20170613.154830\build\JetBrains.Psi.Features.UnitTesting.targets')" />
+  <Import Project="..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170613.154830\build\JetBrains.Psi.Features.test.Framework.targets" Condition="Exists('..\packages\JetBrains.Psi.Features.test.Framework.108.0.20170613.154830\build\JetBrains.Psi.Features.test.Framework.targets')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170613.162448\build\JetBrains.ReSharper.SDK.Internal.targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.Internal.108.0.20170613.162448\build\JetBrains.ReSharper.SDK.Internal.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

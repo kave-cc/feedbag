@@ -15,7 +15,7 @@
  */
 
 using System.Linq;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
 
 namespace KaVE.VS.FeedbackGenerator.Utils.Logging
 {

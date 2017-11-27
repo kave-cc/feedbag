@@ -16,6 +16,7 @@
 
 using System;
 using System.Threading;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.MessageBus;
 using NUnit.Framework;
 
@@ -48,16 +49,17 @@ namespace KaVE.VS.FeedbackGenerator.Tests.MessageBus
         [Test]
         public void ShouldSucceedOnListenerRegistration()
         {
-            _channelUnderTest.Subscribe<TestMessage>(e => {});
+            _channelUnderTest.Subscribe<TestMessage>(e => { });
         }
 
         [Test]
         public void ShouldTransmitMessage()
         {
-            var message = new TestMessage { Id = "jodeldiplom!" };
+            var message = new TestMessage {Id = "jodeldiplom!"};
             var received = false;
 
-            SubscribeToChannelUnderTest<TestMessage>(e =>
+            SubscribeToChannelUnderTest<TestMessage>(
+                e =>
                 {
                     Assert.AreEqual(e.Id, message.Id);
                     received = true;
@@ -72,7 +74,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.MessageBus
         public void ShouldNotReceiveMessageseOfOtherType()
         {
             SubscribeToChannelUnderTest<TestMessage>(e => Assert.Fail());
-            PublishToChannelUnderTest(new Object());
+            PublishToChannelUnderTest(new object());
         }
 
         [Test]
@@ -104,11 +106,13 @@ namespace KaVE.VS.FeedbackGenerator.Tests.MessageBus
             var msg2 = new TestMessage {Id = "growling"};
             var msg3 = new TestMessage {Id = "belting"};
             var messageCount = 0;
-            SubscribeToChannelUnderTest<TestMessage>(e =>
+            SubscribeToChannelUnderTest<TestMessage>(
+                e =>
                 {
                     Assert.AreNotEqual("growling", e.Id);
                     messageCount++;
-                }, e => !e.Id.Equals("growling"));
+                },
+                e => !e.Id.Equals("growling"));
 
             PublishToChannelUnderTest(msg1);
             PublishToChannelUnderTest(msg2);
@@ -121,10 +125,13 @@ namespace KaVE.VS.FeedbackGenerator.Tests.MessageBus
         private void SubscribeToChannelUnderTest<TMessage>(Action<TMessage> action, Func<TMessage, bool> filter = null)
             where TMessage : class
         {
-            _channelUnderTest.Subscribe(e => {
-                action.Invoke(e);
-                _messageReceivedEvent.Set();
-            }, filter);
+            _channelUnderTest.Subscribe(
+                e =>
+                {
+                    action.Invoke(e);
+                    _messageReceivedEvent.Set();
+                },
+                filter);
         }
 
         private void PublishToChannelUnderTest<TMessage>(TMessage message) where TMessage : class

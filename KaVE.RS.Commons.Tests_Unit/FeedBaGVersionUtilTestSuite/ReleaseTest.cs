@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-using EnvDTE;
-using JetBrains.Application;
-using KaVE.VS.FeedbackGenerator.VsIntegration;
-using Moq;
+using KaVE.Commons.Model;
+using NUnit.Framework;
 
-namespace KaVE.VS.FeedbackGenerator.Tests.VsIntegrationMocks
+namespace KaVE.RS.Commons.Tests_Unit.FeedBaGVersionUtilTestSuite
 {
-    [ShellComponent]
-    public class TestIDESession : IIDESession
+    internal class ReleaseTest
     {
-        private readonly Mock<DTE> _mockDTE = new Mock<DTE>();
+        private FeedBaGVersionUtil _sut;
 
-        public string UUID
+        [SetUp]
+        public void SetUp()
         {
-            get { return "TestIDESessionUUID"; }
+            _sut = new FeedBaGVersionUtil();
         }
 
-        public DTE DTE
+        [Test]
+        public void GetInformalVersion()
         {
-            get { return _mockDTE.Object; }
+            var actual = _sut.GetInformalVersion();
+            Assert.That(actual.StartsWith("0."));
+            Assert.That(actual.EndsWith("-Release"));
+        }
+
+        [Test]
+        public void GetVariant()
+        {
+            var actual = _sut.GetVariant();
+            Assert.AreEqual(Variant.Release, actual);
         }
     }
 }

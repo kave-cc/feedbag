@@ -26,7 +26,7 @@ using KaVE.Commons.Model.Naming.CodeElements;
 using KaVE.Commons.Model.SSTs;
 using KaVE.RS.Commons.Analysis.CompletionTarget;
 using KaVE.RS.Commons.Tests_Integration.Analysis;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 
 namespace KaVE.RS.Commons.Tests_Integration
 {
@@ -39,26 +39,36 @@ namespace KaVE.RS.Commons.Tests_Integration
 
         protected void CompleteInMethod(string methodBody)
         {
-            CompleteInClass(string.Format(@"
+            CompleteInClass(
+                string.Format(
+                    @"
                 public void M() {{
                     {0}
-                }}", methodBody));
+                }}",
+                    methodBody));
         }
 
         protected void CompleteInClass(string classBody)
         {
-            CompleteInNamespace(string.Format(@"
+            CompleteInNamespace(
+                string.Format(
+                    @"
                     public class C {{
                         {0}
-                    }}", classBody));
+                    }}",
+                    classBody));
         }
 
         protected void CompleteInNamespace(string content, string namespaceName = "N")
         {
-            CompleteInCSharpFile(string.Format(@"
+            CompleteInCSharpFile(
+                string.Format(
+                    @"
                 namespace {0} {{
                     {1}
-                }}", namespaceName, content));
+                }}",
+                    namespaceName,
+                    content));
         }
 
         /// <summary>

@@ -14,50 +14,66 @@
  * limitations under the License.
  */
 
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using JetBrains.Application;
-using KaVE.Commons.Model.Events;
+using KaVE.Commons.Model;
+using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.JetBrains.Annotations;
 using KaVE.RS.Commons;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 
 namespace KaVE.VS.FeedbackGenerator.Generators
 {
-    // TODO: Remove once obsolete.
     [ShellComponent]
     public class OldEventLogAutoResubmitter
     {
-        private static readonly string OldEventLogBasePath = Path.Combine(
-            IDEEventLogFileManager.AppDataPath,
-            IDEEventLogFileManager.ProjectName,
-            "KaVE.VS.FeedbackGenerator");
-
         public OldEventLogAutoResubmitter([NotNull] IMessageBus messageBus,
             // Dependency on EventLogger is necessary to make sure it has already been
             // created and is subscribed to the message bus.
+            // ReSharper disable once UnusedParameter.Local
             [NotNull] EventLogger eventLogger,
             [NotNull] ILogger logger,
-            [NotNull] KaVEVersionUtil versionUtil)
+            [NotNull] FeedBaGVersionUtil versionUtil)
         {
-            Task.Factory.StartNew(
-                () =>
-                    Execute(
-                        Path.Combine(OldEventLogBasePath, versionUtil.GetCurrentVariant().ToString()),
-                        messageBus,
-                        logger));
+            var pathInRoaming = Path.Combine(
+                IDEEventLogFileManager.AppDataPath,
+                IDEEventLogFileManager.ProjectName,
+                "KaVE.VS.FeedbackGenerator",
+                versionUtil.GetVariant().ToString());
+
+
+            var pathWithDefaultVariant = Path.Combine(
+                IDEEventLogFileManager.AppDataPath,
+                IDEEventLogFileManager.ProjectName,
+                "KaVE.VS.FeedbackGenerator",
+                "Default");
+
+            var paths = new List<string> {pathInRoaming};
+
+            if (versionUtil.GetVariant() == Variant.Release)
+            {
+                paths.Add(pathWithDefaultVariant);
+            }
+
+            Task.Factory.StartNew(() => Execute(paths, messageBus, logger));
         }
 
-        private static void Execute(string oldEventLogPath, IMessageBus messageBus, ILogger logger)
+        private static void Execute(IList<string> paths, IMessageBus messageBus, ILogger logger)
         {
-            if (Directory.Exists(oldEventLogPath))
+            foreach (var path in paths)
             {
-                var count = LogFileUtils.ResubmitLogs(new LogFileManager(oldEventLogPath), messageBus);
-                logger.Info("Migrated {0} events from old to new event log path.", count);
-                messageBus.Publish(new InfoEvent {Info = "wat?"});
-                Directory.Delete(oldEventLogPath, true);
+                if (Directory.Exists(path))
+                {
+                    logger.Info("Starting to migrate events from an old to a new event log path.");
+                    var count = LogFileUtils.ResubmitLogs(new LogFileManager(path), messageBus);
+                    logger.Info("Migrated {0} events from an old to a new event log path.", count);
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    Directory.Delete(Path.GetDirectoryName(path), true);
+                }
             }
         }
     }

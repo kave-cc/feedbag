@@ -20,6 +20,7 @@ using JetBrains.Util;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Model.Events.CompletionEvents;
 using KaVE.RS.Commons.Utils.LookupItems;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.ReSharper;
 using KaVE.VS.FeedbackGenerator.Tests.TestFactories;
 using NUnit.Framework;

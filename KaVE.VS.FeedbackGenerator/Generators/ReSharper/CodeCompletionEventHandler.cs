@@ -31,8 +31,9 @@ using KaVE.Commons.Model.Events.CompletionEvents;
 using KaVE.Commons.Utils;
 using KaVE.RS.Commons.Analysis;
 using KaVE.RS.Commons.Utils.LookupItems;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 using KaVE.VS.FeedbackGenerator.CodeCompletion;
-using KaVE.VS.FeedbackGenerator.MessageBus;
 using ILogger = KaVE.Commons.Utils.Exceptions.ILogger;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
@@ -102,7 +103,10 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
         private Context _context;
         private ILookupItem[] _lastDisplayedItems;
 
-        public CodeCompletionEventHandler(IRSEnv env, IMessageBus messageBus, IDateUtils dateUtils, IThreading threading)
+        public CodeCompletionEventHandler(IRSEnv env,
+            IMessageBus messageBus,
+            IDateUtils dateUtils,
+            IThreading threading)
             : base(env, messageBus, dateUtils, threading)
         {
             _context = new Context();

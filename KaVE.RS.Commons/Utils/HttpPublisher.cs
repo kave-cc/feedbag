@@ -22,6 +22,7 @@ using KaVE.Commons.Model.Events;
 using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.IO;
+using KaVE.VS.Commons;
 
 namespace KaVE.RS.Commons.Utils
 {

@@ -26,8 +26,9 @@ using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Assertion;
 using KaVE.Commons.Utils.IO;
 using KaVE.JetBrains.Annotations;
-using KaVE.VS.FeedbackGenerator.MessageBus;
-using KaVE.VS.FeedbackGenerator.Utils.Naming;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
+using KaVE.VS.Commons.Naming;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 {

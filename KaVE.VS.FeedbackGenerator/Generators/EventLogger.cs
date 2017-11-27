@@ -23,7 +23,7 @@ using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils.Collections;
 using KaVE.Commons.Utils.Concurrency;
 using KaVE.VS.FeedbackGenerator.Generators.Merging;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 
 namespace KaVE.VS.FeedbackGenerator.Generators

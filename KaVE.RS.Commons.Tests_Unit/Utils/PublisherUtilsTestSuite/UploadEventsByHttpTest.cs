@@ -23,6 +23,7 @@ using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Assertion;
 using KaVE.Commons.Utils.IO;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using Moq;
 using NUnit.Framework;
 
@@ -84,7 +85,7 @@ namespace KaVE.RS.Commons.Tests_Unit.Utils.PublisherUtilsTestSuite
 
         private const string TransferFailMessage = "Error XYZ";
 
-        [Test, ExpectedException(typeof (AssertException), ExpectedMessage = TransferFailMessage)]
+        [Test, ExpectedException(typeof(AssertException), ExpectedMessage = TransferFailMessage)]
         public void ShouldFailIfTransferFails()
         {
             _ioUtilsMock.Setup(io => io.TransferByHttp(It.IsAny<HttpContent>(), ValidUri))
@@ -93,7 +94,8 @@ namespace KaVE.RS.Commons.Tests_Unit.Utils.PublisherUtilsTestSuite
         }
 
         [Test,
-         ExpectedException(typeof (AssertException),
+         ExpectedException(
+             typeof(AssertException),
              ExpectedMessage = "Server response was empty")]
         public void ShouldFailIfMessageIsEmpty()
         {
@@ -107,7 +109,8 @@ namespace KaVE.RS.Commons.Tests_Unit.Utils.PublisherUtilsTestSuite
         }
 
         [Test,
-         ExpectedException(typeof (InvalidResponseException),
+         ExpectedException(
+             typeof(InvalidResponseException),
              ExpectedMessage = "Server response did not follow the expected format:\r\nXYZ")]
         public void ShouldFailIfMessageCannotBeParsed()
         {
@@ -120,7 +123,7 @@ namespace KaVE.RS.Commons.Tests_Unit.Utils.PublisherUtilsTestSuite
             _uut.UploadEventsByHttp(_ioUtilsMock.Object, ValidUri, _stream);
         }
 
-        [Test, ExpectedException(typeof (InvalidResponseException))]
+        [Test, ExpectedException(typeof(InvalidResponseException))]
         public void ShouldFailIfMessageCannotBeParsed_verifyLog()
         {
             var resp = new HttpResponseMessage
@@ -133,7 +136,8 @@ namespace KaVE.RS.Commons.Tests_Unit.Utils.PublisherUtilsTestSuite
         }
 
         [Test,
-         ExpectedException(typeof (AssertException),
+         ExpectedException(
+             typeof(AssertException),
              ExpectedMessage = "Server complains about invalid request:\r\nXYZ")]
         public void ShouldFailIfStateIsNotOk()
         {

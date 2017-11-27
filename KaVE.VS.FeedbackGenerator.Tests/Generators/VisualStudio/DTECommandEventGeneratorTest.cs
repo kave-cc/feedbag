@@ -50,7 +50,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
         private void SetUpCommands()
         {
             _mockCommands = new Mock<Commands>();
-            TestIDESession.MockDTE.Setup(dte => dte.Commands).Returns(_mockCommands.Object);
+            Mock.Get(TestIDESession.DTE).Setup(dte => dte.Commands).Returns(_mockCommands.Object);
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
         [Test(
             Description =
                 "BUGFIX: Superfluous events weren't removed from queue, which caused 'executing same event twice at a time' exception"
-            )]
+        )]
         public void ShouldNotFailIfSuperfluousEventIsFiredTwice()
         {
             var command = GetCommand("{5EFC7975-14BC-11CF-9B2B-00AA00573819}", 337, "Edit.GoToFindCombo");
@@ -200,7 +200,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
         }
 
         [Test,
-         ExpectedException(typeof(AssertException),
+         ExpectedException(
+             typeof(AssertException),
              ExpectedMessage = "command finished that didn't start: {some-guid}:456:command-name")]
         public void ShouldFailIfCommandEndsWithoutHavingStarted()
         {

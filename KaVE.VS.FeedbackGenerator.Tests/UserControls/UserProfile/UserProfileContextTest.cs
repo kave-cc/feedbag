@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using KaVE.Commons.Model.Events.Enums;
 using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.Commons.Utils;
 using KaVE.RS.Commons.Settings;
@@ -421,7 +422,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UserProfile
         public void EducationOptions()
         {
             var actuals = _sut.EducationOptions;
-            var expecteds = Enum.GetValues(typeof (Educations));
+            var expecteds = Enum.GetValues(typeof(Educations));
             Assert.AreEqual(expecteds, actuals);
         }
 
@@ -429,7 +430,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UserProfile
         public void PositionOptions()
         {
             var actuals = _sut.PositionOptions;
-            var expecteds = Enum.GetValues(typeof (Positions));
+            var expecteds = Enum.GetValues(typeof(Positions));
             Assert.AreEqual(expecteds, actuals);
         }
 
@@ -437,7 +438,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UserProfile
         public void LickertOptions()
         {
             var actuals = _sut.LikertOptions;
-            var expecteds = Enum.GetValues(typeof (Likert7Point));
+            var expecteds = Enum.GetValues(typeof(Likert7Point));
             Assert.AreEqual(expecteds, actuals);
         }
 
@@ -445,7 +446,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UserProfile
         public void YesNoOptions()
         {
             var actuals = _sut.YesNoOptions;
-            var expecteds = Enum.GetValues(typeof (YesNoUnknown));
+            var expecteds = Enum.GetValues(typeof(YesNoUnknown));
             Assert.AreEqual(expecteds, actuals);
         }
 

@@ -24,7 +24,7 @@ using KaVE.Commons.TestUtils.Model.Events;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.Commons.Utils.IO;
 using KaVE.Commons.Utils.Json;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using Moq;
 using NUnit.Framework;

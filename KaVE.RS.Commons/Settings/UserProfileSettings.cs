@@ -15,11 +15,12 @@
  */
 
 using JetBrains.Application.Settings;
+using KaVE.Commons.Model.Events.Enums;
 using KaVE.Commons.Model.Events.UserProfiles;
 
 namespace KaVE.RS.Commons.Settings
 {
-    [SettingsKey(typeof (KaVESettings), "KaVE UserProfile Settings")]
+    [SettingsKey(typeof(KaVESettings), "KaVE UserProfile Settings")]
     // WARNING: Do not change classname, as it is used to identify settings
     public class UserProfileSettings
     {

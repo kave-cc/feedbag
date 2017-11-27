@@ -18,7 +18,7 @@ using System.ComponentModel;
 using System.Windows;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
@@ -107,7 +107,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
         private void OnClickUserProfile(object sender, RoutedEventArgs e)
         {
             new UserProfileDialog(_actionExec, UploadWizardPolicy.DoNotOpenUploadWizardOnFinish, _userProfileUtil).Show(
-                );
+            );
         }
 
         private void OnClickAnonymization(object sender, RoutedEventArgs e)

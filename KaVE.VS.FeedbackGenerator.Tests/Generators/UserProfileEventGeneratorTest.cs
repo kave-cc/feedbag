@@ -15,8 +15,10 @@
  */
 
 using KaVE.Commons.Model.Events;
+using KaVE.Commons.Model.Events.Enums;
 using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.RS.Commons.Settings;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators;
 using Moq;
 using NUnit.Framework;

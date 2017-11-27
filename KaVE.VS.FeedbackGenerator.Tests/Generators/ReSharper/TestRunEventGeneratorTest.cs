@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.ReSharper;
 using NUnit.Framework;
 

@@ -21,8 +21,9 @@ using JetBrains.Threading;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Model.Naming.IDEComponents;
 using KaVE.Commons.Utils;
-using KaVE.VS.FeedbackGenerator.MessageBus;
-using KaVE.VS.FeedbackGenerator.Utils.Naming;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
+using KaVE.VS.Commons.Naming;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 {
@@ -41,8 +42,10 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly SolutionEvents _solutionEvents;
+
         private readonly ProjectItemsEvents _solutionItemsEvents;
         private readonly ProjectItemsEvents _projectItemsEvents;
+
         private readonly SelectionEvents _selectionEvents;
         // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 

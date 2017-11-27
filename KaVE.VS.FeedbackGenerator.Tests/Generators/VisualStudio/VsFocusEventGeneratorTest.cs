@@ -16,6 +16,7 @@
 
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Model.Naming;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.VisualStudio;
 using Moq;
 using NUnit.Framework;

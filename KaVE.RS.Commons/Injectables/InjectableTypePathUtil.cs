@@ -15,10 +15,10 @@
  */
 
 using JetBrains.Application;
-using KaVE.Commons.Utils.CodeCompletion.Impl;
+using KaVE.Commons.Utils.CodeCompletion;
 
 namespace KaVE.RS.Commons.Injectables
 {
     [ShellComponent]
-    internal class InjectableTypePathUtil : TypePathUtil {}
+    internal class InjectableTypePathUtil : TypePathUtil { }
 }

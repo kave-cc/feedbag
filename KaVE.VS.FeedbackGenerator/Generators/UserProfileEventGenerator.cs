@@ -20,8 +20,8 @@ using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;
 using KaVE.RS.Commons.Settings;
-using KaVE.VS.FeedbackGenerator.MessageBus;
-using KaVE.VS.FeedbackGenerator.Settings;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.Generators
 {

@@ -15,13 +15,13 @@
  */
 
 using JetBrains.Application;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using Moq;
 using NUnit.Framework;
 
 namespace KaVE.RS.Commons.Tests_Integration.Utils
 {
-    [TestFixture]
+    // TODO: move to commons solution, once the activation (ZoneMarker) issue is solved.
     internal class RegistryTest
     {
         [SetUp]

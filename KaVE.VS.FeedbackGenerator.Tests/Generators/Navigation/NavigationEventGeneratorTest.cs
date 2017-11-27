@@ -21,6 +21,7 @@ using JetBrains.TextControl;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Model.Naming.CodeElements;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.Navigation;
 using Moq;
 using NUnit.Framework;

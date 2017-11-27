@@ -22,7 +22,7 @@ using System.Windows.Documents;
 using System.Windows.Threading;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Exceptions;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 
 namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
 {
@@ -36,8 +36,8 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
         public static readonly DependencyProperty XamlProperty =
             DependencyProperty.Register(
                 "Xaml",
-                typeof (string),
-                typeof (XamlBindableRichTextBox),
+                typeof(string),
+                typeof(XamlBindableRichTextBox),
                 new PropertyMetadata(OnXamlChanged));
 
         public string Xaml

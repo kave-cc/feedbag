@@ -20,7 +20,7 @@ using JetBrains.DataFlow;
 using JetBrains.UI.Options;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.Menu;

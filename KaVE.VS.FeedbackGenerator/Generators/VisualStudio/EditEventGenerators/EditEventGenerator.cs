@@ -15,14 +15,14 @@
  */
 
 using System;
-using System.Timers;
 using EnvDTE;
 using JetBrains.Application;
 using JetBrains.Threading;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.EventContext;
-using KaVE.VS.FeedbackGenerator.MessageBus;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
 {
@@ -37,6 +37,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly TextEditorEvents _textEditorEvents;
+
         private EditEvent _currentEditEvent;
 
         public EditEventGenerator(IRSEnv env,

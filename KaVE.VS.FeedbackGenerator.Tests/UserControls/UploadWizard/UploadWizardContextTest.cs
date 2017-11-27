@@ -30,6 +30,7 @@ using KaVE.Commons.Utils.IO;
 using KaVE.Commons.Utils.Reflection;
 using KaVE.RS.Commons.Settings;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.Settings;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
@@ -86,7 +87,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
             _anonymizationSettings = new AnonymizationSettings();
             _mockSettingStore.Setup(store => store.GetSettings<ExportSettings>()).Returns(_exportSettings);
             _mockSettingStore.Setup(store => store.GetSettings<UserProfileSettings>()).Returns(_userSettings);
-            _mockSettingStore.Setup(store => store.GetSettings<AnonymizationSettings>()).Returns(_anonymizationSettings);
+            _mockSettingStore.Setup(store => store.GetSettings<AnonymizationSettings>())
+                             .Returns(_anonymizationSettings);
             _mockSettingStore.Setup(store => store.UpdateSettings(It.IsAny<Action<ExportSettings>>()))
                              .Callback<Action<ExportSettings>>(update => update(_exportSettings));
 
@@ -195,7 +197,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
                 // because the utils return null.
                 httpPublisher.Publish(null, new List<IDEEvent> {new WindowEvent()}, () => { });
             }
-            catch (NullReferenceException) {}
+            catch (NullReferenceException) { }
 
             _mockPublisherUtils.Verify(
                 utils =>
@@ -258,7 +260,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         public void FailingExportCreatesNotification()
         {
             _mockExporter.Setup(
-                e => e.Export(It.IsAny<DateTime>(), It.IsAny<IPublisher>()))
+                             e => e.Export(It.IsAny<DateTime>(), It.IsAny<IPublisher>()))
                          .Throws(new AssertException("TEST"));
 
             WhenExportIsExecuted();
@@ -270,7 +272,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         public void FailingExportNotificationHasCorrectMessage()
         {
             _mockExporter.Setup(
-                e => e.Export(It.IsAny<DateTimeOffset>(), It.IsAny<IPublisher>()))
+                             e => e.Export(It.IsAny<DateTimeOffset>(), It.IsAny<IPublisher>()))
                          .Throws(new AssertException("TEST"));
 
             WhenExportIsExecuted();
@@ -315,7 +317,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
             _testDateUtils.Now = DateTimeOffset.Now;
             var invoked = false;
             _mockExporter.Setup(
-                e => e.Export(_testDateUtils.Now, It.IsAny<IPublisher>()))
+                             e => e.Export(_testDateUtils.Now, It.IsAny<IPublisher>()))
                          .Callback<DateTimeOffset, IPublisher>((export, p) => invoked = true);
 
             WhenExportIsExecuted();

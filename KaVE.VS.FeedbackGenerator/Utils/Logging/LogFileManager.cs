@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using KaVE.Commons.Utils.IO;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 
 namespace KaVE.VS.FeedbackGenerator.Utils.Logging
 {

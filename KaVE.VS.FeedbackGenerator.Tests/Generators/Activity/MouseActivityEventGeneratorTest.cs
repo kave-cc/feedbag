@@ -17,6 +17,7 @@
 using System;
 using System.Windows.Forms;
 using KaVE.Commons.Model.Events;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.Activity;
 using KaVE.VS.FeedbackGenerator.Generators.VisualStudio;
 using Moq;

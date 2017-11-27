@@ -21,7 +21,7 @@ using System.Windows.Threading;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.JetBrains.Annotations;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 using Moq;
 using NUnit.Framework;
@@ -121,7 +121,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.SessionManager.Presentation
                     var uut = new XamlBindableRichTextBox {Xaml = xaml};
 
                     // wait for asynchronous task on dispatcher to finish
-                    uut.Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.Input);
+                    uut.Dispatcher.Invoke(() => { }, DispatcherPriority.Input);
 
                     var paragraph = uut.Document.Blocks.FirstBlock as Paragraph;
                     Assert.NotNull(paragraph);

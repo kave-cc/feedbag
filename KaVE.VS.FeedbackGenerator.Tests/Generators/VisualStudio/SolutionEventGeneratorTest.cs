@@ -23,21 +23,22 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
 {
     internal class SolutionEventGeneratorTest : VisualStudioEventGeneratorTestBase
     {
-        private Mock<SolutionEvents> _mockSolutionEvents;
-        private Mock<ProjectItemsEvents> _mockSolutionItemEvents;
-        private Mock<ProjectItemsEvents> _mockMiscFilesEvents;
-        private Mock<SelectionEvents> _mockSelectionEvents;
+        private SolutionEvents _solutionEvents;
+        private ProjectItemsEvents _solutionItemEvents;
+        private ProjectItemsEvents _miscFilesEvents;
+        private SelectionEvents _selectionEvents;
 
         protected override void MockEvents(Mock<Events> mockEvents)
         {
-            _mockSolutionEvents = new Mock<SolutionEvents>();
-            mockEvents.Setup(evts => evts.SolutionEvents).Returns(_mockSolutionEvents.Object);
-            _mockSolutionItemEvents = new Mock<ProjectItemsEvents>();
-            mockEvents.Setup(evts => evts.SolutionItemsEvents).Returns(_mockSolutionItemEvents.Object);
-            _mockMiscFilesEvents = new Mock<ProjectItemsEvents>();
-            mockEvents.Setup(evts => evts.MiscFilesEvents).Returns(_mockMiscFilesEvents.Object);
-            _mockSelectionEvents = new Mock<SelectionEvents>();
-            mockEvents.Setup(evts => evts.SelectionEvents).Returns(_mockSelectionEvents.Object);
+            _solutionEvents = Mock.Of<SolutionEvents>();
+
+            mockEvents.Setup(evts => evts.SolutionEvents).Returns(_solutionEvents);
+            _solutionItemEvents = Mock.Of<ProjectItemsEvents>();
+            mockEvents.Setup(evts => evts.SolutionItemsEvents).Returns(_solutionItemEvents);
+            _miscFilesEvents = Mock.Of<ProjectItemsEvents>();
+            mockEvents.Setup(evts => evts.MiscFilesEvents).Returns(_miscFilesEvents);
+            _selectionEvents = Mock.Of<SelectionEvents>();
+            mockEvents.Setup(evts => evts.SelectionEvents).Returns(_selectionEvents);
         }
 
         [SetUp]
@@ -57,7 +58,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
             mockProjectItem.Setup(pi => pi.Kind).Returns(itemKind);
             mockProjectItem.Setup(pi => pi.Name).Returns(itemName);
 
-            _mockSolutionItemEvents.Raise(e => e.ItemAdded += null, mockProjectItem.Object);
+            Mock.Get(_solutionItemEvents).Raise(e => e.ItemAdded += null, mockProjectItem.Object);
 
             AssertNoEvent();
         }
@@ -69,8 +70,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
             mockProject.Setup(p => p.Kind).Returns(projectKind);
             mockProject.Setup(p => p.UniqueName).Returns(projectUniqueName);
 
-            _mockSolutionEvents.Raise(se => se.ProjectAdded += null, mockProject.Object);
-            _mockSolutionEvents.Raise(se => se.ProjectRemoved += null, mockProject.Object);
+            Mock.Get(_solutionEvents).Raise(se => se.ProjectAdded += null, mockProject.Object);
+            Mock.Get(_solutionEvents).Raise(se => se.ProjectRemoved += null, mockProject.Object);
 
             AssertNoEvent();
         }

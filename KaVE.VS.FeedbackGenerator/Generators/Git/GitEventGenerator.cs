@@ -26,7 +26,8 @@ using KaVE.Commons.Model.Naming.IDEComponents;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Collections;
 using KaVE.JetBrains.Annotations;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 using NuGet;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.Git
@@ -41,7 +42,10 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Git
     {
         private readonly IKaVEList<VersionControlAction> _oldActions;
 
-        public GitEventGenerator([NotNull] IRSEnv env, [NotNull] IMessageBus messageBus, [NotNull] IDateUtils dateUtils, [NotNull] IThreading threading)
+        public GitEventGenerator([NotNull] IRSEnv env,
+            [NotNull] IMessageBus messageBus,
+            [NotNull] IDateUtils dateUtils,
+            [NotNull] IThreading threading)
             : base(env, messageBus, dateUtils, threading)
         {
             _oldActions = Lists.NewList<VersionControlAction>();

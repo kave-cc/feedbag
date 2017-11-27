@@ -17,7 +17,7 @@
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using KaVE.RS.Commons;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Menu;
 

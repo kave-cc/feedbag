@@ -20,8 +20,8 @@ using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Model.Naming.IDEComponents;
 using KaVE.Commons.Utils;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons.Naming;
 using KaVE.VS.FeedbackGenerator.Generators.VisualStudio;
-using KaVE.VS.FeedbackGenerator.Utils.Naming;
 using Moq;
 using NUnit.Framework;
 

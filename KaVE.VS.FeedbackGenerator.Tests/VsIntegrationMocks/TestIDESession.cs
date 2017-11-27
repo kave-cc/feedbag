@@ -15,19 +15,23 @@
  */
 
 using EnvDTE;
+using KaVE.VS.Commons.Generators;
+using Moq;
 
-namespace KaVE.VS.FeedbackGenerator.VsIntegration
+namespace KaVE.VS.FeedbackGenerator.Tests.VsIntegrationMocks
 {
-    public interface IIDESession
+    public class TestIDESession : IIDESession
     {
-        string UUID
+        private readonly Mock<DTE> _mockDTE = new Mock<DTE>();
+
+        public string UUID
         {
-            get;
+            get { return "TestIDESessionUUID"; }
         }
 
-        DTE DTE
+        public DTE DTE
         {
-            get;
+            get { return _mockDTE.Object; }
         }
     }
 }

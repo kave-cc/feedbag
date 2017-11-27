@@ -23,7 +23,8 @@ using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Assertion;
 using KaVE.JetBrains.Annotations;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 using Microsoft.VisualStudio.CommandBars;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio

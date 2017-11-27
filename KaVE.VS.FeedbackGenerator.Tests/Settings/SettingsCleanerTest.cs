@@ -17,12 +17,11 @@
 using JetBrains.Application.DataContext;
 using KaVE.RS.Commons.Settings;
 using KaVE.RS.Commons.Settings.KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Settings;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using Moq;
-using Moq.Language.Flow;
 using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Settings
@@ -54,7 +53,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Settings
         public void GeneralSettingsWillBeRestored()
         {
             var dataContext = new Mock<IDataContext>();
-            dataContext.Setup(datacontext => datacontext.GetData(SettingDataContextCreator.DataConstant)).Returns(new SettingResetType{ResetType = ResetTypes.GeneralSettings});
+            dataContext.Setup(datacontext => datacontext.GetData(SettingDataContextCreator.DataConstant))
+                       .Returns(new SettingResetType {ResetType = ResetTypes.GeneralSettings});
             _uut.Execute(dataContext.Object, null);
 
             _mockSettingsStore.Verify(s => s.ResetSettings<UploadSettings>());
@@ -79,7 +79,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Settings
         {
             var dataContext = new Mock<IDataContext>();
             dataContext.Setup(datacontext => datacontext.GetData(SettingDataContextCreator.DataConstant))
-                       .Returns(new SettingResetType { ResetType = ResetTypes.ModelStoreSettings });
+                       .Returns(new SettingResetType {ResetType = ResetTypes.ModelStoreSettings});
             _uut.Execute(dataContext.Object, null);
 
             _mockSettingsStore.Verify(s => s.ResetSettings<ModelStoreSettings>());
@@ -110,6 +110,5 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Settings
 
             _mockLogFileManager.Verify(s => s.DeleteAllLogs());
         }
-
     }
 }

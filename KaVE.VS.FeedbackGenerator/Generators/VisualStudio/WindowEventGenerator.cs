@@ -23,8 +23,9 @@ using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Collections;
 using KaVE.RS.Commons.Utils;
-using KaVE.VS.FeedbackGenerator.MessageBus;
-using KaVE.VS.FeedbackGenerator.Utils.Naming;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
+using KaVE.VS.Commons.Naming;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 {

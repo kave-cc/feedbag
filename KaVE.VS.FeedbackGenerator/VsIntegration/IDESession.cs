@@ -18,29 +18,21 @@ using System;
 using EnvDTE;
 using JetBrains.Application;
 using KaVE.JetBrains.Annotations;
+using KaVE.VS.Commons.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.VsIntegration
 {
     [ShellComponent]
     public class IDESession : IIDESession
     {
-        private readonly DTE _dte;
-        private readonly string _sessionUUID;
-
         public IDESession([NotNull] DTE dte)
         {
-            _dte = dte;
-            _sessionUUID = Guid.NewGuid().ToString();
+            DTE = dte;
+            UUID = Guid.NewGuid().ToString();
         }
 
-        public string UUID
-        {
-            get { return _sessionUUID; }
-        }
+        public string UUID { get; }
 
-        public DTE DTE
-        {
-            get { return _dte; }
-        }
+        public DTE DTE { get; }
     }
 }

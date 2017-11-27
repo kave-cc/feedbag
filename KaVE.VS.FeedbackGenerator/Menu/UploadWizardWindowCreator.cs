@@ -19,7 +19,7 @@ using JetBrains.Util;
 using KaVE.Commons.Utils;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Properties;
 using KaVE.VS.FeedbackGenerator.UserControls.UploadWizard;
 using KaVE.VS.FeedbackGenerator.UserControls.UserProfileDialogs;

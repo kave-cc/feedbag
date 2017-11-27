@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-using EnvDTE;
-using KaVE.VS.FeedbackGenerator.VsIntegration;
-using Moq;
+using KaVE.Commons.Model;
+using NUnit.Framework;
 
-namespace KaVE.VS.FeedbackGenerator.Tests.Generators
+namespace KaVE.RS.Commons.Tests_Unit.FeedBaGVersionUtilTestSuite
 {
-    internal class TestIDESession : IIDESession
+    internal class ExperimentalTest
     {
-        private readonly Mock<DTE> _mockDTE;
+        private FeedBaGVersionUtil _sut;
 
-        public TestIDESession()
+        [SetUp]
+        public void SetUp()
         {
-            _mockDTE = new Mock<DTE>();
-            _mockDTE.Setup(dte => dte.ActiveWindow).Returns((Window) null);
-            _mockDTE.Setup(dte => dte.ActiveDocument).Returns((Document) null);
+            _sut = new FeedBaGVersionUtil();
         }
 
-        public Mock<DTE> MockDTE
+        [Test]
+        public void GetInformalVersion()
         {
-            get { return _mockDTE; }
+            var actual = _sut.GetInformalVersion();
+            Assert.That(actual.StartsWith("0."));
+            Assert.That(actual.EndsWith("-Release"));
         }
 
-        public string UUID
+        [Test]
+        public void GetVariant()
         {
-            get { return "TestIDESessionUUID"; }
-        }
-
-        public DTE DTE
-        {
-            get { return _mockDTE.Object; }
+            var actual = _sut.GetVariant();
+            Assert.AreEqual(Variant.Experimental, actual);
         }
     }
 }

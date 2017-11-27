@@ -15,7 +15,7 @@
  */
 
 using KaVE.Commons.Model.Events;
-using KaVE.Commons.Utils;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.ReSharper;
 using NUnit.Framework;
 

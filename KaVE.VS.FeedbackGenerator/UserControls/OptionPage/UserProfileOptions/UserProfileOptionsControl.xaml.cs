@@ -24,6 +24,7 @@ using JetBrains.DataFlow;
 using JetBrains.UI.CrossFramework;
 using JetBrains.UI.Options;
 using JetBrains.UI.Resources;
+using KaVE.Commons.Model.Events.Enums;
 using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
@@ -36,8 +37,12 @@ using KaVEISettingsStore = KaVE.RS.Commons.Settings.ISettingsStore;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.UserProfileOptions
 {
-    [OptionsPage(PID, "User Profile", typeof (OptionsThemedIcons.EnvironmentGeneral),
-        ParentId = RootOptionPage.PID, Sequence = 3.0)]
+    [OptionsPage(
+        PID,
+        "User Profile",
+        typeof(OptionsThemedIcons.EnvironmentGeneral),
+        ParentId = RootOptionPage.PID,
+        Sequence = 3.0)]
     public partial class UserProfileOptionsControl : IOptionsPage
     {
         private const string PID =
@@ -257,33 +262,33 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.UserProfileOptions
 
         public static readonly DependencyProperty EducationProperty = DependencyProperty.Register(
             "Education",
-            typeof (Educations),
-            typeof (GeneralOptionsControl)
-            );
+            typeof(Educations),
+            typeof(GeneralOptionsControl)
+        );
 
         public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
             "Position",
-            typeof (Positions),
-            typeof (GeneralOptionsControl)
-            );
+            typeof(Positions),
+            typeof(GeneralOptionsControl)
+        );
 
         public static readonly DependencyProperty CodeReviewsProperty = DependencyProperty.Register(
             "CodeReviews",
-            typeof (YesNoUnknown),
-            typeof (GeneralOptionsControl)
-            );
+            typeof(YesNoUnknown),
+            typeof(GeneralOptionsControl)
+        );
 
         public static readonly DependencyProperty ProgrammingGeneralProperty = DependencyProperty.Register(
             "ProgrammingGeneral",
-            typeof (Likert7Point),
-            typeof (GeneralOptionsControl)
-            );
+            typeof(Likert7Point),
+            typeof(GeneralOptionsControl)
+        );
 
         public static readonly DependencyProperty ProgrammingCSharpProperty = DependencyProperty.Register(
             "ProgrammingCSharp",
-            typeof (Likert7Point),
-            typeof (GeneralOptionsControl)
-            );
+            typeof(Likert7Point),
+            typeof(GeneralOptionsControl)
+        );
 
         private readonly IMessageBoxCreator _messageBoxCreator;
         private readonly IUserProfileSettingsUtils _userProfileUtils;

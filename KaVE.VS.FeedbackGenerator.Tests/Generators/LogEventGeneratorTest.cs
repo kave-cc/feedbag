@@ -16,13 +16,13 @@
 
 using System;
 using KaVE.Commons.Model.Events;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators;
 using Moq;
 using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Generators
 {
-    [TestFixture]
     internal class LogEventGeneratorTest : EventGeneratorTestBase
     {
         private LogEventGenerator _uut;
@@ -58,7 +58,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
             var actual = GetSinglePublished<ErrorEvent>();
             var expected = new ErrorEvent
             {
-                StackTrace = new[] { "C", "D" },
+                StackTrace = new[] {"C", "D"},
                 Content = "t2"
             };
 
@@ -74,7 +74,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
             var actual = GetSinglePublished<ErrorEvent>();
             var expected = new ErrorEvent
             {
-                StackTrace = new[] { "E", "F" },
+                StackTrace = new[] {"E", "F"},
                 Content = "t3"
             };
 
@@ -103,7 +103,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators
             var actual = GetSinglePublished<ErrorEvent>();
             var expected = new ErrorEvent
             {
-                StackTrace = new[] { "G" },
+                StackTrace = new[] {"G"}
             };
 
             AssertSimilarity(expected, actual);

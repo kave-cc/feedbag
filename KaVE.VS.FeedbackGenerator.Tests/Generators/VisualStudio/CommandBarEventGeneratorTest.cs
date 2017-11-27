@@ -67,7 +67,11 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
         private void GivenDTECommandBarsAre(params CommandBar[] mockCommandBar)
         {
             var mockCommandBars = MockCommandBars(mockCommandBar);
-            TestIDESession.MockDTE.Setup(dte => dte.CommandBars).Returns(mockCommandBars);
+
+            var dte1 = TestIDESession.DTE;
+            var dte2 = Mock.Of<DTE>();
+
+            Mock.Get(TestIDESession.DTE).Setup(dte => dte.CommandBars).Returns(mockCommandBars);
         }
 
         private static Mock<CommandBarPopup> MockCommandBarPopup(string popupCaption,

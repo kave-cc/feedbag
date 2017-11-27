@@ -45,7 +45,7 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
         /// </summary>
         public static readonly string EventLogsPath = Path.Combine(LocalAppDataPath, ProjectName, EventLogsScope);
 
-        public IDEEventLogFileManager(KaVEVersionUtil versionUtil)
-            : base(Path.Combine(EventLogsPath, versionUtil.GetCurrentVariant().ToString())) { }
+        public IDEEventLogFileManager(FeedBaGVersionUtil versionUtil)
+            : base(Path.Combine(EventLogsPath, versionUtil.GetVariant().ToString())) { }
     }
 }

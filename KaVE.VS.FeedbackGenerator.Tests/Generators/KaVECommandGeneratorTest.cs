@@ -16,6 +16,7 @@
 
 using System;
 using KaVE.Commons.Model.Events;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators;
 using NUnit.Framework;
 

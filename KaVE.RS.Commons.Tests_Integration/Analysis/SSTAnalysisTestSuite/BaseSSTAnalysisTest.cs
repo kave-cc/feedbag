@@ -36,7 +36,7 @@ using KaVE.Commons.Utils.Assertion;
 using KaVE.Commons.Utils.Collections;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.RS.Commons.Analysis.CompletionTarget;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using NUnit.Framework;
 using JB = JetBrains.ReSharper.Psi.CSharp.Tree;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;

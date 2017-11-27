@@ -20,7 +20,7 @@ using System.Threading;
 using System.Windows.Navigation;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.AboutWindow
@@ -34,12 +34,12 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.AboutWindow
             InitializeComponent();
             DataContext = this;
 
-            var versionUtil = Registry.GetComponent<KaVEVersionUtil>();
+            var versionUtil = Registry.GetComponent<FeedBaGVersionUtil>();
             _linkPrefix = Registry.GetComponent<SettingsStore>().GetSettings<ExportSettings>().WebAccessPrefix;
 
             VersionString = string.Format(
                 "{0} (installed at {1:s})",
-                versionUtil.GetCurrentInformalVersion(),
+                versionUtil.GetInformalVersion(),
                 File.GetLastWriteTime(typeof(AboutWindowControl).Assembly.Location));
 
             DebugInfoString = string.Format(

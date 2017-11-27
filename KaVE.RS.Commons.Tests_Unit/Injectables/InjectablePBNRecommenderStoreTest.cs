@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using KaVE.Commons.Utils.CodeCompletion.Impl;
+using KaVE.Commons.Utils.CodeCompletion;
 using KaVE.Commons.Utils.IO;
 using KaVE.RS.Commons.Injectables;
 using KaVE.RS.Commons.Settings;
@@ -56,7 +56,7 @@ namespace KaVE.RS.Commons.Tests_Unit.Injectables
             settings.ModelStorePath = @"C:\new\path";
             settingsStoreMock.Raise(
                 s => s.SettingsChanged += null,
-                new SettingsChangedEventArgs(typeof (ModelStoreSettings)));
+                new SettingsChangedEventArgs(typeof(ModelStoreSettings)));
 
             Assert.AreEqual(settings.ModelStorePath, sut.BasePath);
         }

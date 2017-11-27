@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2014 Technische Universität Darmstadt
+ * Copyright 2017 University of Zurich
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,25 @@
  * limitations under the License.
  */
 
-using KaVE.VS.FeedbackGenerator.VsIntegration;
+using JetBrains.Application;
+using KaVE.Commons.Model;
+using KaVE.Commons.Utils;
 
-namespace KaVE.VS.FeedbackGenerator.Tests
+namespace KaVE.RS.Commons
 {
-    internal class TestRSEnv : IRSEnv
+    [ShellComponent]
+    public class FeedBaGVersionUtil
     {
-        public string DefaultVersion
+        private readonly IKaVEVersionUtil _versionUtil = new KaVEVersionUtil();
+
+        public string GetInformalVersion()
         {
-            get { return "1.2-test"; }
+            return _versionUtil.GetAssemblyInformalVersionByContainedType<FeedBaGVersionUtil>();
         }
 
-        private readonly IIDESession _session;
-
-        public TestRSEnv(IIDESession session)
+        public Variant GetVariant()
         {
-            _session = session;
-            KaVEVersion = DefaultVersion;
-        }
-
-        public string KaVEVersion { get; set; }
-
-        public IIDESession IDESession
-        {
-            get { return _session; }
+            return _versionUtil.GetAssemblyVariantByContainedType<FeedBaGVersionUtil>();
         }
     }
 }

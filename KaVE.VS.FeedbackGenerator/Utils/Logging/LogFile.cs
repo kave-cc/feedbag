@@ -26,7 +26,7 @@ using KaVE.Commons.Utils.Assertion;
 using KaVE.Commons.Utils.IO;
 using KaVE.Commons.Utils.Logging;
 using KaVE.Commons.Utils.Logging.Json;
-using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using ILogger = KaVE.Commons.Utils.Exceptions.ILogger;
 
 namespace KaVE.VS.FeedbackGenerator.Utils.Logging
@@ -117,12 +117,12 @@ namespace KaVE.VS.FeedbackGenerator.Utils.Logging
         private bool IsConcurrentAccessException(IOException e)
         {
             return e.Message.Equals(
-                string.Format(
-                    "The process cannot access the file '{0}' because it is being used by another process.",
-                    Path)) || e.Message.Equals(
-                        string.Format(
-                            "Der Prozess kann nicht auf die Datei '{0}' zugreifen, da sie von einem anderen Prozess verwendet wird.",
-                            Path));
+                       string.Format(
+                           "The process cannot access the file '{0}' because it is being used by another process.",
+                           Path)) || e.Message.Equals(
+                       string.Format(
+                           "Der Prozess kann nicht auf die Datei '{0}' zugreifen, da sie von einem anderen Prozess verwendet wird.",
+                           Path));
         }
 
         public int ApproximateNumberOfEvents

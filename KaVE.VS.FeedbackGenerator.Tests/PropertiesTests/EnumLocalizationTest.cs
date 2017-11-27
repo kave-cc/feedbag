@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KaVE.Commons.Model.Events.Enums;
 using KaVE.Commons.Model.Events.UserProfiles;
 using KaVE.VS.FeedbackGenerator.Properties;
 using NUnit.Framework;
@@ -45,15 +46,16 @@ namespace KaVE.VS.FeedbackGenerator.Tests.PropertiesTests
 
         private static void CheckEnumLocalization<T>()
         {
-            var enumType = typeof (T);
-            var localizationType = typeof (EnumLocalization);
+            var enumType = typeof(T);
+            var localizationType = typeof(EnumLocalization);
 
             var prefix = string.Format("{0}_", enumType.Name);
 
             // ReSharper disable once SuspiciousTypeConversion.Global
             var expecteds =
                 ((IEnumerable<T>) Enum.GetValues(enumType)).Select(v => string.Format("{0}{1}", prefix, v)).ToList();
-            var actuals = localizationType.GetProperties().Select(p => p.Name).Where(p => p.StartsWith(prefix)).ToList();
+            var actuals = localizationType.GetProperties().Select(p => p.Name).Where(p => p.StartsWith(prefix))
+                                          .ToList();
             CollectionAssert.AreEquivalent(expecteds, actuals);
         }
     }

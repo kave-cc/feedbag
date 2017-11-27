@@ -16,6 +16,7 @@
 
 using System;
 using JetBrains.Application;
+using KaVE.VS.Commons;
 
 namespace KaVE.VS.FeedbackGenerator.MessageBus
 {

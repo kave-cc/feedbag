@@ -15,6 +15,7 @@
  */
 
 using JetBrains.Application;
+using KaVE.Commons.Utils;
 
 namespace KaVE.RS.Commons.Injectables
 {

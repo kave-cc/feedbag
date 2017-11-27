@@ -1,0 +1,13 @@
+#### KaVE Test Plan ####
+
+## KaVE Commands ##
+
+make sure the following actions create command events:
+* opening the "Event Manager"
+* All (relevant) buttons in the toolbar
+* All (relevant) buttons in the menu
+* delete one event
+* delete multiple events
+* delete one day
+* delete multiple days
+* open eventManager from reminder popup

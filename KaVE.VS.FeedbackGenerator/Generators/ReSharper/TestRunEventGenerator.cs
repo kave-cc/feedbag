@@ -30,7 +30,8 @@ using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Model.Naming.CodeElements;
 using KaVE.Commons.Utils;
 using KaVE.RS.Commons.Utils.Naming;
-using KaVE.VS.FeedbackGenerator.MessageBus;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
 {
@@ -59,7 +60,8 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
                 lifetime,
                 sessionView =>
                 {
-                    var sessionLifetimeDefinition = Lifetimes.Define(lifetime, "KaVE::TestRunEventGenerator");
+                    var sessionLifetimeDefinition =
+                        Lifetimes.Define(lifetime, "KaVE::TestRunEventGenerator");
                     testSessionLifetimes.Add(sessionView, sessionLifetimeDefinition);
 
                     SubscribeToSessionLaunch(sessionLifetimeDefinition.Lifetime, sessionView.Session);
@@ -120,7 +122,8 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
                                 }
                                 // These need to be declared here because session.Launch.Value is null by 
                                 // the time the Dispatcher executes the action.
-                                var relevantTestElements = session.Launch.Value.Elements.Where(e => !e.Children.Any());
+                                var relevantTestElements =
+                                    session.Launch.Value.Elements.Where(e => !e.Children.Any());
                                 var launchTime = session.Launch.Value.StartedOn;
                                 _threading.Dispatcher.BeginOrInvoke(
                                     "KaVE::TestStopping",
@@ -129,9 +132,14 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
                                         ReadLockCookie.GuardedExecute(
                                             () =>
                                             {
-                                                var results = _resultManager.GetResults(relevantTestElements, session);
+                                                var results = _resultManager.GetResults(
+                                                    relevantTestElements,
+                                                    session);
 
-                                                CreateAndFireTestRunEvent(launchTime, aborted, results);
+                                                CreateAndFireTestRunEvent(
+                                                    launchTime,
+                                                    aborted,
+                                                    results);
                                             });
                                     });
                                 break;

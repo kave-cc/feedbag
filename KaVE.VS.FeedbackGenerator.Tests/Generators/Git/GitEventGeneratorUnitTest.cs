@@ -23,8 +23,10 @@ using KaVE.Commons.Model.Naming.IDEComponents;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Collections;
 using KaVE.JetBrains.Annotations;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.Git;
-using KaVE.VS.FeedbackGenerator.MessageBus;
 using NUnit.Framework;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.Generators.Git
@@ -62,12 +64,13 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.Git
                         ActionType = VersionControlActionType.Pull,
                         ExecutedAt = new DateTime(2015, 05, 14, 18, 08, 48)
                     }
-                    );
+                );
             }
         }
 
         private const string TestCommitString =
-            "de75df3fd4322ec96e02c078e90228f121b6b53c 6f2eaaff6079e41af242a41a09b5f9510214d014 TestUsername <TestMail@domain.de> 1441217745 +0200	commit: Test commit";
+                "de75df3fd4322ec96e02c078e90228f121b6b53c 6f2eaaff6079e41af242a41a09b5f9510214d014 TestUsername <TestMail@domain.de> 1441217745 +0200	commit: Test commit"
+            ;
 
         private static VersionControlAction TestCommitAction
         {

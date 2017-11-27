@@ -18,40 +18,29 @@ using JetBrains.Application;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;
 using KaVE.RS.Commons;
-using KaVE.VS.FeedbackGenerator.VsIntegration;
+using KaVE.VS.Commons.Generators;
 
 namespace KaVE.VS.FeedbackGenerator
 {
-    public interface IRSEnv
-    {
-        IIDESession IDESession { get; }
-
-        string KaVEVersion { get; }
-    }
-
     [ShellComponent]
     internal class RSEnv : IRSEnv
     {
         public const string ExtensionId = "KaVE.VsFeedbackGenerator";
 
-        private readonly IIDESession _ideSession;
-        private readonly KaVEVersionUtil _versionUtil;
+        private readonly FeedBaGVersionUtil _versionUtil;
 
-        public RSEnv(IIDESession ideSession, KaVEVersionUtil versionUtil)
+        public RSEnv(IIDESession ideSession, FeedBaGVersionUtil versionUtil)
         {
-            _ideSession = ideSession;
+            IDESession = ideSession;
             _versionUtil = versionUtil;
         }
 
         [NotNull]
-        public IIDESession IDESession
-        {
-            get { return _ideSession; }
-        }
+        public IIDESession IDESession { get; }
 
         public string KaVEVersion
         {
-            get { return _versionUtil.GetCurrentInformalVersion(); }
+            get { return _versionUtil.GetInformalVersion(); }
         }
     }
 }

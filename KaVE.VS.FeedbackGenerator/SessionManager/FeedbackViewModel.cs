@@ -22,12 +22,14 @@ using JetBrains;
 using JetBrains.Annotations;
 using KaVE.Commons.Utils.Collections;
 using KaVE.RS.Commons.Utils;
+using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Interactivity;
 using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 using KaVE.VS.FeedbackGenerator.Utils.Export;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;
 using NuGet;
+using ILogger = KaVE.Commons.Utils.Exceptions.ILogger;
 
 namespace KaVE.VS.FeedbackGenerator.SessionManager
 {
@@ -145,7 +147,7 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager
 
         private void OnRefreshFailed(Exception e)
         {
-            var logEventGenerator = Registry.GetComponent<Commons.Utils.Exceptions.ILogger>();
+            var logEventGenerator = Registry.GetComponent<ILogger>();
             logEventGenerator.Error(new Exception("refresh failed", e));
             // TODO send error notification event to inform user!
             Sessions.Clear();

@@ -19,9 +19,10 @@ using System.Collections.Generic;
 using EnvDTE;
 using JetBrains.DataFlow;
 using KaVE.Commons.Model.Events.VisualStudio;
+using KaVE.VS.Commons.Naming;
+using KaVE.VS.Commons.TestUtils.Generators;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.VisualStudio;
-using KaVE.VS.FeedbackGenerator.Utils.Naming;
 using Moq;
 using NUnit.Framework;
 
@@ -42,7 +43,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
             _instantiatedWindows.Clear();
             var mockWindows = new Mock<Windows>().As<IEnumerable>();
             mockWindows.Setup(w => w.GetEnumerator()).Returns(() => _instantiatedWindows.GetEnumerator());
-            TestIDESession.MockDTE.Setup(dte => dte.Windows).Returns((Windows) mockWindows.Object);
+            Mock.Get(TestIDESession.DTE).Setup(dte => dte.Windows).Returns((Windows) mockWindows.Object);
         }
 
         [SetUp]
@@ -55,7 +56,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.VisualStudio
 
             var mockDocuments = new Mock<Documents>().As<IEnumerable>();
             mockDocuments.Setup(d => d.GetEnumerator()).Returns(_openDocuments.GetEnumerator);
-            TestIDESession.MockDTE.Setup(dte => dte.Documents).Returns((Documents) mockDocuments.Object);
+            Mock.Get(TestIDESession.DTE).Setup(dte => dte.Documents).Returns((Documents) mockDocuments.Object);
         }
 
         private static Mock<Window> CreateWindowMock(string caption, bool visible)

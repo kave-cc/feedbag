@@ -21,8 +21,9 @@ using JetBrains.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;
+using KaVE.VS.Commons;
+using KaVE.VS.Commons.Generators;
 using KaVE.VS.FeedbackGenerator.Generators.VisualStudio;
-using KaVE.VS.FeedbackGenerator.MessageBus;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.Activity
 {
