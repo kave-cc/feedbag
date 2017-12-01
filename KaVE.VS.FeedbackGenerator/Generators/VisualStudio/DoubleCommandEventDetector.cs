@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using JetBrains.Annotations;
 using KaVE.Commons.Utils;
 
@@ -26,12 +27,31 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 
     public class DoubleCommandEventDetector : IDoubleCommandEventDetector
     {
+        public const int TimeForDoubledEventInMs = 100;
+
+        private readonly IDateUtils _dateUtils;
+
+        private string _lastId;
+        private DateTimeOffset _lastTime = DateTimeOffset.MinValue;
+
+
         public DoubleCommandEventDetector(IDateUtils dateUtils)
         {
+            _dateUtils = dateUtils;
         }
 
-        public bool ShouldProcess(string cmdId)
+        public bool ShouldProcess(string id)
         {
+            var last = _lastTime;
+            var now = _dateUtils.Now;
+            _lastTime = now;
+
+            if (id.Equals(_lastId))
+            {
+                var isTimeout = (now - last).TotalMilliseconds > TimeForDoubledEventInMs;
+                return isTimeout;
+            }
+            _lastId = id;
             return true;
         }
     }
