@@ -430,6 +430,7 @@
     <Compile Include="Generators\ReSharper\BuildEventGenerator.cs" />
     <Compile Include="Generators\KaVECommandGenerator.cs" />
     <Compile Include="Generators\ReSharper\TestRunEventGenerator.cs" />
+    <Compile Include="Generators\VisualStudio\DoubleCommandEventDetector.cs" />
     <Compile Include="Generators\VisualStudio\SystemEventGenerator.cs" />
     <Compile Include="Menu\IntelligentCodeCompletionAction.cs" />
     <Compile Include="Menu\MenuActionBase.cs" />

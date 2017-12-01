@@ -80,7 +80,8 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
                         _messageBus,
                         _dateUtils,
                         _logger,
-                        _threading);
+                        _threading,
+                        new DoubleCommandEventDetector(_dateUtils));
                     WindowRegistry[focusedWindow] = listener;
                 }
                 listener.WindowChanged();

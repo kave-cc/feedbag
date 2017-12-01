@@ -432,6 +432,7 @@
     <Compile Include="Generators\Activity\MouseActivityEventGeneratorTest.cs" />
     <Compile Include="Generators\ReSharper\ActionEventGeneratorTest.cs" />
     <Compile Include="Generators\ReSharper\TestRunEventGeneratorTest.cs" />
+    <Compile Include="Generators\VisualStudio\DoubleCommandEventDetectorTest.cs" />
     <Compile Include="Generators\VisualStudio\VsFocusEventGeneratorTest.cs" />
     <Compile Include="Menu\UploadWizardActionHandlerTest.cs" />
     <Compile Include="PropertiesTests\EnumLocalizationTest.cs" />

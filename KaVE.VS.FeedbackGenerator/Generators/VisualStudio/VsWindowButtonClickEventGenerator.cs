@@ -43,17 +43,20 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
         private readonly object _frame;
         private FrameworkElement _frameContent;
         private readonly ILogger _logger;
+        private readonly IDoubleCommandEventDetector _doubleCommandEventDetector;
 
         public VsWindowButtonClickEventGenerator(Window window,
             [NotNull] IRSEnv env,
             [NotNull] IMessageBus messageBus,
             [NotNull] IDateUtils dateUtils,
             [NotNull] ILogger logger,
-            [NotNull] IThreading threading)
+            [NotNull] IThreading threading,
+            [NotNull] IDoubleCommandEventDetector doubleCommandEventDetector)
             : base(env, messageBus, dateUtils, threading)
         {
             _frame = GetFrame(window);
             _logger = logger;
+            _doubleCommandEventDetector = doubleCommandEventDetector;
 
             RegisterToFrameEvents();
         }
@@ -118,7 +121,11 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
 
         private void RegisterToAllNewButtons(object sender, EventArgs eventArgs)
         {
-            _frameContent.FindChildren<Button>().Where(WasNotSeenBefore).ForEach(RegisterToButton);
+            var unseenButtons = _frameContent.FindChildren<Button>().Where(WasNotSeenBefore);
+            foreach (var button in unseenButtons)
+            {
+                RegisterToButton(button);
+            }
         }
 
         private static bool WasNotSeenBefore(Button view)
@@ -135,10 +142,15 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio
         {
             try
             {
-                var commandEvent = Create<CommandEvent>();
-                commandEvent.TriggeredBy = EventTrigger.Click;
-                commandEvent.CommandId = button.GetId();
-                Fire(commandEvent);
+                var cmdId = button.GetId();
+                if (_doubleCommandEventDetector.ShouldProcess(cmdId))
+                {
+                    var commandEvent = Create<CommandEvent>();
+                    commandEvent.TriggeredBy = EventTrigger.Click;
+                    commandEvent.CommandId = cmdId;
+
+                    Fire(commandEvent);
+                }
             }
             catch (Exception e)
             {
