@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Linq;
 using EnvDTE;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
@@ -53,13 +52,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
             _documentManager = intellisenseManager.DocumentManager;
             _logger = logger;
             _solution = intellisenseManager.Solution;
-
-            ContextGeneratorCreated(this);
         }
-
-        public delegate void ContextProviderChangedHandler(ContextGenerator generator);
-
-        public static event ContextProviderChangedHandler ContextGeneratorCreated = delegate { };
 
         public Context GetCurrentContext([NotNull] Document vsDocument)
         {
@@ -80,7 +73,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
             var document = GetDocument(filePath);
             if (document != null)
             {
-                FindEntryNode(document, RunAnalysis);
+                FindEntryNode(RunAnalysis);
             }
 
             return CurrentContext;
@@ -100,7 +93,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
             return null;
         }
 
-        private void FindEntryNode(IDocument document, Action<ITreeNode> process)
+        private void FindEntryNode(Action<ITreeNode> process)
         {
             ReentrancyGuard.Current.ExecuteOrQueue(
                 "context-generator",
@@ -109,8 +102,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
                     ReadLockCookie.Execute(
                         () =>
                         {
-                            var
-                                node = FindCurrentTreeNode(document);
+                            var node = FindCurrentTreeNode();
 
                             if (node == null)
                             {
@@ -130,11 +122,9 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
                 });
         }
 
-        private ITreeNode FindCurrentTreeNode(IDocument document)
+        private ITreeNode FindCurrentTreeNode()
         {
-            var textControl =
-                _textControlManager.TextControls.FirstOrDefault(
-                    tc => tc.Document.Moniker.Equals(document.Moniker));
+            var textControl = _textControlManager.FocusedTextControl.Value;
             return textControl == null ? null : TextControlToPsi.GetElement<ITreeNode>(_solution, textControl);
         }
 
@@ -144,9 +134,9 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
             return method != null;
         }
 
-        private static IClassDeclaration FindSourroundingClassDeclaration(ITreeNode psiFile)
+        private static ICSharpTypeDeclaration FindSourroundingClassDeclaration(ITreeNode psiFile)
         {
-            return psiFile.GetContainingNode<IClassDeclaration>(true);
+            return psiFile.GetContainingNode<ICSharpTypeDeclaration>(true);
         }
 
         private void RunAnalysis(ITreeNode node)

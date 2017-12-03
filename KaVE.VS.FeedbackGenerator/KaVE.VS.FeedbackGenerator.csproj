@@ -444,7 +444,6 @@
     <Compile Include="Generators\UserProfileEventGenerator.cs" />
     <Compile Include="Generators\VisualStudio\EditEventGenerators\EditEventGenerator.cs" />
     <Compile Include="Generators\VisualStudio\EditEventGenerators\EventContext\ContextGenerator.cs" />
-    <Compile Include="Generators\VisualStudio\EditEventGenerators\EventContext\ContextProvider.cs" />
     <Compile Include="Generators\VisualStudio\EditEventGenerators\RetryRunner.cs" />
     <Compile Include="Generators\OldEventLogAutoResubmitter.cs" />
     <Compile Include="Menu\AboutAction.cs" />

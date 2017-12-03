@@ -18,6 +18,7 @@ using System;
 using EnvDTE;
 using JetBrains.Application;
 using JetBrains.Threading;
+using KaVE.Commons.Model.Events.CompletionEvents;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils;
 using KaVE.VS.Commons;
@@ -33,7 +34,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
         private static readonly TimeSpan InactivityPeriodToCompleteEditAction = TimeSpan.FromSeconds(2);
 
         private readonly IDateUtils _dateUtils;
-        private readonly IContextProvider _contextProvider;
+        private readonly ContextGenerator _contextGenerator;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly TextEditorEvents _textEditorEvents;
@@ -43,12 +44,12 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
         public EditEventGenerator(IRSEnv env,
             IMessageBus messageBus,
             IDateUtils dateUtils,
-            IContextProvider contextProvider,
+            ContextGenerator contextGenerator,
             IThreading threading)
             : base(env, messageBus, dateUtils, threading)
         {
             _dateUtils = dateUtils;
-            _contextProvider = contextProvider;
+            _contextGenerator = contextGenerator;
             _textEditorEvents = DTE.Events.TextEditorEvents;
             _textEditorEvents.LineChanged += TextEditorEvents_LineChanged;
         }
@@ -58,7 +59,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
             if (_currentEditEvent == null)
             {
                 _currentEditEvent = Create<EditEvent>();
-                _currentEditEvent.Context2 = _contextProvider.GetCurrentContext(startPoint);
+                _currentEditEvent.Context2 = _contextGenerator.GetCurrentContext(startPoint);
             }
 
             _currentEditEvent.NumberOfChanges += 1;
