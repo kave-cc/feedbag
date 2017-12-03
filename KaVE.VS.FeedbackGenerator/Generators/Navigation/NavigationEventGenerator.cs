@@ -53,14 +53,23 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
         public void OnClick(TextControlMouseEventArgs args)
         {
             var oldLocation = _currentLocation;
-            var newLocation = _currentLocation = _navigationUtils.GetLocation(args.TextControl);
-
             var ctrlIsPressed = args.KeysAndButtons == KeyStateMasks.MK_CONTROL;
+            IName curLocation = null;
+            IName target = null;
+
+            ReentrancyGuard.Current.ExecuteOrQueue(
+                "KaVE.EditEventGenerator",
+                () =>
+                {
+                    curLocation = _currentLocation = _navigationUtils.GetLocation(args.TextControl);
+                    target = ctrlIsPressed ? _navigationUtils.GetTarget(args.TextControl) : null;
+                });
+
             if (ctrlIsPressed)
             {
                 var ctrlClickEvent = Create<NavigationEvent>();
-                ctrlClickEvent.Target = _navigationUtils.GetTarget(args.TextControl);
-                ctrlClickEvent.Location = newLocation;
+                ctrlClickEvent.Target = target;
+                ctrlClickEvent.Location = curLocation;
                 ctrlClickEvent.TypeOfNavigation = NavigationType.CtrlClick;
                 ctrlClickEvent.TriggeredBy = EventTrigger.Click;
 
@@ -68,10 +77,10 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
 
                 Fire(ctrlClickEvent);
             }
-            else if (IsNewLocation(oldLocation, newLocation))
+            else if (IsNewLocation(oldLocation, curLocation))
             {
                 var clickNavigationEvent = Create<NavigationEvent>();
-                clickNavigationEvent.Location = newLocation;
+                clickNavigationEvent.Location = curLocation;
                 clickNavigationEvent.TypeOfNavigation = NavigationType.Click;
                 clickNavigationEvent.TriggeredBy = EventTrigger.Click;
                 Fire(clickNavigationEvent);
