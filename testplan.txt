@@ -1,8 +1,22 @@
 #### KaVE Test Plan ####
 
-## KaVE Commands ##
+## Activity Events ##
 
-make sure the following actions create command events:
+* See whether mouse movement causes Activity Events
+* Wait for the timeout (3s)
+* cause longer event by moving the mouse for ~10s in smaller intervals with ~1-2s breaks in between
+
+## Commands ##
+
+* Invoke Cleanup Code from ReSharper
+* save file
+* build solution
+* Use R# BulbAction (e.g. use fully qualified class name for static call)
+* added code should be redundant, use AltEnter zu remove code again
+* refactor variable name
+
+KaVE specific events (make sure the following actions create command events)
+
 * opening the "Event Manager"
 * All (relevant) buttons in the toolbar
 * All (relevant) buttons in the menu
@@ -11,3 +25,133 @@ make sure the following actions create command events:
 * delete one day
 * delete multiple days
 * open eventManager from reminder popup
+
+## CodeCompletions ##
+
+* Open Small file, trigger Code completion
+* assert recorded time
+* assert recorded duration of window open
+* abort selection and assert correct terminationState
+* apply selection and assert correct terminationState
+* assert proposals are recorded
+* assert selections are recorded (pay attention to timing)
+* assert context and trigger location
+
+## Build Events ##
+
+-- ReSharper Build
+* assert that at least the command is recorded
+
+-- vsbuild
+* build solution and project
+* assert correct "Scope"
+* assert "Action" is "Build"
+* clean solution, assert Action
+* "Build" and "Rebuild" solution, assert Actions
+
+## Debugger ##
+
+-- on a test
+
+* Debug a successful test
+* Debug a successful test with a breakpoint
+* step over/in/out
+* continue
+* abort
+* regular end of program
+* hit another breakpoint by stepping over
+* hit an unhandled exception
+
+
+-- on an application
+
+* debug an application (and do the steps above)
+
+-- attach to an application
+
+* attach to a running process (and do the steps above) -- e.g., console application with read
+* detach from a running process
+
+## Document ##
+
+* open/close/save a document
+
+## Edit Events ##
+
+(edit events have a timeout, always try with and without -- as of now, should be 3s)
+
+* open or create a file
+* change SST relevant stuff 
+* add whitespace
+* combine with code completion selection
+
+## Find Events ##
+
+* Right now, only the "Find all" search does return any meaningful values.
+* only non-canceled searches are tracked
+* neither "prev/next", nor in document searching is tracked
+
+
+## IDE State Event ##
+
+* quit IDE
+* start IDE
+* kill IDE (alt-f4)
+* kill IDE (task manager)
+* close while multiple windows are open (should appear in list)
+* start by opening a specific file (should appear in list)
+
+
+## Solution Event ##
+
+* open solution
+* close solution
+* rename solution
+* add/delete/rename solution items
+* add/delete/rename project
+* (add/delete/rename projectitem not working)
+
+
+## Window Event ##
+
+* switch between files and several open windows in visual studio
+* detach a tool window (e.g., test runs) and switch to the external window
+* test VS focus loose/gain events
+
+## Version Control Event ##
+
+* git init in running instance does not do anything
+* comit one file, still does not show up
+* re-open solution (commit should show up now)
+* commit something else
+* re-open again (all commits show up now)
+
+## User Profile Event ##
+
+export zip locally and assert existence of event
+
+## Navigation Event ##
+
+* click into a method
+* click into the class body
+* key navigate from one method to another (location: method, class, method)
+* ctrl-click within a file
+* ctrl-click to another local type
+* ctrl-click to another local method
+* ctrl-click to disassembled type (only sometimes working)
+* ctrl-click to disassembled method (only sometimes working)
+
+
+## System Event ##
+
+* (dis-) connect remote session
+* (un-) lock local login
+* send computer to sleep, wake it up (not possible in VM)
+
+## Test Run Event ##
+
+* run a testsuite with all possible outcomes
+* run a single test
+* debug a test
+* Analyze esp. the timing information in all cases
+
