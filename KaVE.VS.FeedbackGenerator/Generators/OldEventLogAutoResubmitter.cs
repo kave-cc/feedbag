@@ -19,7 +19,6 @@ using System.IO;
 using System.Threading.Tasks;
 using JetBrains.Application;
 using KaVE.Commons.Model;
-using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.JetBrains.Annotations;
 using KaVE.RS.Commons;
@@ -47,7 +46,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators
 
 
             var pathWithDefaultVariant = Path.Combine(
-                IDEEventLogFileManager.AppDataPath,
+                IDEEventLogFileManager.LocalAppDataPath,
                 IDEEventLogFileManager.ProjectName,
                 "KaVE.VS.FeedbackGenerator",
                 "Default");
@@ -72,7 +71,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators
                     var count = LogFileUtils.ResubmitLogs(new LogFileManager(path), messageBus);
                     logger.Info("Migrated {0} events from an old to a new event log path.", count);
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    Directory.Delete(Path.GetDirectoryName(path), true);
+                    Directory.Delete(path, true);
                 }
             }
         }
