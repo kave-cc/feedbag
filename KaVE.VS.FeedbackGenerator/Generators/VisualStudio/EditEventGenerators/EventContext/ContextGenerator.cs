@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-using System;
-using EnvDTE;
-using JetBrains.DocumentManagers;
-using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.Util;
@@ -25,22 +21,16 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
-using JetBrains.Threading;
-using JetBrains.Util;
 using KaVE.Commons.Model.Events.CompletionEvents;
-using KaVE.JetBrains.Annotations;
+using KaVE.Commons.Utils.Exceptions;
 using KaVE.RS.Commons.Analysis;
-using ILogger = KaVE.Commons.Utils.Exceptions.ILogger;
 
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.EventContext
 {
     [SolutionComponent]
     internal class ContextGenerator
     {
-        private Context CurrentContext { get; set; }
-
         private readonly TextControlManager _textControlManager;
-        private readonly DocumentManager _documentManager;
         private readonly ISolution _solution;
         private readonly ILogger _logger;
 
@@ -49,76 +39,33 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
             ILogger logger)
         {
             _textControlManager = textControlManager;
-            _documentManager = intellisenseManager.DocumentManager;
             _logger = logger;
             _solution = intellisenseManager.Solution;
         }
 
-        public Context GetCurrentContext([NotNull] Document vsDocument)
+        public Context RunContextAnalysis()
         {
-            return ComputeNewContextByFilePath(vsDocument.FullName);
-        }
-
-        public Context GetCurrentContext([NotNull] TextPoint startPoint)
-        {
-            // activeDocument is sometimes null, e.g., when IDE shuts down
-            var activeDocument = startPoint.DTE.ActiveDocument;
-            return activeDocument != null ? ComputeNewContextByFilePath(activeDocument.FullName) : new Context();
-        }
-
-        private Context ComputeNewContextByFilePath([NotNull] string filePath)
-        {
-            CurrentContext = Context.Default;
-
-            var document = GetDocument(filePath);
-            if (document != null)
-            {
-                FindEntryNode(RunAnalysis);
-            }
-
-            return CurrentContext;
-        }
-
-        private IDocument GetDocument(string filePath)
-        {
-            try
-            {
-                var path = FileSystemPath.Parse(filePath);
-                return _documentManager.GetOrCreateDocument(path);
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(exception, "failed to access the current document");
-            }
-            return null;
-        }
-
-        private void FindEntryNode(Action<ITreeNode> process)
-        {
-            ReentrancyGuard.Current.ExecuteOrQueue(
-                "context-generator",
+            return ReadLockCookie.Execute(
                 () =>
                 {
-                    ReadLockCookie.Execute(
-                        () =>
-                        {
-                            var node = FindCurrentTreeNode();
+                    var node = FindCurrentTreeNode();
 
-                            if (node == null)
-                            {
-                                return;
-                            }
+                    if (node == null)
+                    {
+                        return null;
+                    }
 
-                            if (!HasSourroundingMethod(node))
-                            {
-                                node = FindSourroundingClassDeclaration(node);
-                            }
+                    if (!HasSourroundingMethod(node))
+                    {
+                        node = FindSourroundingTypeDeclaration(node);
+                    }
 
-                            if (node != null)
-                            {
-                                process(node);
-                            }
-                        });
+                    if (node == null)
+                    {
+                        return null;
+                    }
+
+                    return RunAnalysis(node);
                 });
         }
 
@@ -134,20 +81,22 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.
             return method != null;
         }
 
-        private static ICSharpTypeDeclaration FindSourroundingClassDeclaration(ITreeNode psiFile)
+        private static ICSharpTypeDeclaration FindSourroundingTypeDeclaration(ITreeNode psiFile)
         {
             return psiFile.GetContainingNode<ICSharpTypeDeclaration>(true);
         }
 
-        private void RunAnalysis(ITreeNode node)
+        private Context RunAnalysis(ITreeNode node)
         {
+            Context ctx = null;
             ContextAnalysis.Analyse(
                 node,
                 null,
                 _logger,
-                context => { CurrentContext = context; },
+                context => { ctx = context; },
                 delegate { },
                 delegate { });
+            return ctx;
         }
     }
 }
