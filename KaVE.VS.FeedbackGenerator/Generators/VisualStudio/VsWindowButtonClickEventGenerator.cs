@@ -21,7 +21,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using JetBrains.Util;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;

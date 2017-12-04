@@ -91,7 +91,8 @@ namespace KaVE.RS.Commons.Tests_Integration
                 intellisenseManager,
                 parameters,
                 LookupListSorting.ByRelevance,
-                out filteredItems);
+                out filteredItems,
+                settingsStore);
 
             if (result != null)
             {

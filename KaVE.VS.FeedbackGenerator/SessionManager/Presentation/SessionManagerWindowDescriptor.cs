@@ -15,8 +15,8 @@
  */
 
 using JetBrains.Application;
+using JetBrains.Application.UI.ToolWindowManagement;
 using JetBrains.ReSharper.Features.Navigation.Resources;
-using JetBrains.UI.ToolWindowManagement;
 
 namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
 {
@@ -29,11 +29,11 @@ namespace KaVE.VS.FeedbackGenerator.SessionManager.Presentation
         InitialDocking = ToolWindowInitialDocking.Bottom, // TODO make it dock!
         InitialHeight = 400,
         InitialWidth = 1000
-        )]
+    )]
     public class SessionManagerWindowDescriptor : ToolWindowDescriptor
     {
         public SessionManagerWindowDescriptor(IApplicationHost applicationHost)
-            : base(applicationHost) {}
+            : base(applicationHost) { }
 
         /// <summary>
         ///     If the type FeaturesFindingThemedIcons.SearchOptionsPage is only used within attributes, it will not be loaded

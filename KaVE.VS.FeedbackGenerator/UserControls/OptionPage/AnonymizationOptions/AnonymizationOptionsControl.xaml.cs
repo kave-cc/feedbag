@@ -18,10 +18,10 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Settings;
+using JetBrains.Application.UI.Options;
+using JetBrains.Application.UI.Options.Options.ThemedIcons;
+using JetBrains.Application.UI.UIAutomation;
 using JetBrains.DataFlow;
-using JetBrains.UI.CrossFramework;
-using JetBrains.UI.Options;
-using JetBrains.UI.Resources;
 using KaVE.RS.Commons;
 using KaVE.VS.FeedbackGenerator.Settings;
 using KaVE.VS.FeedbackGenerator.UserControls.Anonymization;
@@ -30,8 +30,12 @@ using KaVEISettingsStore = KaVE.RS.Commons.Settings.ISettingsStore;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.AnonymizationOptions
 {
-    [OptionsPage(PID, "Anonymization Settings", typeof (OptionsThemedIcons.ExportLayer),
-        ParentId = RootOptionPage.PID, Sequence = 2.0)]
+    [OptionsPage(
+        PID,
+        "Anonymization Settings",
+        typeof(OptionsThemedIcons.ExportLayer),
+        ParentId = RootOptionPage.PID,
+        Sequence = 2.0)]
     public partial class AnonymizationOptionsControl : IOptionsPage
     {
         private const string PID =

@@ -25,7 +25,7 @@ using Moq;
 
 namespace KaVE.RS.Commons.Tests_Integration.Utils
 {
-    [Language(typeof (CSharpLanguage))]
+    [Language(typeof(CSharpLanguage))]
     public class TestProposalProvider : CSharpItemsProviderBasic
     {
         public static bool Enabled { get; set; }
@@ -35,7 +35,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Utils
             return Enabled;
         }
 
-        protected override bool AddLookupItems(CSharpCodeCompletionContext context, GroupedItemsCollector collector)
+        protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
             collector.Add(CreateXamlLookupItem());
             return true;

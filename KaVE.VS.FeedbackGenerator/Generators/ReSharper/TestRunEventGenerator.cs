@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
@@ -24,7 +25,6 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.ReSharper.UnitTestFramework.Session;
-using JetBrains.Threading;
 using KaVE.Commons.Model.Events.TestRunEvents;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Model.Naming.CodeElements;

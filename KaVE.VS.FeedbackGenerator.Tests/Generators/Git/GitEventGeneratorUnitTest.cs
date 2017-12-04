@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events.VersionControlEvents;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Model.Naming.IDEComponents;

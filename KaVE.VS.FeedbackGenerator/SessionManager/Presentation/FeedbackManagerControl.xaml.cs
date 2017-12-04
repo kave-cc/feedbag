@@ -16,8 +16,8 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using JetBrains.Application.UI.Options.Actions;
 using JetBrains.DataFlow;
-using JetBrains.UI.Options;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
 using KaVE.VS.Commons;

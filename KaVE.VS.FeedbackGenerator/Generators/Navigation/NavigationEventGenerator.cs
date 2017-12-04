@@ -16,6 +16,7 @@
 
 using System.Collections.Specialized;
 using System.Linq;
+using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
 using JetBrains.Interop.WinApi;
 using JetBrains.ProjectModel;

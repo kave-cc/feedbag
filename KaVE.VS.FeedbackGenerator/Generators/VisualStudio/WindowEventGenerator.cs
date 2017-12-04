@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using EnvDTE;
 using JetBrains.Application;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Collections;

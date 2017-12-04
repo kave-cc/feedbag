@@ -15,17 +15,17 @@
  */
 
 using System;
-using JetBrains.ActionManagement;
 using JetBrains.Application.DataContext;
+using JetBrains.Application.UI.Actions;
+using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.DataFlow;
-using JetBrains.UI.ActionsRevised;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.TestFactories.Actions
 {
     internal class MockExecutableAction : IExecutableAction
     {
         // TODO RS9
-       // private readonly HandlersList _handlers;
+        // private readonly HandlersList _handlers;
 
         public IDataContext DataContext { get; private set; }
 
@@ -42,9 +42,9 @@ namespace KaVE.VS.FeedbackGenerator.Tests.TestFactories.Actions
         {
             while (i >= 0)
             {
-               // var handler = _handlers.GetHandler(i);
-              //  if (!_handlers.IsRemoved(handler))
-              //      return handler;
+                // var handler = _handlers.GetHandler(i);
+                //  if (!_handlers.IsRemoved(handler))
+                //      return handler;
                 --i;
             }
             return null;
@@ -74,7 +74,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.TestFactories.Actions
 
         public void AddHandler(Lifetime lifetime, IExecutableAction handler)
         {
-           // _handlers.AddHandler(handler);
+            // _handlers.AddHandler(handler);
         }
 
         public void RemoveHandler(IExecutableAction handler)
@@ -89,7 +89,9 @@ namespace KaVE.VS.FeedbackGenerator.Tests.TestFactories.Actions
 
         public string OverridenAction { get; set; }
         public string Id { get; private set; }
-        public ActionPresentation Presentation {
+
+        public ActionPresentation Presentation
+        {
             get { return new ActionPresentation(); }
         }
     }

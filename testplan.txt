@@ -155,3 +155,15 @@ export zip locally and assert existence of event
 * debug a test
 * Analyze esp. the timing information in all cases
 
+########################
+
+## Intelligent Code Completion
+
+* trigger code completion on unresolved type
+* trigger code completion on non-existing type
+* trigger code completion on StringBuilder
+* trigger code completion on StringBuilder in diff. context
+
+## KaVE Settings
+
+* assert that settings are preserved throughout the update

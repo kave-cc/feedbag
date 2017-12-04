@@ -20,7 +20,7 @@ using JetBrains.ReSharper.Feature.Services.Util;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
-using JetBrains.TextControl;
+using JetBrains.TextControl.TextControlsManagement;
 using KaVE.Commons.Model.Events.CompletionEvents;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.RS.Commons.Analysis;

@@ -20,7 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using EnvDTE;
 using JetBrains.Application;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Assertion;

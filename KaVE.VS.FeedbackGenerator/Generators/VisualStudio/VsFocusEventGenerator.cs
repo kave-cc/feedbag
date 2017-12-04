@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Timers;
 using JetBrains.Application;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Utils;

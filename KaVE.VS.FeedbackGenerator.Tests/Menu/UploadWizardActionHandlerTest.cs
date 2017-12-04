@@ -15,10 +15,10 @@
  */
 
 using System.Collections.Generic;
-using JetBrains.ActionManagement;
 using JetBrains.Application.DataContext;
-using JetBrains.UI.ActionsRevised.Handlers;
-using JetBrains.UI.ActionsRevised.Loader;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.ActionsRevised.Handlers;
+using JetBrains.Application.UI.ActionsRevised.Loader;
 using KaVE.RS.Commons.Settings;
 using KaVE.VS.Commons;
 using KaVE.VS.FeedbackGenerator.Generators;

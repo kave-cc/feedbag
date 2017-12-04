@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.DataContext;
-using JetBrains.UI.ActionsRevised;
-using JetBrains.UI.Options;
+using JetBrains.Application.UI.Actions;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.ActionsRevised.Menu;
+using JetBrains.Application.UI.Options.Actions;
 using KaVE.VS.FeedbackGenerator.Generators;
 
 namespace KaVE.VS.FeedbackGenerator.Menu

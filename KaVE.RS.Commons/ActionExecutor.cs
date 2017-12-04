@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.DataContext;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.DataFlow;
-using JetBrains.UI.ActionsRevised;
 
 namespace KaVE.RS.Commons
 {
-    // TODO RS9: TESTEN!!!
     [ShellComponent]
     public class ActionExecutor : IActionExecutor
     {

@@ -16,8 +16,8 @@
 
 using System;
 using JetBrains.Application.DataContext;
+using JetBrains.Application.UI.Options;
 using JetBrains.DataFlow;
-using JetBrains.UI.Options;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings;
 using KaVE.VS.FeedbackGenerator.Settings;

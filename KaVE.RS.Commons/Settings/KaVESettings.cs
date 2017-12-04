@@ -15,10 +15,11 @@
  */
 
 using JetBrains.Application.Settings;
+using JetBrains.Application.Settings.WellKnownRootKeys;
 
 namespace KaVE.RS.Commons.Settings
 {
-    [SettingsKey(typeof (EnvironmentSettings), "Root node of all settings of KaVE extensions")]
+    [SettingsKey(typeof(EnvironmentSettings), "Root node of all settings of KaVE extensions")]
     // WARNING: Do not change classname, as it is used to identify settings
     public class KaVESettings
     {

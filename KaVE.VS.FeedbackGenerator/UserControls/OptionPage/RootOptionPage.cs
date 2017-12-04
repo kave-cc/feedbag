@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-using JetBrains.UI.Options;
-using JetBrains.UI.Options.Helpers;
-using JetBrains.UI.Options.OptionPages.ToolsPages;
-using JetBrains.UI.Resources;
+using JetBrains.Application.UI.Options;
+using JetBrains.Application.UI.Options.OptionPages;
+using JetBrains.Application.UI.Options.Options.ThemedIcons;
+using JetBrains.Application.UI.Options.OptionsDialog;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage
 {
-    [OptionsPage(PID, "KaVE Project", typeof (OptionsThemedIcons.Options),
+    [OptionsPage(
+        PID,
+        "KaVE Project",
+        typeof(OptionsThemedIcons.Options),
         ParentId = ToolsPage.PID)]
     public class RootOptionPage : AEmptyOptionsPage
     {
         public const string PID = "KaVE.VS.FeedbackGenerator.UserControls.OptionPage.RootOptionPage";
-
     }
 }

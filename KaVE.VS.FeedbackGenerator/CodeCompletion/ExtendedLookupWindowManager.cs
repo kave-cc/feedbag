@@ -20,11 +20,11 @@ using System.Reflection;
 using System.Windows.Forms;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
+using JetBrains.Psi.Features.UIInteractive.Core.CodeCompletion.Lookup;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.Match;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Lookup;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.LookupItems;
 using JetBrains.ReSharper.Feature.Services.Lookup;
-using JetBrains.Util;
 using KaVE.JetBrains.Annotations;
 
 namespace KaVE.VS.FeedbackGenerator.CodeCompletion
@@ -104,10 +104,9 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
         }
 
         private object _currentSender;
-        private IEnumerable<Pair<ILookupItem, MatchingResult>> _currentItems;
+        private IEnumerable<MatchedLookupItem> _currentItems;
 
-        private void BaseLookupOnBeforeShownItemsUpdated(object sender,
-            IEnumerable<Pair<ILookupItem, MatchingResult>> items)
+        private void BaseLookupOnBeforeShownItemsUpdated(object sender, IEnumerable<MatchedLookupItem> items)
         {
             // TODO RS9: ugly hack to prevent stack overflow, access to DisplayItems seems to trigger event
             // is it possible to use "this" as sender and use that for identifying the loop?
@@ -126,13 +125,13 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
             get { return (Lifetime) LookupLifetime.GetValue(_baseLookup); }
         }
 
-        private LookupListViewControl<LookupListItem, ILookupItem> ListBoxControl
+        private LookupListViewControl ListBoxControl
         {
             get
             {
                 var lookupWindow = _manager.CurrentLookupWindow;
                 var o = LookupListBox.GetValue(lookupWindow);
-                return (LookupListViewControl<LookupListItem, ILookupItem>) o;
+                return (LookupListViewControl) o;
             }
         }
 

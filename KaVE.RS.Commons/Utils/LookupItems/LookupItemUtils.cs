@@ -22,6 +22,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.AspectLookupItems.BaseInfrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.AspectLookupItems.Info;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.LookupItems;
 using JetBrains.ReSharper.Features.Intellisense.CodeCompletion.CSharp.AspectLookupItems;
 using KaVE.Commons.Model.Events.CompletionEvents;
 using KaVE.Commons.Model.Naming;
@@ -32,6 +33,12 @@ namespace KaVE.RS.Commons.Utils.LookupItems
 {
     public static class LookupItemUtils
     {
+        [NotNull]
+        public static ProposalCollection ToProposalCollection([NotNull] this IEnumerable<EvaluatedLookupItem> items)
+        {
+            return ToProposalCollection(items.Select(i => i.LookupItem));
+        }
+
         [NotNull]
         public static ProposalCollection ToProposalCollection([NotNull] this IEnumerable<ILookupItem> items)
         {

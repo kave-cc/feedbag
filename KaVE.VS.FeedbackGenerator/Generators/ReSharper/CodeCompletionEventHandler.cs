@@ -18,13 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Application;
+using JetBrains.Application.Threading;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Features.Intellisense.CodeCompletion.CSharp.Rules;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.Threading;
 using JetBrains.Util;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Model.Events.CompletionEvents;
@@ -71,7 +71,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
             return true;
         }
 
-        protected override bool AddLookupItems(CSharpCodeCompletionContext context, GroupedItemsCollector collector)
+        protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
             ContextAnalysis.Analyse(
                 context.NodeInFile,

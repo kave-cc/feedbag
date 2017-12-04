@@ -17,15 +17,15 @@
 using System;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Settings;
+using JetBrains.Application.Settings.WellKnownRootKeys;
 using KaVE.RS.Commons.Settings;
 using Moq;
 using NUnit.Framework;
 using RSISettingsStore = JetBrains.Application.Settings.ISettingsStore;
-using KaVEISettingsStore = KaVE.RS.Commons.Settings.ISettingsStore;
 
 namespace KaVE.RS.Commons.Tests_Unit.Settings
 {
-    [SettingsKey(typeof (EnvironmentSettings), "Test Settings")]
+    [SettingsKey(typeof(EnvironmentSettings), "Test Settings")]
     internal class TestSettings
     {
         [SettingsEntry("default string", "a string setting represented by a field, default value is a string")]
@@ -69,7 +69,7 @@ namespace KaVE.RS.Commons.Tests_Unit.Settings
                 Mock.Of<ISettingsOptimization>());
             var settings = SettingsStore.CreateDefaultInstance<TestSettings>();
 
-            int count = 0;
+            var count = 0;
             SettingsChangedEventArgs eventArgs = null;
             settingsStore.SettingsChanged += (sender, args) =>
             {
@@ -81,7 +81,7 @@ namespace KaVE.RS.Commons.Tests_Unit.Settings
 
             Assert.AreEqual(1, count);
             Assert.NotNull(eventArgs);
-            Assert.AreEqual(typeof (TestSettings), eventArgs.SettingsType);
+            Assert.AreEqual(typeof(TestSettings), eventArgs.SettingsType);
         }
     }
 }

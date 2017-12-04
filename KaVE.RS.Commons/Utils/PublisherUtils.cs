@@ -35,7 +35,6 @@ namespace KaVE.RS.Commons.Utils
     public interface IPublisherUtils
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="events"></param>
         /// <param name="stream"></param>
@@ -54,7 +53,7 @@ namespace KaVE.RS.Commons.Utils
             Action progressCallback)
         {
             var i = 0;
-            
+
             using (var zipFile = new ZipFile())
             {
                 zipFile.UseZip64WhenSaving = Zip64Option.AsNecessary;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using JetBrains.UI.ActionsRevised;
+using JetBrains.Application.UI.ActionsRevised.Menu;
 
 namespace KaVE.VS.FeedbackGenerator.Tests.TestFactories.Actions
 {

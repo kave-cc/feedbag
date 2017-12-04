@@ -16,6 +16,7 @@
 
 using System;
 using EnvDTE;
+using JetBrains.Application.Threading;
 using JetBrains.ProjectModel;
 using JetBrains.Threading;
 using KaVE.Commons.Model.Events.CompletionEvents;

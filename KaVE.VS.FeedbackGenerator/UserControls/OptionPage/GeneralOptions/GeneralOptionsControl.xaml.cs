@@ -18,24 +18,28 @@ using System.Windows;
 using System.Windows.Controls;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Settings;
+using JetBrains.Application.UI.Options;
+using JetBrains.Application.UI.UIAutomation;
 using JetBrains.DataFlow;
 using JetBrains.ReSharper.Features.Navigation.Resources;
-using JetBrains.UI.CrossFramework;
-using JetBrains.UI.Options;
 using KaVE.RS.Commons;
 using KaVE.VS.FeedbackGenerator.Settings;
 using KaVE.VS.FeedbackGenerator.Settings.ExportSettingsSuite;
 using KaVE.VS.FeedbackGenerator.Utils;
 using KaVEISettingsStore = KaVE.RS.Commons.Settings.ISettingsStore;
-using MessageBox = JetBrains.Util.MessageBox;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.GeneralOptions
 {
-    [OptionsPage(PID, "General Settings", typeof (FeaturesFindingThemedIcons.SearchOptionsPage),
-        ParentId = RootOptionPage.PID, Sequence = 1.0)]
+    [OptionsPage(
+        PID,
+        "General Settings",
+        typeof(FeaturesFindingThemedIcons.SearchOptionsPage),
+        ParentId = RootOptionPage.PID,
+        Sequence = 1.0)]
     public partial class GeneralOptionsControl : IOptionsPage
     {
-        private const string PID = "KaVE.VS.FeedbackGenerator.UserControls.OptionPage.GeneralOptions.GeneralOptionsControl";
+        private const string PID =
+            "KaVE.VS.FeedbackGenerator.UserControls.OptionPage.GeneralOptions.GeneralOptionsControl";
 
         public const ResetTypes GeneralSettingsResetType = ResetTypes.GeneralSettings;
         public const ResetTypes FeedbackResetType = ResetTypes.Feedback;
@@ -66,9 +70,9 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.GeneralOptions
 
             _exportSettings = settingsStore.GetSettings<ExportSettings>();
 
-            DataContext = new GeneralOptionsViewModel()
+            DataContext = new GeneralOptionsViewModel
             {
-                ExportSettings = _exportSettings,
+                ExportSettings = _exportSettings
             };
 
             if (_ctx != null)
@@ -76,15 +80,16 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.GeneralOptions
                 BindToGeneralChanges();
             }
         }
-        
+
         private void OnResetSettings(object sender, RoutedEventArgs e)
         {
             var result = _messageBoxCreator.ShowYesNo(GeneralOptionsMessages.SettingResetDialog);
             if (result)
             {
                 var settingResetType = new SettingResetType {ResetType = GeneralSettingsResetType};
-                _actionExecutor.ExecuteActionGuarded<SettingsCleaner>(settingResetType.GetDataContextForSettingResultType(_dataContexts,_lifetime));
-                
+                _actionExecutor.ExecuteActionGuarded<SettingsCleaner>(
+                    settingResetType.GetDataContextForSettingResultType(_dataContexts, _lifetime));
+
                 var window = Window.GetWindow(this);
                 if (window != null)
                 {
@@ -98,8 +103,9 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.GeneralOptions
             var result = _messageBoxCreator.ShowYesNo(GeneralOptionsMessages.FeedbackResetDialog);
             if (result)
             {
-                var settingResetType = new SettingResetType { ResetType = FeedbackResetType };
-                _actionExecutor.ExecuteActionGuarded<SettingsCleaner>(settingResetType.GetDataContextForSettingResultType(_dataContexts, _lifetime));
+                var settingResetType = new SettingResetType {ResetType = FeedbackResetType};
+                _actionExecutor.ExecuteActionGuarded<SettingsCleaner>(
+                    settingResetType.GetDataContextForSettingResultType(_dataContexts, _lifetime));
 
                 var window = Window.GetWindow(this);
                 if (window != null)

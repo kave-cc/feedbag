@@ -73,7 +73,7 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
                    (_models.ContainsKey(_currentQuery.type) || _store.IsAvailable(_currentQuery.type));
         }
 
-        protected override bool AddLookupItems(CSharpCodeCompletionContext context, GroupedItemsCollector collector)
+        protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
             Action<Context> onSuccess = kaveContext =>
             {
@@ -98,7 +98,6 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
                             var proposals = rec.Query(_currentQuery);
 
                             WrapExistingItems(collector, proposals);
-                            WrapNewItems(collector, proposals);
                         }
                         catch (AssertException e)
                         {
@@ -140,7 +139,7 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
             return model;
         }
 
-        private static void WrapExistingItems(GroupedItemsCollector collector, CoReProposal[] proposals)
+        private static void WrapExistingItems(IItemsCollector collector, CoReProposal[] proposals)
         {
             // ToList is necessary to avoid ConcurrentModificationExceptions
             foreach (var candidate in collector.Items.ToList())
@@ -149,13 +148,7 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
             }
         }
 
-        private static void WrapNewItems(GroupedItemsCollector collector, CoReProposal[] proposals)
-        {
-            collector.ItemAdded +=
-                (candidate => ConditionallyAddWrappedLookupItem(collector, proposals, candidate));
-        }
-
-        private static void ConditionallyAddWrappedLookupItem(GroupedItemsCollector collector,
+        private static void ConditionallyAddWrappedLookupItem(IItemsCollector collector,
             CoReProposal[] proposals,
             ILookupItem candidate)
         {

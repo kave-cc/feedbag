@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using JetBrains.ActionManagement;
 using JetBrains.Application.DataContext;
-using JetBrains.UI.ActionsRevised;
+using JetBrains.Application.UI.Actions;
+using JetBrains.Application.UI.ActionsRevised.Menu;
 using KaVE.RS.Commons.Settings;
 using KaVE.RS.Commons.Settings.KaVE.RS.Commons.Settings;
 using KaVE.VS.Commons;

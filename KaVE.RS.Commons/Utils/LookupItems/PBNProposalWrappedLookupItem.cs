@@ -16,10 +16,10 @@
 
 using System;
 using System.Drawing;
+using JetBrains.Application.UI.Icons.ColorIcons;
+using JetBrains.Application.UI.Icons.ComposedIcons;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.UI.Icons;
-using JetBrains.UI.Icons.ColorIcons;
-using JetBrains.UI.Icons.ComposedIcons;
 using JetBrains.UI.RichText;
 using KaVE.Commons.Model.Naming;
 
@@ -34,7 +34,7 @@ namespace KaVE.RS.Commons.Utils.LookupItems
         {
             _name = name;
             Item = wrappedItem;
-            _probability = (int) (probability*100);
+            _probability = (int) (probability * 100);
         }
 
         public override LookupItemPlacement Placement

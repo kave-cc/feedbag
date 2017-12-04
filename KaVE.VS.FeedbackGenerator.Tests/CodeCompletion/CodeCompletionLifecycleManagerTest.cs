@@ -18,14 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using JetBrains.ActionManagement;
 using JetBrains.Application.DataContext;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.ActionsRevised.Handlers;
+using JetBrains.Application.UI.ActionsRevised.Loader;
+using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
+using JetBrains.Application.UI.ActionSystem.Text;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.Match;
-using JetBrains.UI.ActionsRevised;
-using JetBrains.UI.ActionsRevised.Handlers;
-using JetBrains.UI.ActionsRevised.Loader;
-using JetBrains.UI.ActionSystem.Text;
 using JetBrains.Util;
 using KaVE.Commons.Model.Events;
 using KaVE.VS.FeedbackGenerator.CodeCompletion;
@@ -74,7 +74,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
             mockActionManager.Setup(m => m.Defs).Returns(_actionDefs);
             mockActionManager.Setup(m => m.Handlers).Returns(_actionHandlers);
 
-            Dictionary<IActionDefWithId, IAction> registeredHandlers = new Dictionary<IActionDefWithId, IAction>();
+            var registeredHandlers = new Dictionary<IActionDefWithId, IAction>();
 
             // store new handlers in handlers dictionary together with their actions
             Mock.Get(_actionHandlers)
@@ -421,7 +421,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
         private void WhenBeforeShownItemsUpdatedIsRaised(IEnumerable<ILookupItem> expectedlookupItems)
         {
             var eventArg =
-                expectedlookupItems.Select(item => new Pair<ILookupItem, MatchingResult>(item, new MatchingResult()))
+                expectedlookupItems.Select(item => new Pair<ILookupItem, MatchingResult>(item, null))
                                    .AsIList();
             _mockLookup.Raise(l => l.BeforeShownItemsUpdated += null, this, eventArg);
         }

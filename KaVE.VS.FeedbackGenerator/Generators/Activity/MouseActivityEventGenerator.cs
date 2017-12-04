@@ -17,7 +17,7 @@
 using System;
 using System.Windows.Forms;
 using JetBrains.Application;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;

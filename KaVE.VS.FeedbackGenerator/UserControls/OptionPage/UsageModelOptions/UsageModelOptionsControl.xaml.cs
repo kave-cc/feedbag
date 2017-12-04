@@ -19,10 +19,10 @@ using System.Windows.Controls;
 using Avalon.Windows.Dialogs;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Settings;
+using JetBrains.Application.UI.Options;
+using JetBrains.Application.UI.Options.Options.ThemedIcons;
+using JetBrains.Application.UI.UIAutomation;
 using JetBrains.DataFlow;
-using JetBrains.UI.CrossFramework;
-using JetBrains.UI.Options;
-using JetBrains.UI.Resources;
 using KaVE.RS.Commons;
 using KaVE.RS.Commons.Settings.KaVE.RS.Commons.Settings;
 using KaVE.VS.FeedbackGenerator.Settings;
@@ -31,8 +31,12 @@ using KaVEISettingsStore = KaVE.RS.Commons.Settings.ISettingsStore;
 
 namespace KaVE.VS.FeedbackGenerator.UserControls.OptionPage.UsageModelOptions
 {
-    [OptionsPage(PID, "Usage Models", typeof (OptionsThemedIcons.ImportLayer),
-        ParentId = RootOptionPage.PID, Sequence = 4.0)]
+    [OptionsPage(
+        PID,
+        "Usage Models",
+        typeof(OptionsThemedIcons.ImportLayer),
+        ParentId = RootOptionPage.PID,
+        Sequence = 4.0)]
     public partial class UsageModelOptionsControl : IOptionsPage
     {
         private const string PID =

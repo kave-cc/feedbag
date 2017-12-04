@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
+using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.Match;
 using JetBrains.ReSharper.Feature.Services.Lookup;
 using JetBrains.TextControl;
 using JetBrains.UI.Icons;
 using JetBrains.UI.RichText;
-using JetBrains.Util;
 
 namespace KaVE.RS.Commons.Utils.LookupItems
 {
@@ -41,7 +40,7 @@ namespace KaVE.RS.Commons.Utils.LookupItems
         }
 
         public void Accept(ITextControl textControl,
-            TextRange nameRange,
+            DocumentRange nameRange,
             LookupItemInsertType lookupItemInsertType,
             Suffix suffix,
             ISolution solution,
@@ -50,9 +49,9 @@ namespace KaVE.RS.Commons.Utils.LookupItems
             Item.Accept(textControl, nameRange, lookupItemInsertType, suffix, solution, keepCaretStill);
         }
 
-        public TextRange GetVisualReplaceRange(ITextControl textControl, TextRange nameRange)
+        public DocumentRange GetVisualReplaceRange(DocumentRange nameRange)
         {
-            return Item.GetVisualReplaceRange(textControl, nameRange);
+            return Item.GetVisualReplaceRange(nameRange);
         }
 
         public bool Shrink()
@@ -89,18 +88,6 @@ namespace KaVE.RS.Commons.Utils.LookupItems
         public bool CanShrink
         {
             get { return Item.CanShrink; }
-        }
-
-        public int Multiplier
-        {
-            get { return Item.Multiplier; }
-            set { Item.Multiplier = value; }
-        }
-
-        public EvaluationMode Mode
-        {
-            get { return Item.Mode; }
-            set { Item.Mode = value; }
         }
 
         public bool IsDynamic

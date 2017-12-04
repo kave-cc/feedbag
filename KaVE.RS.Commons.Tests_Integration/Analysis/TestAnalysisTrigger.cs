@@ -69,7 +69,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis
             }
         }
 
-        protected override bool AddLookupItems(CSharpCodeCompletionContext context, GroupedItemsCollector collector)
+        protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
             LastException = null;
             var analysisResult = ContextAnalysis.Analyze(context.NodeInFile, null, MockLogger());

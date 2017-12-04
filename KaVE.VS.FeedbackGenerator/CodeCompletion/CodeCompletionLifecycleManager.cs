@@ -17,17 +17,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.ActionManagement;
+using System.Windows.Input;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.ActionSystem.Text;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.Match;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.LookupItems;
 using JetBrains.ReSharper.Feature.Services.Lookup;
-using JetBrains.UI.ActionSystem.Text;
-using JetBrains.Util;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.IO;
-using Key = System.Windows.Input.Key;
 
 namespace KaVE.VS.FeedbackGenerator.CodeCompletion
 {
@@ -98,9 +97,9 @@ namespace KaVE.VS.FeedbackGenerator.CodeCompletion
         /// <summary>
         ///     Invoked when new lookup items have been computed, before they are shown.
         /// </summary>
-        private void OnBeforeShownItemsUpdated(object sender, IEnumerable<Pair<ILookupItem, MatchingResult>> items)
+        private void OnBeforeShownItemsUpdated(object sender, IEnumerable<MatchedLookupItem> items)
         {
-            DisplayedItemsUpdated(items.Select(pair => pair.First));
+            DisplayedItemsUpdated(items.Select(i => i.LookupItem));
         }
 
         /// <param name="displayedItems">The items displayed from now on.</param>

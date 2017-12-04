@@ -16,10 +16,11 @@
 
 using System.IO;
 using System.Linq;
-using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.DataContext;
-using JetBrains.UI.ActionsRevised;
+using JetBrains.Application.UI.Actions;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.ActionsRevised.Menu;
 using KaVE.RS.Commons.Settings;
 using KaVE.VS.FeedbackGenerator.Generators;
 using KaVE.VS.FeedbackGenerator.Utils.Logging;

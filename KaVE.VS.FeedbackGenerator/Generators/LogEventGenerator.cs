@@ -17,7 +17,7 @@
 using System;
 using System.Linq;
 using JetBrains.Application;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.Commons.Utils.Exceptions;

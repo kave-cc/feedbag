@@ -16,7 +16,7 @@
 
 using JetBrains.Application;
 using JetBrains.Application.ActivityTrackingNew;
-using JetBrains.Threading;
+using JetBrains.Application.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Utils;
 using KaVE.JetBrains.Annotations;

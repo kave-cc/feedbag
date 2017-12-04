@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-using JetBrains.UI.ActionsRevised;
-using JetBrains.UI.MenuGroups;
+using JetBrains.Application.UI.Actions.MenuGroups;
+using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using KaVE.VS.FeedbackGenerator.SessionManager.Presentation;
 
 namespace KaVE.VS.FeedbackGenerator.Menu
