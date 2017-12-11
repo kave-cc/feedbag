@@ -36,8 +36,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
 
             AssertBody(
                 Fix.EmptyCompletion,
-                // TODO @seb: think about the "Object" types for erroneous code... better use "Unknown"?
-                VarDecl("$0", Fix.Object),
+                VarDecl("$0", Fix.Unknown),
                 Assign("$0", Const("null")),
                 new ForEachLoop
                 {
@@ -57,7 +56,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
             AssertCompletionMarker<IForeachStatement>(CompletionCase.EmptyCompletionAfter);
 
             AssertBody(
-                VarDecl("$0", Fix.Object),
+                VarDecl("$0", Fix.Unknown),
                 Assign("$0", Const("null")),
                 new ForEachLoop
                 {
@@ -79,7 +78,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
             AssertCompletionMarker<IForeachStatement>(CompletionCase.InBody);
 
             AssertBody(
-                VarDecl("$0", Fix.Object),
+                VarDecl("$0", Fix.Unknown),
                 Assign("$0", Const("null")),
                 new ForEachLoop
                 {
