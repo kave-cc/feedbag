@@ -24,8 +24,9 @@ using JetBrains.Application.UI.ActionsRevised.Handlers;
 using JetBrains.Application.UI.ActionsRevised.Loader;
 using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.Application.UI.ActionSystem.Text;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.Match;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.LookupItems;
 using JetBrains.Util;
 using KaVE.Commons.Model.Events;
 using KaVE.VS.FeedbackGenerator.CodeCompletion;
@@ -41,7 +42,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
         private const string TabActionId = TextControlActions.TAB_ACTION_ID;
         private const string ForceCompleteActionId = "ForceCompleteItem";
 
-        private Mock<IExtendedLookup> _mockLookup;
+        private IExtendedLookup _lookup;
         private Mock<IExtendedLookupWindowManager> _mockLookupWindowManager;
         private CodeCompletionLifecycleManager _manager;
         private Mock<IActionManager> _mockActionManager;
@@ -58,10 +59,10 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
 
         private void SetUpLookup()
         {
-            _mockLookup = new Mock<IExtendedLookup>();
-            _mockLookup.Setup(l => l.DisplayedItems).Returns(LookupItemsMockUtils.MockLookupItemList(3));
+            _lookup = Mock.Of<IExtendedLookup>();
+            Mock.Get(_lookup).Setup(l => l.DisplayedItems).Returns(LookupItemsMockUtils.MockLookupItemList(3));
             _mockLookupWindowManager = new Mock<IExtendedLookupWindowManager>();
-            _mockLookupWindowManager.Setup(m => m.CurrentLookup).Returns(_mockLookup.Object);
+            _mockLookupWindowManager.Setup(m => m.CurrentLookup).Returns(_lookup);
         }
 
         private Mock<IActionManager> SetUpActionManager()
@@ -113,7 +114,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
         public void ShouldFireTriggeredWhenLookupWindowIsAboutToOpen()
         {
             const string expectedPrefix = "testPrefix";
-            _mockLookup.Setup(l => l.Prefix).Returns(() => expectedPrefix);
+            Mock.Get(_lookup).Setup(l => l.Prefix).Returns(() => expectedPrefix);
             string actualPrefix = null;
             IEnumerable<ILookupItem> actualItems = null;
             _manager.OnTriggered += (prefix, items) =>
@@ -125,7 +126,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
             WhenBeforeLookupWindowShownIsRaised();
 
             Assert.AreEqual(expectedPrefix, actualPrefix);
-            CollectionAssert.AreEqual(_mockLookup.Object.DisplayedItems, actualItems);
+            CollectionAssert.AreEqual(_lookup.DisplayedItems, actualItems);
         }
 
         [Test]
@@ -200,14 +201,14 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
                 actualItems = items;
             };
 
-            _mockLookup.Setup(l => l.Prefix).Returns(() => "set");
+            Mock.Get(_lookup).Setup(l => l.Prefix).Returns(() => "set");
             WhenBeforeLookupWindowShownIsRaised();
             WhenBeforeShownItemsUpdatedIsRaised(lookupItems);
             WhenCurrentItemChangedIsRaised(lookupItems[0]);
             const string expectedPrefix = "setM";
-            _mockLookup.Setup(l => l.Prefix).Returns(() => expectedPrefix);
+            Mock.Get(_lookup).Setup(l => l.Prefix).Returns(() => expectedPrefix);
             var expectedItems = lookupItems.Take(2).ToList();
-            _mockLookup.Setup(l => l.DisplayedItems).Returns(expectedItems);
+            Mock.Get(_lookup).Setup(l => l.DisplayedItems).Returns(expectedItems);
             WhenCurrentItemChangedIsRaised(lookupItems[0]);
 
             Assert.AreEqual(expectedPrefix, actualPrefix);
@@ -221,7 +222,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
             var invokations = 0;
             _manager.OnPrefixChanged += (prefix, items) => invokations++;
 
-            _mockLookup.Setup(l => l.Prefix).Returns(() => "set");
+            Mock.Get(_lookup).Setup(l => l.Prefix).Returns(() => "set");
             WhenBeforeLookupWindowShownIsRaised();
             WhenBeforeShownItemsUpdatedIsRaised(lookupItems);
             WhenCurrentItemChangedIsRaised(lookupItems[0]);
@@ -399,31 +400,30 @@ namespace KaVE.VS.FeedbackGenerator.Tests.CodeCompletion
 
         private void WhenItemCompletedIsRaised(ILookupItem appliedItem)
         {
-            _mockLookup.Raise(l => l.ItemCompleted += null, this, appliedItem, null, null);
+            Mock.Get(_lookup).Raise(l => l.ItemCompleted += null, this, appliedItem, null, null);
         }
 
         private void WhenClosedIsRaised()
         {
-            _mockLookup.Raise(l => l.Closed += null, EventArgs.Empty);
+            Mock.Get(_lookup).Raise(l => l.Closed += null, EventArgs.Empty);
         }
 
         private void WhenMouseDownIsRaised()
         {
-            _mockLookup.Raise(l => l.MouseDown += null, this, null);
+            Mock.Get(_lookup).Raise(l => l.MouseDown += null, this, null);
         }
 
         private void WhenCurrentItemChangedIsRaised(ILookupItem selectedItem)
         {
-            _mockLookup.Setup(l => l.SelectedItem).Returns(selectedItem);
-            _mockLookup.Raise(l => l.CurrentItemChanged += null, EventArgs.Empty);
+            Mock.Get(_lookup).Setup(l => l.SelectedItem).Returns(selectedItem);
+            Mock.Get(_lookup).Raise(l => l.CurrentItemChanged += null, EventArgs.Empty);
         }
 
-        private void WhenBeforeShownItemsUpdatedIsRaised(IEnumerable<ILookupItem> expectedlookupItems)
+        private void WhenBeforeShownItemsUpdatedIsRaised(IEnumerable<ILookupItem> expecteds)
         {
-            var eventArg =
-                expectedlookupItems.Select(item => new Pair<ILookupItem, MatchingResult>(item, null))
-                                   .AsIList();
-            _mockLookup.Raise(l => l.BeforeShownItemsUpdated += null, this, eventArg);
+            var eventArg = expecteds.Select(e => new MatchedLookupItem(e, EvaluationMode.All, 1, null))
+                                    .AsIList();
+            Mock.Get(_lookup).Raise(l => l.BeforeShownItemsUpdated += null, this, eventArg);
         }
 
         private void WhenBeforeLookupWindowShownIsRaised()
