@@ -15,7 +15,6 @@
  */
 
 using System.Windows;
-using MsgBox;
 
 namespace KaVE.VS.FeedbackGenerator.Interactivity
 {
@@ -34,24 +33,22 @@ namespace KaVE.VS.FeedbackGenerator.Interactivity
 
             if (_window == null)
             {
-                Msg.Show(
+                MessageBox.Show(
                     notification.Message,
                     notification.Caption,
-                    MsgBoxButtons.OK,
-                    MsgBoxImage.Default,
-                    MsgBoxResult.OK);
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK);
             }
             else
             {
-                Msg.Show(
+                MessageBox.Show(
                     _window,
                     notification.Message,
                     notification.Caption,
-                    MsgBoxResult.OK,
-                    true,
-                    MsgBoxButtons.OK,
-                    MsgBoxImage.Default,
-                    MsgBoxResult.OK);
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information,
+                    MessageBoxResult.OK);
             }
         }
     }

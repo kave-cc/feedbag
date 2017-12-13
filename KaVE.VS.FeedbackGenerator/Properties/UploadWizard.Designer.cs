@@ -142,7 +142,7 @@ namespace KaVE.VS.FeedbackGenerator.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Head to the following web site to manually upload your feedback:.
+        ///   Looks up a localized string similar to Head to the following web site to manually upload your feedback: {0} (You will find a convenient link to this URL in the toolbar of the event manager).
         /// </summary>
         public static string ExportSuccessLinkDescription {
             get {

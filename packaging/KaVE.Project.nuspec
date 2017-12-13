@@ -16,7 +16,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
 
         <dependencies>
-            <dependency id="Wave" version="[8.0]" />
+            <dependency id="Wave" version="[9.0]" />
         </dependencies>
     </metadata>
     <files>
@@ -34,6 +34,5 @@
         <!-- dependencies -->
         <file src="../KaVE.VS.FeedbackGenerator\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll" target="DotFiles" />
 		<file src="../KaVE.VS.FeedbackGenerator\bin\Debug\Gma.System.MouseKeyHook.dll" target="DotFiles" />
-        <file src="../3rd-party\MsgBox.dll" target="DotFiles" />
     </files>
 </package>

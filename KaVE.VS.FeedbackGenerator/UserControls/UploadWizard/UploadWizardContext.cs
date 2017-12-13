@@ -43,7 +43,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
         private UploadWizardControl.ExportType _exportType;
 
         private readonly InteractionRequest<Notification> _errorNotificationRequest;
-        private readonly InteractionRequest<LinkNotification> _successNotificationRequest;
+        private readonly InteractionRequest<Notification> _successNotificationRequest;
 
         public UserProfileSettings UserProfileSettings { get; private set; }
 
@@ -52,7 +52,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
             get { return _errorNotificationRequest; }
         }
 
-        public IInteractionRequest<LinkNotification> SuccessNotificationRequest
+        public IInteractionRequest<Notification> SuccessNotificationRequest
         {
             get { return _successNotificationRequest; }
         }
@@ -69,7 +69,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
             _dateUtils = dateUtils;
             _logger = logger;
             _errorNotificationRequest = new InteractionRequest<Notification>();
-            _successNotificationRequest = new InteractionRequest<LinkNotification>();
+            _successNotificationRequest = new InteractionRequest<Notification>();
             _exportWorker = new BackgroundWorker {WorkerSupportsCancellation = false, WorkerReportsProgress = true};
             _exportWorker.DoWork += OnExport;
             _exportWorker.ProgressChanged += OnProgressChanged;
@@ -194,22 +194,26 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
             {
                 case UploadWizardControl.ExportType.ZipFile:
                     var export = _settingsStore.GetSettings<ExportSettings>();
-                    RaiseLinkNotificationRequest(message, export.UploadUrl);
+                    var messageLink = string.Format(
+                        Properties.UploadWizard.ExportSuccessLinkDescription,
+                        export.UploadUrl);
+                    var messageWithLink = message + "\n\n" + messageLink;
+                    RaiseSuccessRequest(messageWithLink);
                     break;
                 case UploadWizardControl.ExportType.HttpUpload:
-                    RaiseNotificationRequest(message);
+                    RaiseSuccessRequest(message);
                     break;
             }
         }
 
         private void ShowExportFailedMessage(string message)
         {
-            RaiseNotificationRequest(
+            RaiseErrorRequest(
                 Properties.UploadWizard.ExportFail + (string.IsNullOrWhiteSpace(message) ? "" : ":\n" + message));
         }
 
 
-        private void RaiseNotificationRequest(string text)
+        private void RaiseErrorRequest(string text)
         {
             _errorNotificationRequest.Raise(
                 new Notification
@@ -219,15 +223,14 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
                 });
         }
 
-        private void RaiseLinkNotificationRequest(string text, string url)
+
+        private void RaiseSuccessRequest(string text)
         {
             _successNotificationRequest.Raise(
-                new LinkNotification
+                new Notification
                 {
                     Caption = UploadWizardMessages.Title,
-                    Message = text,
-                    LinkDescription = Properties.UploadWizard.ExportSuccessLinkDescription,
-                    Link = url
+                    Message = text
                 });
         }
     }

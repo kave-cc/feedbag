@@ -59,7 +59,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
             DataContext = dataContext;
             MyDataContext.PropertyChanged += OnViewModelPropertyChanged;
             MyDataContext.ErrorNotificationRequest.Raised += new NotificationRequestHandler(this).Handle;
-            MyDataContext.SuccessNotificationRequest.Raised += new LinkNotificationRequestHandler(this).Handle;
+            MyDataContext.SuccessNotificationRequest.Raised += new NotificationRequestHandler(this).Handle;
         }
 
         private void OnClickReview(object sender, RoutedEventArgs e)

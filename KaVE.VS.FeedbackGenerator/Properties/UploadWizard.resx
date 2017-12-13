@@ -142,7 +142,7 @@
     <value>Sucessfully exported/uploaded {0} events.</value>
   </data>
   <data name="ExportSuccessLinkDescription" xml:space="preserve">
-    <value>Head to the following web site to manually upload your feedback:</value>
+    <value>Head to the following web site to manually upload your feedback: {0} (You will find a convenient link to this URL in the toolbar of the event manager)</value>
   </data>
   <data name="CompressingEvents" xml:space="preserve">
     <value>3/4: Compression</value>

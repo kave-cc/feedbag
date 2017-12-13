@@ -23,7 +23,7 @@ namespace KaVE.VS.FeedbackGenerator.Settings
     // WARNING: Do not change classname, as it is used to identify settings
     public class UploadSettings
     {
-        private const string DateTimeMinValue = "0001-01-01T00:00:00";
+        private const string DateTimeMinValue = "0001-01-01T00:00:00Z";
 
         [SettingsEntry(DateTimeMinValue, "Timestamp of the last time the upload-reminder popup was shown to the user.")]
         public DateTimeOffset LastNotificationDate;

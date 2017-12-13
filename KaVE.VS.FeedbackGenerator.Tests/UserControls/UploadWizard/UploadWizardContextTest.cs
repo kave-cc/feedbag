@@ -52,8 +52,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         private UploadWizardContext _uut;
         private Mock<IExporter> _mockExporter;
         private Mock<ISettingsStore> _mockSettingStore;
-        private InteractionRequestTestHelper<Notification> _notificationHelper;
-        private InteractionRequestTestHelper<LinkNotification> _linkNotificationHelper;
+        private InteractionRequestTestHelper<Notification> _errorNotificationHelper;
+        private InteractionRequestTestHelper<Notification> _successNotificationHelper;
         private TestDateUtils _testDateUtils;
         private Mock<IIoUtils> _mockIoUtils;
         private Mock<IPublisherUtils> _mockPublisherUtils;
@@ -100,8 +100,8 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
                 _testDateUtils,
                 _mockLogger.Object);
 
-            _notificationHelper = _uut.ErrorNotificationRequest.NewTestHelper();
-            _linkNotificationHelper = _uut.SuccessNotificationRequest.NewTestHelper();
+            _errorNotificationHelper = _uut.ErrorNotificationRequest.NewTestHelper();
+            _successNotificationHelper = _uut.SuccessNotificationRequest.NewTestHelper();
         }
 
         [TearDown]
@@ -209,7 +209,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         {
             WhenExportIsExecuted();
 
-            Assert.IsTrue(_notificationHelper.IsRequestRaised);
+            Assert.IsTrue(_successNotificationHelper.IsRequestRaised);
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         {
             WhenExportIsExecuted(UploadWizardControl.ExportType.ZipFile);
 
-            Assert.IsTrue(_linkNotificationHelper.IsRequestRaised);
+            Assert.IsTrue(_successNotificationHelper.IsRequestRaised);
         }
 
         [Test]
@@ -228,13 +228,12 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
 
             WhenExportIsExecuted(UploadWizardControl.ExportType.ZipFile);
 
-            var actual = _linkNotificationHelper.Context;
-            var expected = new LinkNotification
+            var actual = _successNotificationHelper.Context;
+            var expected = new Notification
             {
                 Caption = UploadWizardMessages.Title,
-                Message = Properties.UploadWizard.ExportSuccess.FormatEx(23),
-                LinkDescription = Properties.UploadWizard.ExportSuccessLinkDescription,
-                Link = TestUploadUrl
+                Message = Properties.UploadWizard.ExportSuccess.FormatEx(23) + "\n\n" +
+                          Properties.UploadWizard.ExportSuccessLinkDescription.FormatEx(TestUploadUrl)
             };
             Assert.AreEqual(expected, actual);
         }
@@ -247,7 +246,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
 
             WhenExportIsExecuted();
 
-            var actual = _notificationHelper.Context;
+            var actual = _successNotificationHelper.Context;
             var expected = new Notification
             {
                 Caption = UploadWizardMessages.Title,
@@ -260,12 +259,12 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
         public void FailingExportCreatesNotification()
         {
             _mockExporter.Setup(
-                             e => e.Export(It.IsAny<DateTime>(), It.IsAny<IPublisher>()))
+                             e => e.Export(It.IsAny<DateTimeOffset>(), It.IsAny<IPublisher>()))
                          .Throws(new AssertException("TEST"));
 
             WhenExportIsExecuted();
 
-            Assert.IsTrue(_notificationHelper.IsRequestRaised);
+            Assert.IsTrue(_errorNotificationHelper.IsRequestRaised);
         }
 
         [Test]
@@ -277,7 +276,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.UserControls.UploadWizard
 
             WhenExportIsExecuted();
 
-            var actual = _notificationHelper.Context;
+            var actual = _errorNotificationHelper.Context;
             var expected = new Notification
             {
                 Caption = UploadWizardMessages.Title,
