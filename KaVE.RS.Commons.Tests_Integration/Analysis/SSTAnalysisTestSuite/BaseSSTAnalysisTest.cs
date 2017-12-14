@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.ReSharper.Psi.Tree;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Model.Naming.CodeElements;
 using KaVE.Commons.Model.Naming.Types;
@@ -40,6 +41,7 @@ using KaVE.VS.Commons;
 using NUnit.Framework;
 using JB = JetBrains.ReSharper.Psi.CSharp.Tree;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;
+using IStatement = KaVE.Commons.Model.SSTs.IStatement;
 
 namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
 {
@@ -186,28 +188,28 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
             AssertBody(ResultSST.Methods.Single(m => m.Name.Name == methodName), Lists.NewListFrom(bodyArr));
         }
 
-        protected static void AssertNodeIsMethodDeclaration(string simpleMethodName, JB.ICSharpTreeNode node)
+        protected static void AssertNodeIsMethodDeclaration(string simpleMethodName, ITreeNode node)
         {
             var decl = node as JB.IMethodDeclaration;
             Assert.NotNull(decl);
             Assert.AreEqual(simpleMethodName, decl.NameIdentifier.Name);
         }
 
-        protected static void AssertNodeIsVariableDeclaration(string varName, JB.ICSharpTreeNode node)
+        protected static void AssertNodeIsVariableDeclaration(string varName, ITreeNode node)
         {
             var decl = node as JB.ILocalVariableDeclaration;
             Assert.NotNull(decl);
             Assert.AreEqual(varName, decl.NameIdentifier.Name);
         }
 
-        protected static void AssertNodeIsReference(string refName, JB.ICSharpTreeNode node)
+        protected static void AssertNodeIsReference(string refName, ITreeNode node)
         {
             var expr = node as JB.IReferenceExpression;
             Assert.NotNull(expr);
             Assert.AreEqual(refName, expr.NameIdentifier.Name);
         }
 
-        protected static void AssertNodeIsAssignment(string varName, JB.ICSharpTreeNode node)
+        protected static void AssertNodeIsAssignment(string varName, ITreeNode node)
         {
             var ass = node as JB.IAssignmentExpression;
             Assert.NotNull(ass);
@@ -221,12 +223,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
             Assert.AreEqual(expectedCase, LastCompletionMarker.Case);
         }
 
-        protected void AssertNodeIsIf(JB.ICSharpTreeNode node)
-        {
-            Assert.True(node is JB.IIfStatement);
-        }
-
-        protected void AssertNodeIsCall(string expectedName, JB.ICSharpTreeNode node)
+        protected void AssertNodeIsCall(string expectedName, ITreeNode node)
         {
             var call = node as JB.IInvocationExpression;
             Assert.NotNull(call);
@@ -236,12 +233,40 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
 
         protected void AssertCompletionMarker<TNodeType>(CompletionCase expectedCase)
         {
+            var expectedType = typeof(TNodeType);
+            var actualCase = LastCompletionMarker.Case;
+
             var node = LastCompletionMarker.AffectedNode;
+            if (node == null)
+            {
+                Assert.Fail(
+                    "expected {0} ({1}), but target node is null ({2})",
+                    expectedType,
+                    expectedCase,
+                    actualCase);
+            }
+
             if (!(node is TNodeType))
             {
-                Assert.Fail("expected {0}, but was {1}", typeof(TNodeType), node.GetType());
+                var actualType = node.GetType();
+                Assert.Fail(
+                    "expected {0} ({2}), but node type of target is {1} ({3})\n\nNode details:\n{4}\n\n",
+                    expectedType,
+                    actualType,
+                    expectedCase,
+                    actualCase,
+                    node);
             }
-            Assert.AreEqual(expectedCase, LastCompletionMarker.Case);
+
+            if (expectedCase != actualCase)
+            {
+                Assert.Fail(
+                    "expected {0} ({1}). Node type is correct, but case is {2}.",
+                    expectedType,
+                    expectedCase,
+                    actualCase,
+                    node);
+            }
         }
 
         #endregion

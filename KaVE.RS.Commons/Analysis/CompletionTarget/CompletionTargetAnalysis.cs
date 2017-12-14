@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Linq;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -41,21 +42,62 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
 
         private class TargetFinder : TreeNodeVisitor
         {
-            public CompletionTargetMarker Result { get; private set; }
-
-            public TargetFinder()
+            private readonly Type[] _interestingNodeTypes =
             {
-                Result = new CompletionTargetMarker();
-            }
+                typeof(ICSharpNamespaceDeclaration),
+                typeof(ICSharpTypeDeclaration),
+                typeof(ICSharpTypeMemberDeclaration),
+                typeof(ICSharpStatement),
+                typeof(ICSharpExpression),
+                typeof(IExpressionStatement),
+                typeof(IAttribute),
+                typeof(ISwitchSection),
+                typeof(ILocalVariableDeclaration),
+                typeof(IErrorElement)
+            };
+
+            private readonly Type[] _excludedNodeTypes =
+            {
+                typeof(IChameleonNode)
+                // typeof(IParenthesizedExpression)
+            };
+
+            public CompletionTargetMarker Result { get; private set; }
 
             public override void VisitNode(ITreeNode tNode)
             {
-                var target = tNode as ICSharpTreeNode;
-                if (target == null)
+                Result = FindInterestingNode(tNode);
+                if (Result.Case == CompletionCase.Invalid)
                 {
-                    // TODO handle?!
                     return;
                 }
+
+                Result.AffectedNode = SelectBetterNodesThanErrors(Result.AffectedNode);
+                Result.AffectedNode = PossiblyStepDown(Result.AffectedNode);
+
+                SetCaseForTriggerInTypeSignature(tNode);
+                SetCaseForTriggerInMethodSignature(tNode);
+
+                var isSemicolon = CSharpTokenType.SEMICOLON == tNode.GetTokenType();
+                if (isSemicolon)
+                {
+                    Result.Case = CompletionCase.EmptyCompletionAfter;
+                }
+
+                if (IsBraceOrParenthesis(tNode))
+                {
+                    Result.Case = CompletionCase.InBody;
+                }
+
+
+                if (IsNonWhitespaceSiblingABrace(tNode, true) && IsNonWhitespaceSiblingABrace(tNode, false))
+                {
+                    Result.Case = CompletionCase.InBody;
+                }
+
+                return;
+
+                var handler = Result.AffectedNode;
                 var parent = tNode.Parent as ICSharpTreeNode;
 
                 var isDot = CSharpTokenType.DOT == tNode.GetTokenType();
@@ -66,16 +108,38 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     return;
                 }
 
-                var isAssign = CSharpTokenType.EQ == tNode.GetTokenType();
-                if (IsWhitespaceOrBraceToken(target) || isAssign)
+                var attr = FindInParent<IAttribute>(tNode, typeof(IChameleonNode));
+                if (attr != null)
                 {
-                    FindAvailableTarget(target);
+                    Result.AffectedNode = attr;
+                    Result.Case = CompletionCase.Undefined;
+                    return;
                 }
 
-                var isSemicolon = CSharpTokenType.SEMICOLON == tNode.GetTokenType();
-                if (isSemicolon)
+                var md = FindInParent<IMethodDeclaration>(tNode, typeof(IChameleonNode), typeof(IStatement));
+                if (md != null)
                 {
-                    FindAvailableTarget(tNode.Parent);
+                    Result.AffectedNode = md;
+                    Result.Case = CompletionCase.InSignature;
+                    return;
+                }
+
+                var td = FindInParent<ICSharpTypeDeclaration>(
+                    tNode,
+                    typeof(IChameleonNode),
+                    typeof(IStatement),
+                    typeof(IMemberOwnerBody));
+                if (td != null)
+                {
+                    Result.AffectedNode = td;
+                    Result.Case = CompletionCase.InSignature;
+                    return;
+                }
+
+                var isAssign = CSharpTokenType.EQ == tNode.GetTokenType();
+                if (IsWhitespaceOrBraceToken(handler) || isAssign)
+                {
+                    FindAvailableTarget(handler);
                 }
 
                 if (Result.AffectedNode is IAssignmentExpression && HasError(Result.AffectedNode))
@@ -89,9 +153,9 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     Result.Case = CompletionCase.Undefined;
                 }
 
-                if (target is IIdentifier)
+                if (handler is IIdentifier)
                 {
-                    Result.AffectedNode = target.Parent as ICSharpTreeNode;
+                    Result.AffectedNode = handler.Parent as ICSharpTreeNode;
                     Result.Case = CompletionCase.Undefined;
                 }
 
@@ -100,6 +164,169 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 {
                     Result.AffectedNode = exprStatement.Expression;
                 }
+            }
+
+            private static bool IsBraceOrParenthesis(ITreeNode tNode)
+            {
+                var isLBrace = CSharpTokenType.LBRACE == tNode.GetTokenType();
+                var isRBrace = CSharpTokenType.RBRACE == tNode.GetTokenType();
+                var isLPara = CSharpTokenType.LPARENTH == tNode.GetTokenType();
+                var isRPara = CSharpTokenType.RPARENTH == tNode.GetTokenType();
+                var b = isLBrace || isRBrace || isLPara || isRPara;
+                return b;
+            }
+
+            private ITreeNode SelectBetterNodesThanErrors(ITreeNode n)
+            {
+                if (n.Parent is IMethodDeclaration)
+                {
+                    return n.Parent;
+                }
+                return n;
+            }
+
+            private void SetCaseForTriggerInMethodSignature(ITreeNode tNode)
+            {
+                if (Result.AffectedNode is IMethodDeclaration)
+                {
+                    var tmp = FindInParent<IMethodDeclaration>(tNode, typeof(IChameleonNode), typeof(IStatement));
+                    if (tmp != null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                }
+            }
+
+            private void SetCaseForTriggerInTypeSignature(ITreeNode tNode)
+            {
+                if (Result.AffectedNode is ICSharpTypeDeclaration)
+                {
+                    var tmp = FindInParent<ICSharpTypeDeclaration>(
+                        tNode,
+                        typeof(IChameleonNode),
+                        typeof(IStatement),
+                        typeof(IMemberOwnerBody));
+                    if (tmp != null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                }
+            }
+
+            private static ITreeNode PossiblyStepDown(ITreeNode n)
+            {
+                var x = n as IDeclarationStatement;
+                if (x != null)
+                {
+                    var lastConst = x.ConstantDeclarations.LastOrDefault();
+                    if (lastConst != null)
+                    {
+                        return lastConst;
+                    }
+                    var lastVar = x.VariableDeclarations.LastOrDefault();
+                    if (lastVar != null)
+                    {
+                        return lastVar;
+                    }
+                    return x.LocalFunctionDeclaration;
+                }
+
+                return n;
+            }
+
+            private CompletionTargetMarker FindInterestingNode(ITreeNode n)
+            {
+                ITreeNode handler = null;
+                var c = CompletionCase.Undefined;
+
+                // error case
+                if (n == null)
+                {
+                    return new CompletionTargetMarker {Case = CompletionCase.Invalid};
+                }
+
+                // base cases
+                if (IsInteresting(n))
+                {
+                    handler = n as ICSharpTreeNode;
+                }
+
+                if (IsBraceOrParenthesis(n))
+                {
+                    return FindInterestingNode(n.Parent);
+                }
+
+                if (handler == null && FindInterestingSibling(n, true, out handler))
+                {
+                    c = CompletionCase.EmptyCompletionAfter;
+                }
+                if (handler == null && FindInterestingSibling(n, false, out handler))
+                {
+                    c = CompletionCase.EmptyCompletionBefore;
+                }
+
+                // recursion
+                return handler != null
+                    ? new CompletionTargetMarker {AffectedNode = handler, Case = c}
+                    : FindInterestingNode(n.Parent);
+            }
+
+            private static bool IsNonWhitespaceSiblingABrace(ITreeNode n, bool goBack)
+            {
+                if (!n.IsWhitespaceToken())
+                {
+                    return false;
+                }
+
+                while ((n = goBack ? n.PrevSibling : n.NextSibling) != null)
+                {
+                    if (!n.IsWhitespaceToken())
+                    {
+                        return goBack
+                            ? CSharpTokenType.LBRACE == n.GetTokenType()
+                            : CSharpTokenType.RBRACE == n.GetTokenType();
+                    }
+                }
+                return false;
+            }
+
+            private bool FindInterestingSibling(ITreeNode n, bool goBack, out ITreeNode target)
+            {
+                while ((n = goBack ? n.PrevSibling : n.NextSibling) != null)
+                {
+                    if (IsInteresting(n))
+                    {
+                        target = n;
+                        return true;
+                    }
+                }
+                target = null;
+                return false;
+            }
+
+            private bool IsInteresting(ITreeNode n)
+            {
+                var isInteresting = _interestingNodeTypes.Any(t => t.IsInstanceOfType(n));
+                var shouldBeExcluded = _excludedNodeTypes.Any(t => t.IsInstanceOfType(n));
+                return isInteresting && !shouldBeExcluded;
+            }
+
+            private static T FindInParent<T>(ITreeNode node, params Type[] abortTypes) where T : ITreeNode
+            {
+                if (node == null)
+                {
+                    return default(T);
+                }
+                var nodeType = node.GetType();
+                if (abortTypes.Any(abortType => abortType.IsAssignableFrom(nodeType)))
+                {
+                    return default(T);
+                }
+                if (node is T)
+                {
+                    return (T) node;
+                }
+                return FindInParent<T>(node.Parent, abortTypes);
             }
 
             private void FindAvailableTarget(ITreeNode target)
@@ -224,12 +451,12 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 }
             }
 
-            private static bool HasError(ICSharpTreeNode prev)
+            private static bool HasError(ITreeNode prev)
             {
                 return prev.LastChild is IErrorElement;
             }
 
-            private ICSharpTreeNode FindNonBlockParent(ITreeNode target)
+            private ITreeNode FindNonBlockParent(ITreeNode target)
             {
                 if (target is IEmptyStatement)
                 {

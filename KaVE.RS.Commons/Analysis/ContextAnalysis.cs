@@ -143,6 +143,8 @@ namespace KaVE.RS.Commons.Analysis
                 var sst = new SST();
                 context.SST = sst;
 
+                res.CompletionMarker = _completionTargetAnalysis.Analyze(nodeInFile);
+
                 var typeDecl = FindEnclosing<ICSharpTypeDeclaration>(nodeInFile);
                 if (typeDecl != null && typeDecl.DeclaredElement != null)
                 {
@@ -158,10 +160,11 @@ namespace KaVE.RS.Commons.Analysis
                         var file = nodeInFile.GetSourceFile();
                         sst.PartialClassIdentifier = file != null
                             ? file.DisplayName
-                            : _srcFile != null ? _srcFile.DisplayName : "partial";
+                            : _srcFile != null
+                                ? _srcFile.DisplayName
+                                : "partial";
                     }
 
-                    res.CompletionMarker = _completionTargetAnalysis.Analyze(nodeInFile);
                     typeDecl.Accept(
                         new DeclarationVisitor(_logger, res.EntryPoints, res.CompletionMarker, _token),
                         sst);

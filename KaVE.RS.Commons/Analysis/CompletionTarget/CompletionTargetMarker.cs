@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Tree;
 
 namespace KaVE.RS.Commons.Analysis.CompletionTarget
 {
     public class CompletionTargetMarker
     {
-        public ICSharpTreeNode AffectedNode { get; set; }
+        public ITreeNode AffectedNode { get; set; }
         public CompletionCase Case { get; set; }
     }
 
@@ -31,6 +31,8 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
         EmptyCompletionAfter,
         InBody,
         InElse,
-        InFinally
+        InFinally,
+        InSignature,
+        Invalid
     }
 }

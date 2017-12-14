@@ -279,8 +279,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
                 }
             ");
 
-            AssertNodeIsIf(LastCompletionMarker.AffectedNode);
-            AssertCompletionCase(CompletionCase.InBody);
+            AssertCompletionMarker<IIfStatement>(CompletionCase.InBody);
 
             AssertBody(
                 new IfElseBlock
