@@ -236,7 +236,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
             var expectedType = typeof(TNodeType);
             var actualCase = LastCompletionMarker.Case;
 
-            var node = LastCompletionMarker.AffectedNode;
+            var node = LastCompletionMarker.HandlingNode;
             if (node == null)
             {
                 Assert.Fail(

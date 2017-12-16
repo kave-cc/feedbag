@@ -38,6 +38,7 @@ using KaVE.Commons.Utils.Assertion;
 using KaVE.Commons.Utils.Collections;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.RS.Commons.Analysis.CompletionTarget;
+using KaVE.RS.Commons.Analysis.Transformer.StatementVisitorParts;
 using KaVE.RS.Commons.Analysis.Util;
 using KaVE.RS.Commons.Utils.Naming;
 using ICastExpression = JetBrains.ReSharper.Psi.CSharp.Tree.ICastExpression;
@@ -280,7 +281,8 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                         varRef = ToVariableRef(invokedExpression, body);
                     }
                     else if (qExpr != null &&
-                             (qExpr.IsClassifiedAsVariable || qExpr is IThisExpression || qExpr is IInvocationExpression))
+                             (qExpr.IsClassifiedAsVariable || qExpr is IThisExpression ||
+                              qExpr is IInvocationExpression))
                     {
                         varRef = ToVariableRef(qExpr, body);
                     }
@@ -806,7 +808,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
         {
             var qualifierExpr = expr.QualifierExpression;
             var name = expr.NameIdentifier != null ? expr.NameIdentifier.Name : "";
-            if (expr == _marker.AffectedNode && _marker.AffectedNode != null)
+            if (expr == _marker.HandlingNode && _marker.HandlingNode != null)
             {
                 var ce = new CompletionExpression
                 {
@@ -895,7 +897,15 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
             var lambdaName = expr.GetName();
             var lambdaBody = new KaVEList<IStatement>();
-            var bodyVisitor = new BodyVisitor(_nameGen, _marker);
+
+            var isCompletionTarget = expr == _marker.HandlingNode && CompletionCase.InBody == _marker.Case;
+            if (isCompletionTarget)
+            {
+                var stmt = new ExpressionStatement {Expression = new CompletionExpression()};
+                lambdaBody.Add(stmt);
+            }
+
+            var bodyVisitor = new StatementVisitor(_nameGen, _marker);
 
             if (expr.BodyBlock != null)
             {
@@ -920,7 +930,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
         {
             var lambdaName = expr.GetName();
             var lambdaBody = new KaVEList<IStatement>();
-            var bodyVisitor = new BodyVisitor(_nameGen, _marker);
+            var bodyVisitor = new StatementVisitor(_nameGen, _marker);
 
             expr.Body.Accept(bodyVisitor, lambdaBody);
 
@@ -973,7 +983,8 @@ namespace KaVE.RS.Commons.Analysis.Transformer
             };
         }
 
-        public override IAssignableExpression VisitUncheckedExpression(IUncheckedExpression expr, IList<IStatement> body)
+        public override IAssignableExpression VisitUncheckedExpression(IUncheckedExpression expr,
+            IList<IStatement> body)
         {
             var uncheckedBlock = new UncheckedBlock();
             var assignable = ToAssignableExpr(expr.Operand, uncheckedBlock.Body);

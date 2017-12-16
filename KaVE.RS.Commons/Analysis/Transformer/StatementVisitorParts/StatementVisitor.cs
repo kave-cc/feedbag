@@ -46,9 +46,9 @@ using IReturnStatement = JetBrains.ReSharper.Psi.CSharp.Tree.IReturnStatement;
 using IStatement = KaVE.Commons.Model.SSTs.IStatement;
 using IThrowStatement = JetBrains.ReSharper.Psi.CSharp.Tree.IThrowStatement;
 
-namespace KaVE.RS.Commons.Analysis.Transformer
+namespace KaVE.RS.Commons.Analysis.Transformer.StatementVisitorParts
 {
-    public class BodyVisitor : TreeNodeVisitor<IList<IStatement>>
+    public partial class StatementVisitor : TreeNodeVisitor<IList<IStatement>>
     {
         private readonly CompletionTargetMarker _marker;
         private readonly ExpressionVisitor _exprVisitor;
@@ -59,7 +59,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
             get { return new ExpressionStatement {Expression = new CompletionExpression()}; }
         }
 
-        public BodyVisitor(UniqueVariableNameGenerator nameGen, CompletionTargetMarker marker)
+        public StatementVisitor(UniqueVariableNameGenerator nameGen, CompletionTargetMarker marker)
         {
             _marker = marker;
             _nameGen = nameGen;
@@ -75,8 +75,8 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                     {
                         child.Accept(this, context);
                     }
-                    catch (NullReferenceException) {}
-                    catch (AssertException) {}
+                    catch (NullReferenceException) { }
+                    catch (AssertException) { }
                 });
         }
 
@@ -116,7 +116,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
             {
                 initializer = _exprVisitor.ToAssignableExpr(decl.Initial, body);
             }
-            else if (_marker.AffectedNode == decl && _marker.Case == CompletionCase.Undefined)
+            else if (_marker.HandlingNode == decl && _marker.Case == CompletionCase.Undefined)
             {
                 initializer = new CompletionExpression();
             }
@@ -129,7 +129,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                 }
             }
 
-            if (decl == _marker.AffectedNode && _marker.Case == CompletionCase.EmptyCompletionAfter)
+            if (decl == _marker.HandlingNode && _marker.Case == CompletionCase.EmptyCompletionAfter)
             {
                 body.Add(EmptyCompletionExpression);
             }
@@ -144,7 +144,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
             VisitNode(decl.Declaration, body);
 
-            if (decl == _marker.AffectedNode && _marker.Case == CompletionCase.EmptyCompletionAfter)
+            if (decl == _marker.HandlingNode && _marker.Case == CompletionCase.EmptyCompletionAfter)
             {
                 body.Add(EmptyCompletionExpression);
             }
@@ -175,7 +175,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
             {
                 initializer = _exprVisitor.ToAssignableExpr(decl.ValueExpression, body);
             }
-            else if (_marker.AffectedNode == decl && _marker.Case == CompletionCase.Undefined)
+            else if (_marker.HandlingNode == decl && _marker.Case == CompletionCase.Undefined)
             {
                 initializer = new CompletionExpression();
             }
@@ -188,7 +188,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                 }
             }
 
-            if (decl == _marker.AffectedNode && _marker.Case == CompletionCase.EmptyCompletionAfter)
+            if (decl == _marker.HandlingNode && _marker.Case == CompletionCase.EmptyCompletionAfter)
             {
                 body.Add(EmptyCompletionExpression);
             }
@@ -196,8 +196,8 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
         private bool IsTargetMatch(ICSharpTreeNode o, CompletionCase completionCase)
         {
-            var isValid = _marker.AffectedNode != null;
-            var isMatch = o == _marker.AffectedNode;
+            var isValid = _marker.HandlingNode != null;
+            var isMatch = o == _marker.HandlingNode;
             var isRightCase = _marker.Case == completionCase;
             return isValid && isMatch && isRightCase;
         }
@@ -487,7 +487,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
         public override void VisitEmptyStatement(IEmptyStatement stmt, IList<IStatement> body)
         {
-            if (stmt == _marker.AffectedNode)
+            if (stmt == _marker.HandlingNode)
             {
                 body.Add(EmptyCompletionExpression);
             }
@@ -509,340 +509,6 @@ namespace KaVE.RS.Commons.Analysis.Transformer
         #endregion
 
         #region blocks
-
-        public override void VisitIfStatement(IIfStatement stmt, IList<IStatement> body)
-        {
-            if (IsTargetMatch(stmt, CompletionCase.EmptyCompletionBefore))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-            var ifElseBlock = new IfElseBlock
-            {
-                Condition = _exprVisitor.ToSimpleExpression(stmt.Condition, body) ?? new UnknownExpression()
-            };
-            if (IsTargetMatch(stmt, CompletionCase.InBody))
-            {
-                ifElseBlock.Then.Add(EmptyCompletionExpression);
-            }
-            if (IsTargetMatch(stmt, CompletionCase.InElse))
-            {
-                ifElseBlock.Else.Add(EmptyCompletionExpression);
-            }
-            if (stmt.Then != null)
-            {
-                stmt.Then.Accept(this, ifElseBlock.Then);
-            }
-            if (stmt.Else != null)
-            {
-                stmt.Else.Accept(this, ifElseBlock.Else);
-            }
-
-            body.Add(ifElseBlock);
-
-            if (IsTargetMatch(stmt, CompletionCase.EmptyCompletionAfter))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-        }
-
-        public override void VisitWhileStatement(IWhileStatement rsLoop, IList<IStatement> body)
-        {
-            if (_marker.AffectedNode == rsLoop && _marker.Case == CompletionCase.EmptyCompletionBefore)
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-
-            var loop = new WhileLoop
-            {
-                Condition = _exprVisitor.ToLoopHeaderExpression(rsLoop.Condition, body)
-            };
-
-            body.Add(loop);
-
-            rsLoop.Body.Accept(this, loop.Body);
-
-            if (_marker.AffectedNode == rsLoop && _marker.Case == CompletionCase.InBody)
-            {
-                loop.Body.Add(EmptyCompletionExpression);
-            }
-
-            if (_marker.AffectedNode == rsLoop && _marker.Case == CompletionCase.EmptyCompletionAfter)
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-        }
-
-        public override void VisitForStatement(IForStatement stmt, IList<IStatement> body)
-        {
-            if (IsTargetMatch(stmt, CompletionCase.EmptyCompletionBefore))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-
-            var forLoop = new ForLoop();
-            body.Add(forLoop);
-
-            if (IsTargetMatch(stmt, CompletionCase.InBody))
-            {
-                forLoop.Body.Add(EmptyCompletionExpression);
-            }
-
-            VisitForStatement_Init(stmt.Initializer, forLoop.Init, body);
-            forLoop.Condition = _exprVisitor.ToLoopHeaderExpression(stmt.Condition, body);
-            foreach (var expr in stmt.IteratorExpressionsEnumerable)
-            {
-                expr.Accept(this, forLoop.Step);
-            }
-
-            if (stmt.Body != null)
-            {
-                stmt.Body.Accept(this, forLoop.Body);
-            }
-
-            if (IsTargetMatch(stmt, CompletionCase.EmptyCompletionAfter))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-        }
-
-        private void VisitForStatement_Init(IForInitializer init, IKaVEList<IStatement> forInit, IList<IStatement> body)
-        {
-            if (init == null)
-            {
-                return;
-            }
-
-            // case 1: single declaration
-            var isDeclaration = init.Declaration != null;
-            if (isDeclaration)
-            {
-                var decl = init.Declaration.Declarators[0];
-                decl.Accept(this, forInit);
-            }
-
-            // case 2: multiple statements
-            var hasStatements = init.Expressions.Count > 0;
-            if (hasStatements)
-            {
-                foreach (var expr in init.ExpressionsEnumerable)
-                {
-                    expr.Accept(this, forInit);
-                }
-            }
-        }
-
-        public override void VisitForeachStatement(IForeachStatement stmt, IList<IStatement> body)
-        {
-            if (IsTargetMatch(stmt, CompletionCase.EmptyCompletionBefore))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-
-            var loop = new ForEachLoop
-            {
-                LoopedReference = _exprVisitor.ToVariableRef(stmt.Collection, body)
-            };
-            body.Add(loop);
-
-            foreach (var itDecl in stmt.IteratorDeclarations)
-            {
-                var localVar = itDecl.DeclaredElement.GetName<ILocalVariableName>();
-                loop.Declaration = new VariableDeclaration
-                {
-                    Reference = new VariableReference {Identifier = localVar.Name},
-                    Type = localVar.ValueType
-                };
-            }
-
-            if (IsTargetMatch(stmt, CompletionCase.InBody))
-            {
-                loop.Body.Add(EmptyCompletionExpression);
-            }
-
-            if (stmt.Body != null)
-            {
-                stmt.Body.Accept(this, loop.Body);
-            }
-
-
-            if (IsTargetMatch(stmt, CompletionCase.EmptyCompletionAfter))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-        }
-
-        public override void VisitTryStatement(ITryStatement block, IList<IStatement> body)
-        {
-            AddIf(block, CompletionCase.EmptyCompletionBefore, body);
-
-            var tryBlock = new TryBlock();
-            body.Add(tryBlock);
-
-            AddIf(block, CompletionCase.InBody, tryBlock.Body);
-            AddIf(block, CompletionCase.InFinally, tryBlock.Finally);
-            VisitBlock(block.Try, tryBlock.Body);
-            VisitBlock(block.FinallyBlock, tryBlock.Finally);
-
-            foreach (var clause in block.Catches)
-            {
-                var catchBlock = new CatchBlock();
-                tryBlock.CatchBlocks.Add(catchBlock);
-
-                AddIf(clause, CompletionCase.InBody, catchBlock.Body);
-
-                VisitBlock(clause.Body, catchBlock.Body);
-
-                var generalClause = clause as IGeneralCatchClause;
-                if (generalClause != null)
-                {
-                    catchBlock.Kind = CatchBlockKind.General;
-                    continue;
-                }
-
-                var specificClause = clause as ISpecificCatchClause;
-                if (specificClause != null)
-                {
-                    var varDecl = specificClause.ExceptionDeclaration;
-                    var isUnnamed = varDecl == null;
-
-                    var typeName = specificClause.ExceptionType.GetName();
-                    var varName = isUnnamed ? "?" : varDecl.DeclaredName;
-                    catchBlock.Parameter = Names.Parameter("[{0}] {1}", typeName, varName);
-                    catchBlock.Kind = isUnnamed ? CatchBlockKind.Unnamed : CatchBlockKind.Default;
-                }
-            }
-
-            AddIf(block, CompletionCase.EmptyCompletionAfter, body);
-        }
-
-        private void AddIf(ICSharpTreeNode node, CompletionCase completionCase, IList<IStatement> body)
-        {
-            if (IsTargetMatch(node, completionCase))
-            {
-                body.Add(EmptyCompletionExpression);
-            }
-        }
-
-        public override void VisitUsingStatement(IUsingStatement block, IList<IStatement> body)
-        {
-            AddIf(block, CompletionCase.EmptyCompletionBefore, body);
-
-            var usingBlock = new UsingBlock();
-
-            IVariableReference varRef = new VariableReference();
-
-            // case 1: variable declarations
-            if (block.VariableDeclarations.Any())
-            {
-                var decl = block.VariableDeclarations[0];
-                decl.Accept(this, body);
-                varRef = new VariableReference {Identifier = decl.DeclaredName};
-            }
-            // case 2: expressions (var refs, method calls ...)
-            else if (block.Expressions.Any())
-            {
-                var expr = block.Expressions[0];
-                varRef = _exprVisitor.ToVariableRef(expr, body);
-            }
-
-            usingBlock.Reference = varRef;
-
-            var bodyAsIBlock = block.Body as IBlock;
-            if (bodyAsIBlock != null && !bodyAsIBlock.Statements.Any() && IsTargetMatch(block, CompletionCase.InBody))
-            {
-                usingBlock.Body.Add(new ExpressionStatement {Expression = new CompletionExpression()});
-            }
-            else
-            {
-                block.Body.Accept(this, usingBlock.Body);
-            }
-
-            body.Add(usingBlock);
-
-            AddIf(block, CompletionCase.EmptyCompletionAfter, body);
-        }
-
-        public override void VisitSwitchStatement(ISwitchStatement block, IList<IStatement> body)
-        {
-            AddIf(block, CompletionCase.EmptyCompletionBefore, body);
-
-            var switchBlock = new SwitchBlock {Reference = _exprVisitor.ToVariableRef(block.Condition, body)};
-
-            foreach (var section in block.Sections)
-            {
-                IKaVEList<IStatement> currentSection = null;
-
-                foreach (var label in section.CaseLabels)
-                {
-                    currentSection = new KaVEList<IStatement>();
-                    if (label.IsDefault)
-                    {
-                        switchBlock.DefaultSection = currentSection;
-                    }
-                    else
-                    {
-                        switchBlock.Sections.Add(
-                            new CaseBlock
-                            {
-                                Label = _exprVisitor.ToSimpleExpression(label.ValueExpression, body),
-                                Body = currentSection
-                            });
-                    }
-                    AddIf(label, CompletionCase.InBody, currentSection);
-                }
-
-                AddIf(section, CompletionCase.InBody, currentSection);
-                foreach (var statement in section.Statements)
-                {
-                    statement.Accept(this, currentSection);
-                }
-
-                switch (1)
-                {
-                    case 1*2:
-                    case 0:
-                        break;
-                }
-            }
-
-            body.Add(switchBlock);
-
-            AddIf(block, CompletionCase.EmptyCompletionAfter, body);
-        }
-
-        public override void VisitUncheckedStatement(IUncheckedStatement block, IList<IStatement> body)
-        {
-            AddIf(block, CompletionCase.EmptyCompletionBefore, body);
-
-            var uncheckedBlock = new UncheckedBlock();
-            AddIf(block, CompletionCase.InBody, uncheckedBlock.Body);
-            block.Body.Accept(this, uncheckedBlock.Body);
-            body.Add(uncheckedBlock);
-
-            AddIf(block, CompletionCase.EmptyCompletionAfter, body);
-        }
-
-        public override void VisitBlock(IBlock block, IList<IStatement> body)
-        {
-            // TODO NameUpdate: changed another helper to overriding this method, check if Null check is really necessary now
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (block == null)
-            {
-                return;
-            }
-            // TODO NameUpdate: untested addition
-            AddIf(block, CompletionCase.EmptyCompletionBefore, body);
-            // TODO NameUpdate: untested addition
-            AddIf(block, CompletionCase.InBody, body);
-
-            foreach (var stmt in block.Statements)
-            {
-                Execute.AndSupressExceptions(
-                    delegate { stmt.Accept(this, body); });
-            }
-            // TODO NameUpdate: untested addition
-            AddIf(block, CompletionCase.EmptyCompletionAfter, body);
-        }
 
         #endregion
     }

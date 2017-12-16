@@ -91,5 +91,15 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             ");
             AssertCompletionMarker<IMethodDeclaration>(CompletionCase.InSignature);
         }
+
+        [Test]
+        public void InLambdaSignature()
+        {
+            CompleteInMethod(
+                @"
+                ( $ ) => {};
+            ");
+            AssertCompletionMarker<ILambdaExpression>(CompletionCase.InSignature);
+        }
     }
 }

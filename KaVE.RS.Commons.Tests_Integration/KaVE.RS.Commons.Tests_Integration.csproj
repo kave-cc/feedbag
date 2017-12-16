@@ -260,6 +260,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analysis\CompletionTargetTestSuite\BaseTest.cs" />
+    <Compile Include="Analysis\CompletionTargetTestSuite\Blocks.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\Comments.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\EmptyCompletions.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\MethodSignatures.cs" />

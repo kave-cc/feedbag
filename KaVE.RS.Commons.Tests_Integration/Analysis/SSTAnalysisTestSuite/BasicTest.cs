@@ -32,12 +32,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void LonelyVariableDeclaration()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i;
                 $
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionAfter);
 
             AssertBody(
@@ -48,7 +49,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void ShouldResolveTypeAliases()
         {
-            CompleteInNamespace(@"
+            CompleteInNamespace(
+                @"
                 using X = System.String;
                 class C
                 {
@@ -71,7 +73,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void BlocksAreAnalyzed()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 { int i; }
                 $
             ");
@@ -87,12 +90,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void AssignmentOfConstantValue()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i = 1;
                 $
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionAfter);
 
             AssertBody(
@@ -104,13 +108,14 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void PlainCompletion()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public void A() {
                     $
                 }
             ");
 
-            AssertNodeIsMethodDeclaration("A", LastCompletionMarker.AffectedNode);
+            AssertNodeIsMethodDeclaration("A", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.InBody);
 
             AssertBody(
@@ -120,12 +125,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionBeforeDeclaration()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 $
                 int i;
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionBefore);
 
             AssertBody(
@@ -136,12 +142,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionAfterDeclaration()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i;
                 $
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionAfter);
 
             AssertBody(
@@ -152,13 +159,14 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionInBetweenDeclarations()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i;
                 $
                 int j;
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionAfter);
 
             AssertBody(
@@ -170,12 +178,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionBeforeExpressionStatement()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 $
                 int i = 1;
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionBefore);
 
             AssertBody(
@@ -187,12 +196,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionAfterExpressionStatement()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i = 1;
                 $
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.EmptyCompletionAfter);
 
             AssertBody(
@@ -204,11 +214,12 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionInDeclarationInitializer()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i = $
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.Undefined);
 
             AssertBody(
@@ -221,11 +232,12 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         {
             TestAnalysisTrigger.IsPrintingType = true;
 
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i=$
             ");
 
-            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.Undefined);
 
             AssertBody(
@@ -236,11 +248,12 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionInDeclarationInitializerWithReference()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i = t$
             ");
 
-            AssertNodeIsReference("t", LastCompletionMarker.AffectedNode);
+            AssertNodeIsReference("t", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.Undefined);
 
             AssertBody(
@@ -256,12 +269,13 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionInAssignment()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 int i;
                 i = $
             ");
 
-            AssertNodeIsAssignment("i", LastCompletionMarker.AffectedNode);
+            AssertNodeIsAssignment("i", LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.Undefined);
 
             AssertBody(
@@ -272,7 +286,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void CompletionInIfBody()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 if(true)
                 {
                     $
@@ -295,7 +310,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void MethodCall()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 this.GetHashCode();
                 $
             ");
@@ -310,20 +326,22 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void TriggeredOutsideOfMethods()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public static void M() {}
                 $
             ");
 
             // TODO think about this simplification, perhaps it is better to create an artificial "no match" ITreeNode
-            Assert.IsNull(LastCompletionMarker.AffectedNode);
+            Assert.IsNull(LastCompletionMarker.HandlingNode);
             AssertCompletionCase(CompletionCase.Undefined);
         }
 
         [Test]
         public void EnclosingTypeAndPartialClassIdentifier_nonPartial()
         {
-            CompleteInCSharpFile(@"
+            CompleteInCSharpFile(
+                @"
                 namespace N {
                     class C {
                         void M() {
@@ -340,7 +358,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         [Test]
         public void EnclosingTypeAndPartialClassIdentifier_Partial()
         {
-            CompleteInCSharpFile(@"
+            CompleteInCSharpFile(
+                @"
                 namespace N {
                     partial class C {
                         void M() {

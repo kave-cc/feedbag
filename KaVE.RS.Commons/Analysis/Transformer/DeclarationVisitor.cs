@@ -34,6 +34,7 @@ using KaVE.Commons.Model.SSTs.Impl.Statements;
 using KaVE.Commons.Utils.Collections;
 using KaVE.Commons.Utils.Exceptions;
 using KaVE.RS.Commons.Analysis.CompletionTarget;
+using KaVE.RS.Commons.Analysis.Transformer.StatementVisitorParts;
 using KaVE.RS.Commons.Analysis.Util;
 using KaVE.RS.Commons.Utils.Naming;
 using KaVELogger = KaVE.Commons.Utils.Exceptions.ILogger;
@@ -253,7 +254,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                 };
                 context.Methods.Add(sstDecl);
 
-                if (decl == _marker.AffectedNode)
+                if (decl == _marker.HandlingNode)
                 {
                     sstDecl.Body.Add(new ExpressionStatement {Expression = new CompletionExpression()});
                 }
@@ -300,7 +301,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
                 if (!decl.IsAbstract)
                 {
-                    var bodyVisitor = new BodyVisitor(nameGen, _marker);
+                    var bodyVisitor = new StatementVisitor(nameGen, _marker);
 
                     Execute.AndSupressExceptions(
                         delegate { decl.Accept(bodyVisitor, sstDecl.Body); });
@@ -323,14 +324,14 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                 };
                 context.Methods.Add(sstDecl);
 
-                if (decl == _marker.AffectedNode)
+                if (decl == _marker.HandlingNode)
                 {
                     sstDecl.Body.Add(new ExpressionStatement {Expression = new CompletionExpression()});
                 }
 
                 if (!decl.IsAbstract)
                 {
-                    var bodyVisitor = new BodyVisitor(new UniqueVariableNameGenerator(), _marker);
+                    var bodyVisitor = new StatementVisitor(new UniqueVariableNameGenerator(), _marker);
 
                     Execute.AndSupressExceptions(
                         delegate { decl.Accept(bodyVisitor, sstDecl.Body); });
@@ -366,7 +367,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
         {
             foreach (var accessor in decl.AccessorDeclarations)
             {
-                var bodyVisitor = new BodyVisitor(new UniqueVariableNameGenerator(), _marker);
+                var bodyVisitor = new StatementVisitor(new UniqueVariableNameGenerator(), _marker);
                 var body = Lists.NewList<IKaVEStatement>();
 
                 if (accessor.Kind == AccessorKind.GETTER)

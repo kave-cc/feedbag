@@ -255,7 +255,8 @@
     <Compile Include="Analysis\InvocationCollector.cs" />
     <Compile Include="Analysis\MethodRef.cs" />
     <Compile Include="Analysis\ReSharperUtils.cs" />
-    <Compile Include="Analysis\Transformer\BodyVisitor.cs" />
+    <Compile Include="Analysis\Transformer\StatementVisitorParts\Blocks.cs" />
+    <Compile Include="Analysis\Transformer\StatementVisitorParts\StatementVisitor.cs" />
     <Compile Include="Analysis\Transformer\ComposedExpressionCreator.cs" />
     <Compile Include="Analysis\Transformer\DeclarationVisitor.cs" />
     <Compile Include="Analysis\Transformer\ExpressionVisitor.cs" />

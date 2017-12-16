@@ -20,7 +20,7 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
 {
     public class CompletionTargetMarker
     {
-        public ITreeNode AffectedNode { get; set; }
+        public ITreeNode HandlingNode { get; set; }
         public CompletionCase Case { get; set; }
     }
 

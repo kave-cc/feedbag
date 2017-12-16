@@ -70,6 +70,30 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
         }
 
+
+        [Test]
+        public void InSwitchCase()
+        {
+            CompleteInMethod(
+                @"
+                switch (this)
+                {
+                    default:
+                        $
+                }
+            ");
+
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
+
+            AssertBody(
+                "M",
+                new KaVE.Commons.Model.SSTs.Impl.Blocks.SwitchBlock
+                {
+                    DefaultSection = { Fix.EmptyCompletion }
+                }
+            );
+        }
+
         [Test]
         public void InLabel()
         {
@@ -80,9 +104,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     defa$
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InBody);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
-
         [Test]
         public void InLabel_WithColons()
         {
@@ -93,7 +116,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     defa$:
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InBody);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
 
         [Test]
@@ -106,7 +129,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     case$
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InSignature);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InSignature);
         }
 
         [Test]
@@ -119,7 +142,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     case $
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InSignature);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InSignature);
         }
 
         [Test]
@@ -132,7 +155,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     case 3$
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InSignature);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InSignature);
         }
 
         [Test]
@@ -145,7 +168,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     case 3:$
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InBody);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
 
         [Test]
@@ -159,7 +182,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                         $
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InBody);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
 
         [Test]
@@ -175,7 +198,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                         continue;
                 }");
 
-            AssertCompletionMarker<ISwitchSection>(CompletionCase.InBody);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
 
         [Test]

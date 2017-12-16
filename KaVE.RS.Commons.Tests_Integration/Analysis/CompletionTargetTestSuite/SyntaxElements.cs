@@ -43,7 +43,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
-        public void CompletionOnClosingBracket()
+        public void CompletionBeforeClosingBracket()
         {
             CompleteInClass(
                 @" 
@@ -60,7 +60,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
-        public void CompletionOnClosingBracket_WithStatement()
+        public void CompletionBeforeClosingBracket_WithStatement()
         {
             CompleteInClass(
                 @" 
@@ -74,6 +74,42 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             AssertBody(
                 "M",
                 new ContinueStatement(),
+                Fix.EmptyCompletion);
+        }
+
+        [Test]
+        public void CompletionOnClosingBracket_Method()
+        {
+            CompleteInClass(
+                @" 
+                public void M()
+                {
+                  
+                } $"); // on bracket does not trigger completion
+
+            AssertCompletionMarker<IMethodDeclaration>(CompletionCase.EmptyCompletionAfter);
+
+            AssertBody("M");
+        }
+
+        [Test]
+        public void CompletionOnClosingBracket_If()
+        {
+            CompleteInClass(
+                @" 
+                public void M()
+                {
+                  if(true) { }$
+                }");
+
+            AssertCompletionMarker<IIfStatement>(CompletionCase.EmptyCompletionAfter);
+
+            AssertBody(
+                "M",
+                new IfElseBlock
+                {
+                    Condition = Const("true")
+                },
                 Fix.EmptyCompletion);
         }
 

@@ -24,7 +24,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
     {
         protected void AssertInvalidCompletionTarget()
         {
-            var actualNode = LastCompletionMarker.AffectedNode;
+            var actualNode = LastCompletionMarker.HandlingNode;
             var actualCase = LastCompletionMarker.Case;
 
             if (actualNode == null)

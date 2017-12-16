@@ -51,7 +51,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 //
                 // no trigger: "public class C<T> $where T:new() {}",
                 "public class C<T> where $T:new() {}",
-                "public class C<T> where T:$new() {}",
+                "public class C<T> where T:$new() {}"
                 // no trigger: "public class C<T> where T:new()$ {}"
             };
         }
@@ -63,6 +63,4 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             AssertCompletionMarker<ITypeDeclaration>(CompletionCase.InSignature);
         }
     }
-
-    public class C {}
 }

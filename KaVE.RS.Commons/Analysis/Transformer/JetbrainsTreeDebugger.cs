@@ -64,12 +64,12 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
         private static void Indent(this StringBuilder sb, int depth)
         {
-            sb.Append(new string(' ', 4*depth));
+            sb.Append(new string(' ', 4 * depth));
         }
 
         private static void ObjectId(this StringBuilder sb, object o, CompletionTargetMarker marker)
         {
-            var isTarget = o == marker.AffectedNode;
+            var isTarget = o == marker.HandlingNode;
 
             if (isTarget)
             {

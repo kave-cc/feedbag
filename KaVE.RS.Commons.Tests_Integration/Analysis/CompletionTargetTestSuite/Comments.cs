@@ -15,6 +15,7 @@
  */
 
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Tree;
 using KaVE.RS.Commons.Analysis.CompletionTarget;
 using NUnit.Framework;
 
@@ -31,7 +32,19 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 object o;
             ");
 
-            AssertInvalidCompletionTarget();
+            AssertCompletionMarker<ICSharpCommentNode>(CompletionCase.Undefined);
+        }
+
+        [Test, Ignore("no trigger")]
+        public void InComment_MiddleOfLine()
+        {
+            CompleteInMethod(
+                @" 
+                // comment $ comment
+                object o;
+            ");
+
+            AssertCompletionMarker<ICSharpCommentNode>(CompletionCase.Undefined);
         }
 
         [Test]
@@ -46,7 +59,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             AssertCompletionMarker<IMethodDeclaration>(CompletionCase.InBody);
         }
 
-        [Test]
+        [Test, Ignore("no trigger")]
         public void InComment_Block()
         {
             CompleteInMethod(
@@ -57,7 +70,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 object o;
             ");
 
-            AssertInvalidCompletionTarget();
+            AssertCompletionMarker<ICSharpCommentNode>(CompletionCase.Undefined);
         }
 
         [Test]
@@ -67,6 +80,19 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 @" 
                 /*
                  */$
+                object o;
+            ");
+
+            AssertCompletionMarker<IComment>(CompletionCase.Undefined);
+        }
+
+        [Test]
+        public void InComment_Block_RightAtTheEndWithSpace()
+        {
+            CompleteInMethod(
+                @" 
+                /*
+                 */ $
                 object o;
             ");
 
