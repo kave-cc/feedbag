@@ -44,6 +44,7 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
         {
             private readonly Type[] _interestingNodeTypes =
             {
+                typeof(ICSharpFile),
                 typeof(ICSharpNamespaceDeclaration),
                 typeof(ICSharpTypeDeclaration),
                 typeof(ICSharpTypeMemberDeclaration),
@@ -88,6 +89,8 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 SetCaseForTriggerInTypeSignature(tNode);
                 SetCaseForTriggerInMethodSignature(tNode);
                 SetCaseForTriggerInLambdaSignature(tNode);
+                SetCaseForTriggerInNamespaceBody(tNode);
+                SetCaseForTriggerInFileBody(tNode);
 
                 var isSemicolon = CSharpTokenType.SEMICOLON == tNode.GetTokenType();
                 if (isSemicolon)
@@ -182,6 +185,31 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 if (exprStatement != null && exprStatement.Expression != null)
                 {
                     Result.HandlingNode = exprStatement.Expression;
+                }
+            }
+
+            private void SetCaseForTriggerInFileBody(ITreeNode tNode)
+            {
+                if (Result.HandlingNode is ICSharpFile)
+                {
+                    Result.Case = CompletionCase.InBody;
+                }
+            }
+
+            private void SetCaseForTriggerInNamespaceBody(ITreeNode tNode)
+            {
+                if (Result.HandlingNode is INamespaceDeclaration && Result.Case == CompletionCase.Undefined)
+                {
+                    var ns = FindInParent<INamespaceDeclaration>(tNode, typeof(INamespaceBody));
+                    if (ns != null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                    ns = FindInParent<INamespaceDeclaration>(tNode);
+                    if (ns != null)
+                    {
+                        Result.Case = CompletionCase.InBody;
+                    }
                 }
             }
 

@@ -66,6 +66,16 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
+        public void InNamespaceSignature()
+        {
+            CompleteInCSharpFile(
+                @"
+                namespace Nam$ {}
+            ");
+            AssertCompletionMarker<INamespaceDeclaration>(CompletionCase.InSignature);
+        }
+
+        [Test]
         public void EmptyBeforeClass()
         {
             CompleteInNamespace(
@@ -96,6 +106,37 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             ");
             AssertCompletionMarker<IClassDeclaration>(CompletionCase.InBody);
         }
+
+        [Test]
+        public void InEmptyInterface()
+        {
+            CompleteInNamespace(
+                @"
+                public interface I { $ }
+            ");
+            AssertCompletionMarker<IInterfaceDeclaration>(CompletionCase.InBody);
+        }
+
+        [Test]
+        public void InEmptyStruct()
+        {
+            CompleteInNamespace(
+                @"
+                public struct S { $ }
+            ");
+            AssertCompletionMarker<IStructDeclaration>(CompletionCase.InBody);
+        }
+
+        [Test]
+        public void InEmptyEnum()
+        {
+            CompleteInNamespace(
+                @"
+                 public enum E { $ }
+            ");
+            AssertCompletionMarker<IEnumDeclaration>(CompletionCase.InBody);
+        }
+
 
         [Test]
         public void EmptyBeforeMethodDecl()
@@ -137,7 +178,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 $
                 object o;
             ");
-            AssertCompletionMarker<ILocalVariableDeclaration>(CompletionCase.Undefined);
+            AssertCompletionMarker<ILocalVariableDeclaration>(CompletionCase.EmptyCompletionBefore);
         }
 
         [Test]
@@ -148,7 +189,18 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 object o;
                 $
             ");
-            AssertCompletionMarker<ILocalVariableDeclaration>(CompletionCase.Undefined);
+            AssertCompletionMarker<ILocalVariableDeclaration>(CompletionCase.EmptyCompletionAfter);
+        }
+
+        [Test]
+        public void Failing()
+        {
+            // TODO fields
+            // TODO events
+            // TODO delegates
+            // TODO properties
+            // class outside of namespace
+            Assert.Fail();
         }
     }
 }

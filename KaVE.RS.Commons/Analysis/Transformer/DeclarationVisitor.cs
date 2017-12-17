@@ -324,7 +324,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                 };
                 context.Methods.Add(sstDecl);
 
-                if (decl == _marker.HandlingNode)
+                if (decl == _marker.HandlingNode && _marker.Case == CompletionCase.InBody)
                 {
                     sstDecl.Body.Add(new ExpressionStatement {Expression = new CompletionExpression()});
                 }

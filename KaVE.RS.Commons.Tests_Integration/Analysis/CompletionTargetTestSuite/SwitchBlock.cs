@@ -89,7 +89,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 "M",
                 new KaVE.Commons.Model.SSTs.Impl.Blocks.SwitchBlock
                 {
-                    DefaultSection = { Fix.EmptyCompletion }
+                    DefaultSection = {Fix.EmptyCompletion}
                 }
             );
         }
@@ -106,6 +106,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
 
             AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
+
         [Test]
         public void InLabel_WithColons()
         {

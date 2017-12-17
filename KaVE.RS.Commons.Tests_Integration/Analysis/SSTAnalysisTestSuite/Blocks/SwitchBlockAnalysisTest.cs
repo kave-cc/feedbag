@@ -39,7 +39,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void DefaultSectionOnly()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     default:
@@ -55,7 +56,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void MultiLabel()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     case 0:
@@ -87,7 +89,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void ExprLabel()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 const int l = 4;
                 switch ()
                 {
@@ -140,7 +143,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void Standard()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     case 0:
@@ -184,7 +188,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInCaseBlock_First()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     default:
@@ -202,7 +207,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInCaseBlock_Second()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     default:
@@ -220,7 +226,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionOutsideCaseBlockIsIgnored_BeforeFirst()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     $
@@ -239,7 +246,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionOutsideCaseBlockIsIgnored_Empty()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     $
@@ -251,7 +259,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_Before()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 $
                 switch ()
                 {
@@ -270,7 +279,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_AfterLabel()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     default:
@@ -287,7 +297,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_AfterLabelMulti()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     case 0:
@@ -310,7 +321,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_AfterLabelNonEmpty()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     default:
@@ -333,7 +345,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_Nested()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     default:
@@ -356,7 +369,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_Nested2()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     default:
@@ -381,7 +395,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_Nested3()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch (this)
                 {
                     default:
@@ -406,7 +421,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
         [Test]
         public void CompletionInSwitchBlock_After()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 switch ()
                 {
                     default:
