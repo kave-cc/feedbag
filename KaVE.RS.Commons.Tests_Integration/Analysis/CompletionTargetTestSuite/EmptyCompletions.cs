@@ -191,16 +191,5 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             ");
             AssertCompletionMarker<ILocalVariableDeclaration>(CompletionCase.EmptyCompletionAfter);
         }
-
-        [Test]
-        public void Failing()
-        {
-            // TODO fields
-            // TODO events
-            // TODO delegates
-            // TODO properties
-            // class outside of namespace
-            Assert.Fail();
-        }
     }
 }

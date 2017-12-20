@@ -263,6 +263,7 @@
     <Compile Include="Analysis\CompletionTargetTestSuite\Blocks.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\Comments.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\EmptyCompletions.cs" />
+    <Compile Include="Analysis\CompletionTargetTestSuite\MemberSignatures.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\MethodSignatures.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\SwitchBlock.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\TypeSignatures.cs" />

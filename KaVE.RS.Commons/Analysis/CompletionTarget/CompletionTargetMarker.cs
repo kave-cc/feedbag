@@ -33,6 +33,8 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
         InElse,
         InFinally,
         InSignature,
-        Invalid
+        Invalid,
+        InGetBody,
+        InSetBody
     }
 }

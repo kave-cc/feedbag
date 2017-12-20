@@ -62,5 +62,12 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             CompleteInNamespace(sig);
             AssertCompletionMarker<ITypeDeclaration>(CompletionCase.InSignature);
         }
+
+        [Test]
+        public void Smoketest_OutOfNamespace()
+        {
+            CompleteInCSharpFile("class C$ { }");
+            AssertCompletionMarker<ITypeDeclaration>(CompletionCase.InSignature);
+        }
     }
 }

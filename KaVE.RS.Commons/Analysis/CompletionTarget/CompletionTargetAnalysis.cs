@@ -48,6 +48,8 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 typeof(ICSharpNamespaceDeclaration),
                 typeof(ICSharpTypeDeclaration),
                 typeof(ICSharpTypeMemberDeclaration),
+                typeof(IMultipleEventDeclaration),
+                typeof(IMultipleFieldDeclaration),
                 typeof(ICSharpStatement),
                 typeof(ICSharpExpression),
                 typeof(IExpressionStatement),
@@ -56,7 +58,8 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 typeof(ISpecificCatchClause),
                 typeof(ISwitchCaseLabel),
                 typeof(ILocalVariableDeclaration),
-                typeof(IErrorElement)
+                typeof(IErrorElement),
+                typeof(IAccessorDeclaration) // property get/set
             };
 
             private readonly Type[] _excludedNodeTypes =
@@ -83,14 +86,6 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     return;
                 }
 
-                Result.HandlingNode = RENAME___SelectBetterNodesThanErrors(Result.HandlingNode);
-                Result.HandlingNode = PossiblyStepDown(Result.HandlingNode);
-
-                SetCaseForTriggerInTypeSignature(tNode);
-                SetCaseForTriggerInMethodSignature(tNode);
-                SetCaseForTriggerInLambdaSignature(tNode);
-                SetCaseForTriggerInNamespaceBody(tNode);
-                SetCaseForTriggerInFileBody(tNode);
 
                 var isSemicolon = CSharpTokenType.SEMICOLON == tNode.GetTokenType();
                 if (isSemicolon)
@@ -114,6 +109,16 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     Result.Case = CompletionCase.InBody;
                 }
 
+                Result.HandlingNode = RENAME___SelectBetterNodesThanErrors(Result.HandlingNode);
+                Result.HandlingNode = StepDownIntoMultiDeclarations(Result.HandlingNode);
+
+                SetCaseForTriggerInTypeSignature(tNode);
+                SetCaseForTriggerInMethodSignature(tNode);
+                SetCaseForTriggerInLambdaSignature(tNode);
+                SetCaseForTriggerInFieldAndEventSignatures(tNode);
+                SetCaseForTriggerInNamespaceBody(tNode);
+                SetCaseForTriggerInFileBody(tNode);
+                SetCaseForTriggerInProperties(tNode);
                 HandleTriggerInEmptyIfElseBlock(tNode);
                 HandleTriggerInTryFinallyBlock(tNode);
 
@@ -188,6 +193,66 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 }
             }
 
+            private void SetCaseForTriggerInFieldAndEventSignatures(ITreeNode tNode)
+            {
+                var h = Result.HandlingNode;
+                if (h is IFieldDeclaration || h is IEventDeclaration)
+                {
+                    var pf = FindInParent<IMultipleFieldDeclaration>(tNode);
+                    var pe = FindInParent<IMultipleEventDeclaration>(tNode);
+                    if (pf != null || pe != null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                }
+            }
+
+            private void SetCaseForTriggerInProperties(ITreeNode tNode)
+            {
+                var t = Result.HandlingNode as IAccessorDeclaration;
+                if (t != null)
+                {
+                    Result.HandlingNode = t.Parent;
+
+                    var p = FindInParent<IPropertyDeclaration>(
+                        tNode,
+                        typeof(IAccessorDeclaration),
+                        typeof(IChameleonNode));
+                    if (p != null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                        return;
+                    }
+
+                    // try to find containing body node
+                    var p2 = FindInParent<IChameleonNode>(
+                        tNode,
+                        typeof(IAccessorDeclaration));
+
+                    // fall back to signature if not found...
+                    if (t.Body == null || p2 == null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                        return;
+                    }
+                    // ... or if closing brace
+                    if (CSharpTokenType.RBRACE == tNode.GetTokenType() && tNode.Parent == t.Body)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                        return;
+                    }
+
+                    Result.Case = "get".Equals(t.NameIdentifier.Name)
+                        ? CompletionCase.InGetBody
+                        : CompletionCase.InSetBody;
+                }
+
+                if (Result.HandlingNode is IPropertyDeclaration && Result.Case == CompletionCase.InBody)
+                {
+                    Result.Case = CompletionCase.InSignature;
+                }
+            }
+
             private void SetCaseForTriggerInFileBody(ITreeNode tNode)
             {
                 if (Result.HandlingNode is ICSharpFile)
@@ -204,6 +269,7 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     if (ns != null)
                     {
                         Result.Case = CompletionCase.InSignature;
+                        return;
                     }
                     ns = FindInParent<INamespaceDeclaration>(tNode);
                     if (ns != null)
@@ -326,7 +392,7 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 }
             }
 
-            private static ITreeNode PossiblyStepDown(ITreeNode n)
+            private static ITreeNode StepDownIntoMultiDeclarations(ITreeNode n)
             {
                 var x = n as IDeclarationStatement;
                 if (x != null)
@@ -342,6 +408,26 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                         return lastVar;
                     }
                     return x.LocalFunctionDeclaration;
+                }
+
+                var fs = n as IMultipleFieldDeclaration;
+                if (fs != null)
+                {
+                    var lastDecl = fs.Declarators.LastOrDefault();
+                    if (lastDecl != null)
+                    {
+                        return lastDecl;
+                    }
+                }
+
+                var es = n as IMultipleEventDeclaration;
+                if (es != null)
+                {
+                    var lastDecl = es.Declarators.LastOrDefault();
+                    if (lastDecl != null)
+                    {
+                        return lastDecl;
+                    }
                 }
 
                 return n;
