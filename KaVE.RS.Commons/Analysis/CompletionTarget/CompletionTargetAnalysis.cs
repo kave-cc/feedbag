@@ -32,14 +32,6 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
             return finder.Result;
         }
 
-        //private static IName GetName(IReference reference)
-        //{
-        //    var resolvedReference = reference.Resolve();
-        //    var result = resolvedReference.Result;
-        //    var declaredElement = result.DeclaredElement;
-        //    return declaredElement != null ? declaredElement.GetName(result.Substitution) : null;
-        //}
-
         private class TargetFinder : TreeNodeVisitor
         {
             private readonly Type[] _interestingNodeTypes =
@@ -56,6 +48,7 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 typeof(IAttribute),
                 typeof(IGeneralCatchClause),
                 typeof(ISpecificCatchClause),
+                typeof(ISwitchSection), // group of switch labels that are not separated by a break
                 typeof(ISwitchCaseLabel),
                 typeof(ILocalVariableDeclaration),
                 typeof(IAccessorDeclaration) // property get/set
@@ -111,6 +104,7 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 Result.HandlingNode = RENAME___SelectBetterNodesThanErrors(Result.HandlingNode);
                 Result.HandlingNode = StepDownIntoMultiDeclarations(Result.HandlingNode);
                 StepDownIntoExpressionStatements(tNode);
+                HandleSwitchCases(tNode);
 
                 HandleTriggerOnReferences(tNode);
                 SetCaseForTriggerInTypeSignature(tNode);
@@ -122,75 +116,70 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 SetCaseForTriggerInProperties(tNode);
                 HandleTriggerInEmptyIfElseBlock(tNode);
                 HandleTriggerInTryFinallyBlock(tNode);
+            }
 
-                return;
-
-                var handler = Result.HandlingNode;
-                var parent = tNode.Parent as ICSharpTreeNode;
-
-                var isDot = CSharpTokenType.DOT == tNode.GetTokenType();
-                if (isDot && tNode.Parent != null && parent is IReferenceExpression)
+            private void HandleSwitchCases(ITreeNode tNode)
+            {
+                if (Result.HandlingNode is ISwitchCaseLabel)
                 {
-                    Result.HandlingNode = parent;
-                    Result.Case = CompletionCase.Undefined;
-                    return;
+                    var label = FindInParent<ISwitchCaseLabel>(tNode, typeof(IStatement), typeof(IExpression));
+                    Result.Case = label != null
+                        ? CompletionCase.InSignature
+                        : CompletionCase.InBody;
+
+                    if (CSharpTokenType.COLON == tNode.GetTokenType())
+                    {
+                        Result.Case = CompletionCase.InBody;
+                    }
                 }
 
-                var attr = FindInParent<IAttribute>(tNode, typeof(IChameleonNode));
-                if (attr != null)
+                if (Result.HandlingNode is ISwitchStatement)
                 {
-                    Result.HandlingNode = attr;
-                    Result.Case = CompletionCase.Undefined;
-                    return;
+                    var stmt = FindInParent<ISwitchStatement>(tNode, typeof(IChameleonNode));
+                    if (stmt == null || stmt != Result.HandlingNode)
+                    {
+                        return;
+                    }
+
+                    var block = FindInParent<ISwitchBlock>(tNode, typeof(ISwitchStatement));
+                    Result.Case = block == null
+                        ? CompletionCase.InSignature
+                        : CompletionCase.InBody;
                 }
 
-                var md = FindInParent<IMethodDeclaration>(tNode, typeof(IChameleonNode), typeof(IStatement));
-                if (md != null)
+                var ss = Result.HandlingNode as ISwitchSection;
+                if (ss != null)
                 {
-                    Result.HandlingNode = md;
-                    Result.Case = CompletionCase.InSignature;
-                    return;
-                }
+                    var lastCase = ss.CaseLabels.LastOrDefault();
+                    if (lastCase != null)
+                    {
+                        Result.HandlingNode = lastCase;
+                        if (lastCase.LastChild is IErrorElement)
+                        {
+                            Result.Case = CompletionCase.InSignature;
+                            return;
+                        }
 
-                var td = FindInParent<ICSharpTypeDeclaration>(
-                    tNode,
-                    typeof(IChameleonNode),
-                    typeof(IStatement),
-                    typeof(IMemberOwnerBody));
-                if (td != null)
-                {
-                    Result.HandlingNode = td;
-                    Result.Case = CompletionCase.InSignature;
-                    return;
-                }
-
-                var isAssign = CSharpTokenType.EQ == tNode.GetTokenType();
-                if (IsWhitespaceOrBraceToken(handler) || isAssign)
-                {
-                    FindAvailableTarget(handler);
-                }
-
-                if (Result.HandlingNode is IAssignmentExpression && HasError(Result.HandlingNode))
-                {
-                    Result.Case = CompletionCase.Undefined;
-                    return;
-                }
-
-                if (isAssign)
-                {
-                    Result.Case = CompletionCase.Undefined;
-                }
-
-                if (handler is IIdentifier)
-                {
-                    Result.HandlingNode = handler.Parent as ICSharpTreeNode;
-                    Result.Case = CompletionCase.Undefined;
-                }
-
-                var exprStatement = Result.HandlingNode as IExpressionStatement;
-                if (exprStatement != null && exprStatement.Expression != null)
-                {
-                    Result.HandlingNode = exprStatement.Expression;
+                        ITreeNode lastSib = lastCase;
+                        ITreeNode lastStmt = null;
+                        while (lastSib.NextSibling != null)
+                        {
+                            lastSib = lastSib.NextSibling;
+                            if (lastSib is IStatement)
+                            {
+                                lastStmt = lastSib;
+                            }
+                        }
+                        if (lastStmt == null)
+                        {
+                            Result.Case = CompletionCase.InBody;
+                        }
+                        else
+                        {
+                            Result.HandlingNode = lastStmt;
+                            Result.Case = CompletionCase.EmptyCompletionAfter;
+                        }
+                    }
                 }
             }
 
@@ -482,7 +471,9 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     return new CompletionTargetMarker {Case = CompletionCase.Invalid};
                 }
 
-                if (n is IBlock && !IsHandlerBlock(n))
+                var isNonHandlingBlock = n is IBlock && !IsHandlerBlock(n);
+                var isNonHandlingPartOfSwitchBloc = n.Parent is ISwitchStatement && !IsHandling(n);
+                if (isNonHandlingBlock || isNonHandlingPartOfSwitchBloc)
                 {
                     return FindHandlingNode(n.Parent);
                 }
@@ -829,44 +820,6 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     node = FindPrevNonWhitespaceNode(node.PrevSibling);
                 }
                 return node as ICSharpTreeNode;
-            }
-
-            public override void VisitClassDeclaration(IClassDeclaration classDecl)
-            {
-                //Result.Parent = classDecl;
-                // TODO add type for type completion
-            }
-
-            public override void VisitMethodDeclaration(IMethodDeclaration methodDeclarationParam)
-            {
-                //Result.Parent = methodDeclarationParam;
-            }
-
-            public override void VisitReferenceExpression(IReferenceExpression refExpr)
-            {
-                var parent = refExpr.Parent as ICSharpTreeNode;
-                if (parent != null)
-                {
-                    parent.Accept(this);
-
-                    // in case of member access, refExpr.QualifierExpression and refExpr.Delimiter are set
-                    var qRrefExpr = refExpr.QualifierExpression as IReferenceExpression;
-                    if (qRrefExpr != null && refExpr.Delimiter != null)
-                    {
-                        var refName = qRrefExpr.Reference.GetName();
-                        var token = refExpr.Reference.GetName();
-                        //Result.Completion = new CompletionExpression
-                        //{
-                        //    VariableReference = SSTUtil.VariableReference(refName),
-                        //    Token = token
-                        //};
-                    }
-                    else
-                    {
-                        var token = refExpr.Reference.GetName();
-                        //Result.Completion = new CompletionExpression {Token = token};
-                    }
-                }
             }
         }
     }

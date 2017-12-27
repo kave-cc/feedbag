@@ -64,12 +64,10 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     default:
                         continue;
                 }
-                $
             ");
 
             AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
         }
-
 
         [Test]
         public void InSwitchCase()
@@ -89,78 +87,113 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 "M",
                 new KaVE.Commons.Model.SSTs.Impl.Blocks.SwitchBlock
                 {
+                    Reference = VarRef("this"),
                     DefaultSection = {Fix.EmptyCompletion}
                 }
             );
         }
 
         [Test]
-        public void InLabel()
+        public void InEmptySwitch()
         {
             CompleteInMethod(
                 @"
                 switch (this)
                 {
-                    defa$
-                }");
+                   $
+                }
+            ");
 
-            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
+            AssertCompletionMarker<ISwitchStatement>(CompletionCase.InBody);
+
+            AssertBody(
+                "M",
+                new KaVE.Commons.Model.SSTs.Impl.Blocks.SwitchBlock {Reference = VarRef("this")}
+            );
         }
 
-        [Test]
-        public void InLabel_WithColons()
+        public string[] SignatureCases()
         {
-            CompleteInMethod(
-                @"
-                switch (this)
-                {
-                    defa$:
-                }");
-
-            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
+            return new[]
+            {
+                "swi$tch (this)",
+                "switch$ (this)",
+                "switch $ (this)",
+                "switch $(this)",
+                "switch (this)$",
+                "switch (this) $"
+            };
         }
 
-        [Test]
-        public void InLabel_Case()
+        [TestCaseSource(nameof(SignatureCases))]
+        public void InSignature(string sig)
+        {
+            CompleteInMethod(
+                @"
+                " + sig + @"
+                {
+                    default:
+                        continue;
+                }
+            ");
+
+            AssertCompletionMarker<ISwitchStatement>(CompletionCase.InSignature);
+        }
+
+        public string[] LabelCases()
+        {
+            return new[]
+            {
+                // indistinguishable from reference: "defa$",
+                // indistinguishable from labeled statement: "defa$:",
+                "case$",
+                "case $",
+                "case 3 $",
+                "case$:",
+                "case $:",
+                "case 3 $:"
+            };
+        }
+
+        [TestCaseSource(nameof(LabelCases))]
+        public void InLabel(string sig)
         {
             CompleteInMethod(
                 @"
                 switch (this)
                 {
-                    case$
+                    " + sig + @"
                 }");
 
             AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InSignature);
         }
 
-        [Test]
-        public void InLabel_Case2()
+        public void InLabelParam_Lit()
         {
             CompleteInMethod(
                 @"
                 switch (this)
                 {
-                    case $
+                    case 3$:
                 }");
 
-            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InSignature);
+            AssertCompletionMarker<ICSharpLiteralExpression>(CompletionCase.Undefined);
         }
 
-        [Test]
-        public void InLabel_Case3()
+        public void InLabelParam_Ref()
         {
             CompleteInMethod(
                 @"
                 switch (this)
                 {
-                    case 3$
+                    case 1.G$:
                 }");
 
-            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InSignature);
+            AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
         }
 
         [Test]
-        public void InLabel_Case4()
+        public void AfterLabel_Case()
         {
             CompleteInMethod(
                 @"
@@ -173,7 +206,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
-        public void AfterLabel()
+        public void AfterLabel_Default()
         {
             CompleteInMethod(
                 @"
@@ -187,7 +220,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
-        public void AfterLabelMulti()
+        public void AfterLabel_Multi()
         {
             CompleteInMethod(
                 @"
@@ -203,7 +236,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
-        public void AfterLabelNonEmpty()
+        public void AfterLabel_NonEmpty()
         {
             CompleteInMethod(
                 @"
@@ -214,7 +247,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                         continue;
                 }");
 
-            AssertCompletionMarker<IContinueStatement>(CompletionCase.EmptyCompletionBefore);
+            AssertCompletionMarker<ISwitchCaseLabel>(CompletionCase.InBody);
         }
 
         [Test]
@@ -240,7 +273,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                 switch (this)
                 {
                     default:
-                        int i;
+                        break;
                         continue;
                         $
                 }");
@@ -258,7 +291,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     default:
                         continue;
                         $
-                        int i;
+                        break;
                 }");
 
             AssertCompletionMarker<IContinueStatement>(CompletionCase.EmptyCompletionAfter);
