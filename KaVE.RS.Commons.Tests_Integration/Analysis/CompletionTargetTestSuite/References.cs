@@ -45,13 +45,33 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
         }
 
         [Test]
+        public void ShouldBeReference_OnLiteral()
+        {
+            CompleteInMethod(
+                @"
+                1.$
+            ");
+            AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
+        }
+
+        [Test]
+        public void ShouldBeReference_OnLiteralWithPrefix()
+        {
+            CompleteInMethod(
+                @"
+                1.G$
+            ");
+            AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
+        }
+
+        [Test]
         public void ShouldBeReference_OnThis()
         {
             CompleteInMethod(
                 @"
                 this.$
             ");
-            AssertCompletionMarker<IThisExpression>(CompletionCase.Undefined);
+            AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
         }
 
         [Test]
@@ -72,7 +92,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
                     }
                 }
             ");
-            AssertCompletionMarker<IBaseExpression>(CompletionCase.Undefined);
+            AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
         }
 
         [Test]
@@ -102,7 +122,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
             CompleteInMethod(
                 @"
                 object o;
-                ((System.Collections.IList) o).$
+                ((string) o).$
             ");
             AssertCompletionMarker<IReferenceExpression>(CompletionCase.Undefined);
         }

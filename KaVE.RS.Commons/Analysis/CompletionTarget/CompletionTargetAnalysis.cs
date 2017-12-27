@@ -58,15 +58,14 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 typeof(ISpecificCatchClause),
                 typeof(ISwitchCaseLabel),
                 typeof(ILocalVariableDeclaration),
-                typeof(IErrorElement),
                 typeof(IAccessorDeclaration) // property get/set
             };
 
             private readonly Type[] _excludedNodeTypes =
             {
-                // typeof(IBlock),
+                typeof(IErrorElement),
                 typeof(IChameleonNode)
-                // typeof(IParenthesizedExpression)
+                //typeof(IParenthesizedExpression)
             };
 
             public CompletionTargetMarker Result { get; private set; }
@@ -111,7 +110,9 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
 
                 Result.HandlingNode = RENAME___SelectBetterNodesThanErrors(Result.HandlingNode);
                 Result.HandlingNode = StepDownIntoMultiDeclarations(Result.HandlingNode);
+                StepDownIntoExpressionStatements(tNode);
 
+                HandleTriggerOnReferences(tNode);
                 SetCaseForTriggerInTypeSignature(tNode);
                 SetCaseForTriggerInMethodSignature(tNode);
                 SetCaseForTriggerInLambdaSignature(tNode);
@@ -190,6 +191,43 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 if (exprStatement != null && exprStatement.Expression != null)
                 {
                     Result.HandlingNode = exprStatement.Expression;
+                }
+            }
+
+            private void StepDownIntoExpressionStatements(ITreeNode tNode)
+            {
+                var es = Result.HandlingNode as IExpressionStatement;
+                if (es != null && es.Expression != null)
+                {
+                    Result.HandlingNode = es.Expression;
+                }
+            }
+
+            private void HandleTriggerOnReferences(ITreeNode tNode)
+            {
+                var isCompletionOnDot = CSharpTokenType.DOT == tNode.GetTokenType();
+                var prev = tNode.PrevSibling;
+                while (prev.IsWhitespaceToken())
+                {
+                    prev = prev.PrevSibling;
+                }
+                var isCompletionOnIdentifierAfterDot = prev != null &&
+                                                       CSharpTokenType.DOT == prev.GetTokenType();
+
+                if (isCompletionOnDot || isCompletionOnIdentifierAfterDot)
+                {
+                    Result.HandlingNode = Result.HandlingNode.Parent;
+                    Result.Case = CompletionCase.Undefined;
+                }
+
+                // distinguish incomplete triggers from "EmptyAfter" cases
+                if (Result.HandlingNode is IReferenceExpression)
+                {
+                    var next = Result.HandlingNode.NextSibling;
+                    if (next is IErrorElement)
+                    {
+                        Result.Case = CompletionCase.Undefined;
+                    }
                 }
             }
 
