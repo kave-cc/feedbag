@@ -19,7 +19,7 @@ using KaVE.RS.Commons.Analysis.CompletionTarget;
 using NUnit.Framework;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;
 
-namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
+namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite.Blocks
 {
     internal class SwitchBlock : BaseTest
     {

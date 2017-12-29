@@ -220,7 +220,14 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
 
         protected void AssertCompletionCase(CompletionCase expectedCase)
         {
-            Assert.AreEqual(expectedCase, LastCompletionMarker.Case);
+            if (expectedCase != LastCompletionMarker.Case)
+            {
+                Assert.Fail(
+                    "Expected: {0}\nBut was {1}\n\nHandling node: {2}\n\n",
+                    expectedCase,
+                    LastCompletionMarker.Case,
+                    LastCompletionMarker.HandlingNode);
+            }
         }
 
         protected void AssertNodeIsCall(string expectedName, ITreeNode node)
@@ -234,6 +241,11 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
         protected void AssertCompletionMarker<TNodeType>(CompletionCase expectedCase)
         {
             var expectedType = typeof(TNodeType);
+            AssertCompletionMarker(expectedType, expectedCase);
+        }
+
+        protected void AssertCompletionMarker(Type expectedType, CompletionCase expectedCase)
+        {
             var actualCase = LastCompletionMarker.Case;
 
             var node = LastCompletionMarker.HandlingNode;
@@ -246,7 +258,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
                     actualCase);
             }
 
-            if (!(node is TNodeType))
+            if (!expectedType.IsInstanceOfType(node))
             {
                 var actualType = node.GetType();
                 Assert.Fail(

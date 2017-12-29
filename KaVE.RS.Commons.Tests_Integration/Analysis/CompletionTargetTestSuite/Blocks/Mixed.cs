@@ -23,9 +23,9 @@ using KaVE.RS.Commons.Analysis.CompletionTarget;
 using NUnit.Framework;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;
 
-namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
+namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite.Blocks
 {
-    internal class Blocks : BaseTest
+    internal class Mixed : BaseTest
     {
         [Test]
         public void Block_Before()
@@ -76,112 +76,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.CompletionTargetTestSuite
 
         // switch moved
 
-        [Test]
-        public void InTry_Body()
-        {
-            CompleteInMethod(
-                @"
-                try
-                {
-                    $
-                }
-                finally { }
-            ");
-
-            AssertCompletionMarker<ITryStatement>(CompletionCase.InBody);
-
-            AssertBody(
-                "M",
-                new TryBlock
-                {
-                    Body = {Fix.EmptyCompletion}
-                }
-            );
-        }
-
-        [Test]
-        public void InTry_GeneralCatch()
-        {
-            CompleteInMethod(
-                @"
-                try {}
-                catch
-                {
-                    $
-                }
-            ");
-
-            AssertCompletionMarker<IGeneralCatchClause>(CompletionCase.InBody);
-
-            AssertBody(
-                "M",
-                new TryBlock
-                {
-                    CatchBlocks =
-                    {
-                        new CatchBlock
-                        {
-                            Kind = CatchBlockKind.General,
-                            Body = {Fix.EmptyCompletion}
-                        }
-                    }
-                }
-            );
-        }
-
-        [Test]
-        public void InTry_SpecificCatch()
-        {
-            CompleteInMethod(
-                @"
-                try {}
-                catch (Exception e)
-                {
-                    $
-                }
-            ");
-
-            AssertCompletionMarker<ISpecificCatchClause>(CompletionCase.InBody);
-
-            AssertBody(
-                "M",
-                new TryBlock
-                {
-                    CatchBlocks =
-                    {
-                        new CatchBlock
-                        {
-                            Kind = CatchBlockKind.Default,
-                            Parameter = Names.Parameter("[{0}] e", Fix.Exception),
-                            Body = {Fix.EmptyCompletion}
-                        }
-                    }
-                }
-            );
-        }
-
-        [Test]
-        public void InTry_Finally()
-        {
-            CompleteInMethod(
-                @"
-                try {}
-                finally
-                {
-                    $
-                }
-            ");
-
-            AssertCompletionMarker<ITryStatement>(CompletionCase.InFinally);
-
-            AssertBody(
-                "M",
-                new TryBlock
-                {
-                    Finally = {Fix.EmptyCompletion}
-                }
-            );
-        }
+        // try catch moved
 
         [Test]
         public void InDo()

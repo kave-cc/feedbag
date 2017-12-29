@@ -16,8 +16,10 @@
 
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using KaVE.Commons.Utils.Assertion;
 
@@ -61,6 +63,17 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 //typeof(IParenthesizedExpression)
             };
 
+            private readonly Type[] _haveDeadAreaAfterParams =
+            {
+                typeof(IForStatement),
+                typeof(IForeachStatement),
+                typeof(IIfStatement),
+                typeof(ILockStatement),
+                typeof(ISpecificCatchClause),
+                typeof(IUsingStatement),
+                typeof(IWhileStatement)
+            };
+
             public CompletionTargetMarker Result { get; private set; }
 
             public override void VisitNode(ITreeNode tNode)
@@ -72,12 +85,14 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     return;
                 }
 
+                // TODO think about this general handling
+                //tNode = ChangeTargetFromWhitespaceAfterStmtToPrevLastChild(tNode);
+
                 Result = FindHandlingNode(tNode);
                 if (Result.Case == CompletionCase.Invalid)
                 {
                     return;
                 }
-
 
                 var isSemicolon = CSharpTokenType.SEMICOLON == tNode.GetTokenType();
                 if (isSemicolon)
@@ -85,21 +100,11 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                     Result.Case = CompletionCase.EmptyCompletionAfter;
                 }
 
-                if (IsOpeningBraceOrAnyParenthesis(tNode))
-                {
-                    Result.Case = CompletionCase.InBody;
-                }
-
-                if (IsClosingBraceOfExpressionOrStatement(tNode))
-                {
-                    Result.Case = CompletionCase.EmptyCompletionAfter;
-                }
-
-
-                if (IsNonWhitespaceSiblingABrace(tNode, true) && IsNonWhitespaceSiblingABrace(tNode, false))
-                {
-                    Result.Case = CompletionCase.InBody;
-                }
+                HandleTriggerInEmptyBody(tNode);
+                HandleMissingCodeAtEndOfStmtLeadsToNewEmptyStmt(tNode);
+                HandleOpeningBraceForYetUndefinedCases(tNode);
+                HandleClosingBraceForExpressionsAndStatements(tNode);
+                HandleTriggerInDeadAreaAfterClosingParenthesis(tNode);
 
                 Result.HandlingNode = RENAME___SelectBetterNodesThanErrors(Result.HandlingNode);
                 Result.HandlingNode = StepDownIntoMultiDeclarations(Result.HandlingNode);
@@ -115,7 +120,267 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 SetCaseForTriggerInFileBody(tNode);
                 SetCaseForTriggerInProperties(tNode);
                 HandleTriggerInEmptyIfElseBlock(tNode);
+                // try
                 HandleTriggerInTryFinallyBlock(tNode);
+                HandleTriggerAfterTryBlock(tNode);
+                DetectTriggerInParametersOfCatchClause(tNode);
+                HandleTriggerBetweenCatchBlocks(tNode);
+                HandleEmptyCompletionAfterTryBlock(tNode);
+            }
+
+            private void HandleEmptyCompletionAfterTryBlock(ITreeNode tNode)
+            {
+                if (Result.Case == CompletionCase.EmptyCompletionAfter && Result.HandlingNode is ICatchClause)
+                {
+                    Result.HandlingNode = Result.HandlingNode.Parent;
+                }
+            }
+
+            private void DetectTriggerInParametersOfCatchClause(ITreeNode tNode)
+            {
+                if (Result.HandlingNode is ICatchClause)
+                {
+                    // detect node on first sub level under catch
+                    var subNode = tNode;
+                    while (subNode.Parent != null && subNode.Parent != Result.HandlingNode)
+                    {
+                        subNode = subNode.Parent;
+                    }
+
+                    // try to find "(" on siblings
+                    var left = subNode;
+                    while (left != null && CSharpTokenType.LPARENTH != left.GetTokenType())
+                    {
+                        left = left.PrevSibling;
+                    }
+
+                    // try to find ")" on *next* siblings
+                    // e.g., "...ption e)$ {..." is not a positive case
+                    var right = subNode.NextSibling;
+                    while (right != null && CSharpTokenType.RPARENTH != right.GetTokenType())
+                    {
+                        right = right.NextSibling;
+                    }
+
+                    // if both are found, trigger was in sig
+                    if (left != null && right != null)
+                    {
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                }
+            }
+
+            [NotNull]
+            private static ITreeNode ChangeTargetFromWhitespaceAfterStmtToPrevLastChild([NotNull] ITreeNode tNode)
+            {
+                // TODO not working, e.g., "if(true) {} else {}$" prevLastChild is an IBlock
+                if (tNode.IsWhitespaceToken() && tNode.PrevSibling is IStatement)
+                {
+                    var prevLastChild = tNode.PrevSibling.Children().LastOrDefault();
+                    return prevLastChild ?? tNode;
+                }
+                return tNode;
+            }
+
+            private void HandleClosingBraceForExpressionsAndStatements([NotNull] ITreeNode tNode)
+            {
+                if (tNode.IsWhitespaceToken() && tNode.PrevSibling is IBlock)
+                {
+                    var prevLastSibling = tNode.PrevSibling.Children().LastOrDefault();
+                    if (prevLastSibling != null && CSharpTokenType.RBRACE == prevLastSibling.GetTokenType())
+                    {
+                        tNode = prevLastSibling;
+                    }
+                }
+                // skip whitespace and comments
+                tNode = AssertSyntaxTokenOrUsePrev(tNode);
+
+                if (tNode != null && CSharpTokenType.RBRACE == tNode.GetTokenType())
+                {
+                    Result.Case = CompletionCase.EmptyCompletionAfter;
+
+                    var h = Result.HandlingNode;
+
+                    // try/catch
+                    var tb = (h is ICatchClause ? h.Parent : h) as ITryStatement;
+                    if (tb != null)
+                    {
+                        Result.Case = CompletionCase.Undefined;
+                        var isClosingFinally = tb.FinallyBlock != null && tb.FinallyBlock == tNode.Parent;
+                        if (isClosingFinally)
+                        {
+                            Result.Case = CompletionCase.EmptyCompletionAfter;
+                        }
+                        if (tb.FinallyBlock == null)
+                        {
+                            var lastCatch = tb.Catches.LastOrDefault();
+                            var thisCatch = FindInParent<ICatchClause>(tNode, typeof(ITryStatement));
+                            var isClosingLastCatch = lastCatch != null && lastCatch == thisCatch;
+                            if (isClosingLastCatch)
+                            {
+                                Result.Case = CompletionCase.EmptyCompletionAfter;
+                            }
+                        }
+                        return;
+                    }
+
+                    var ib = h as IIfStatement;
+                    if (ib != null)
+                    {
+                        var isClosingThenAndNoElse = ib.Else == null && ib.Then == tNode.Parent;
+                        var isClosingElse = ib.Else != null && ib.Else == tNode.Parent;
+                        Result.Case = isClosingThenAndNoElse || isClosingElse
+                            ? CompletionCase.EmptyCompletionAfter
+                            : Result.Case = CompletionCase.Undefined;
+                        return;
+                    }
+
+                    var oce = h as IObjectCreationExpression;
+                    if (oce != null)
+                    {
+                        var p = FindInParent<IObjectCreationExpression>(
+                            tNode,
+                            typeof(ICollectionElementInitializer));
+
+                        if (p == null)
+                        {
+                            // traversal aborts if "}" belongs to nested dict init
+                            Result.Case = CompletionCase.Undefined;
+                        }
+                        else
+                        {
+                            // try to find a second enclosing init
+                            var pp = FindInParent<IObjectCreationExpression>(
+                                p.Parent,
+                                typeof(IStatement));
+
+                            if (pp != null)
+                            {
+                                // if found, the case is undefine (it is nested)
+                                Result.Case = CompletionCase.Undefined;
+                            }
+                        }
+                    }
+                }
+            }
+
+            private void HandleTriggerInEmptyBody(ITreeNode tNode)
+            {
+                var left = AssertSyntaxTokenOrUsePrev(tNode);
+                var right = AssertSyntaxTokenOrUseNext(tNode);
+                var isLeftBrace = left != null && CSharpTokenType.LBRACE == left.GetTokenType();
+                var isRightBrace = right != null && CSharpTokenType.RBRACE == right.GetTokenType();
+                if (isLeftBrace && isRightBrace)
+                {
+                    Result.Case = CompletionCase.InBody;
+                }
+            }
+
+            private void HandleMissingCodeAtEndOfStmtLeadsToNewEmptyStmt(ITreeNode tNode)
+            {
+                if (Result.Case == CompletionCase.EmptyCompletionAfter)
+                {
+                    var lastChild = Result.HandlingNode.Children().LastOrDefault();
+                    if (lastChild is IErrorElement)
+                    {
+                        Result.Case = CompletionCase.InBody;
+                    }
+                }
+            }
+
+            private void HandleOpeningBraceForYetUndefinedCases(ITreeNode tNode)
+            {
+                var left = AssertSyntaxTokenOrUsePrev(tNode);
+                var isOpeningBrace = left != null && CSharpTokenType.LBRACE == left.GetTokenType();
+                // make sure that no valid entries are overriden (e.g.,"{ $ continue;}" EmptyCompletionBefore)
+                if (isOpeningBrace && Result.Case == CompletionCase.Undefined)
+                {
+                    Result.Case = CompletionCase.InBody;
+                }
+            }
+
+            private void HandleTriggerInDeadAreaAfterClosingParenthesis(ITreeNode tNode)
+            {
+                if (IsTriggerInDeadAreaAfterClosingParanthesis(tNode))
+                {
+                    // find next non-whitespace "to the right"
+                    var n = AssertSyntaxTokenOrUseNext(tNode, CSharpTokenType.RPARENTH);
+
+                    // not sure how to get to this case
+                    if (n == null)
+                    {
+                        return;
+                    }
+
+                    // before "{"
+                    if (n is IBlock)
+                    {
+                        Result.Case = CompletionCase.Undefined;
+                        return;
+                    }
+
+                    var isBeforeSingleStatement = n is IStatement;
+                    var isMissingCodeAtTheEnd = n is IErrorElement;
+                    if (isBeforeSingleStatement || isMissingCodeAtTheEnd)
+                    {
+                        Result.Case = CompletionCase.InBody;
+                    }
+                }
+            }
+
+            private bool IsTriggerInDeadAreaAfterClosingParanthesis(ITreeNode tNode)
+            {
+                // check whether parent is potentially affected
+                var isPotentialHit =
+                    _haveDeadAreaAfterParams.Any(p => p.IsInstanceOfType(tNode.Parent));
+                if (isPotentialHit)
+                {
+                    var n = AssertSyntaxTokenOrUsePrev(tNode, CSharpTokenType.LBRACE);
+                    var leftIsClosingParanthesis = n != null && CSharpTokenType.RPARENTH == n.GetTokenType();
+                    return leftIsClosingParanthesis;
+                }
+                return false;
+            }
+
+            private void HandleTriggerAfterTryBlock(ITreeNode tNode)
+            {
+                if (Result.HandlingNode is ITryStatement && Result.Case == CompletionCase.EmptyCompletionAfter)
+                {
+                    var n = FindInParent<ITryStatement>(tNode, typeof(IStatement));
+                    if (n != null && n == Result.HandlingNode)
+                    {
+                        Result.Case = CompletionCase.Undefined;
+                    }
+                }
+            }
+
+            private void HandleTriggerBetweenCatchBlocks(ITreeNode tn)
+            {
+                var hn = Result.HandlingNode;
+                var isCatchClause = hn is ISpecificCatchClause || hn is IGeneralCatchClause;
+
+                if (isCatchClause && Result.Case == CompletionCase.EmptyCompletionBefore)
+                {
+                    Result.Case = CompletionCase.Undefined;
+                    return;
+                }
+
+                if (isCatchClause && Result.Case == CompletionCase.EmptyCompletionAfter)
+                {
+                    while (hn.NextSibling != null)
+                    {
+                        hn = hn.NextSibling;
+
+                        isCatchClause = hn is ISpecificCatchClause || hn is IGeneralCatchClause;
+                        var isFinallyToken = CSharpTokenType.FINALLY_KEYWORD == hn.GetTokenType();
+
+                        if (isCatchClause || isFinallyToken)
+                        {
+                            Result.Case = CompletionCase.Undefined;
+                            return;
+                        }
+                    }
+                }
             }
 
             private void HandleSwitchCases(ITreeNode tNode)
@@ -374,14 +639,6 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 return b;
             }
 
-            private bool IsClosingBraceOfExpressionOrStatement(ITreeNode tNode)
-            {
-                var h = Result.HandlingNode;
-                var isRBrace = CSharpTokenType.RBRACE == tNode.GetTokenType();
-                var isExprOrStmt = h is IExpression || h is IStatement;
-                return isRBrace && isExprOrStmt;
-            }
-
             private ITreeNode RENAME___SelectBetterNodesThanErrors(ITreeNode n)
             {
                 if (n.Parent is IMethodDeclaration)
@@ -473,7 +730,13 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
 
                 var isNonHandlingBlock = n is IBlock && !IsHandlerBlock(n);
                 var isNonHandlingPartOfSwitchBloc = n.Parent is ISwitchStatement && !IsHandling(n);
-                if (isNonHandlingBlock || isNonHandlingPartOfSwitchBloc)
+                if (isNonHandlingBlock || isNonHandlingPartOfSwitchBloc ||
+                    IsTriggerInDeadAreaAfterClosingParanthesis(n))
+                {
+                    return FindHandlingNode(n.Parent);
+                }
+
+                if (!IsSyntaxToken(n) && n.Parent is IIfStatement)
                 {
                     return FindHandlingNode(n.Parent);
                 }
@@ -502,25 +765,6 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 return handler != null
                     ? new CompletionTargetMarker {HandlingNode = handler, Case = c}
                     : FindHandlingNode(n.Parent);
-            }
-
-            private static bool IsNonWhitespaceSiblingABrace(ITreeNode n, bool goBack)
-            {
-                if (!n.IsWhitespaceToken() && !n.IsCommentToken())
-                {
-                    return false;
-                }
-
-                while ((n = goBack ? n.PrevSibling : n.NextSibling) != null)
-                {
-                    if (!n.IsWhitespaceToken() && !n.IsCommentToken())
-                    {
-                        return goBack
-                            ? CSharpTokenType.LBRACE == n.GetTokenType()
-                            : CSharpTokenType.RBRACE == n.GetTokenType();
-                    }
-                }
-                return false;
             }
 
             private bool FindHandlingSibling(ITreeNode n, bool goBack, out ITreeNode target)
@@ -559,24 +803,6 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 var p = n.Parent;
                 var isStandaloneBlock = p is IBlock || p is IChameleonNode || p is ISwitchSection;
                 return isStandaloneBlock;
-            }
-
-            private static T FindInParent<T>(ITreeNode node, params Type[] abortTypes) where T : ITreeNode
-            {
-                if (node == null)
-                {
-                    return default(T);
-                }
-                var nodeType = node.GetType();
-                if (abortTypes.Any(abortType => abortType.IsAssignableFrom(nodeType)))
-                {
-                    return default(T);
-                }
-                if (node is T)
-                {
-                    return (T) node;
-                }
-                return FindInParent<T>(node.Parent, abortTypes);
             }
 
             private void FindAvailableTarget(ITreeNode target)
@@ -821,6 +1047,76 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 }
                 return node as ICSharpTreeNode;
             }
+
+            #region nav utils
+
+            [CanBeNull]
+            private static ITreeNode PrevSyntaxSibling([NotNull] ITreeNode n)
+            {
+                var prev = n;
+                while ((prev = prev.PrevSibling) != null)
+                {
+                    if (!prev.IsWhitespaceToken() && !prev.IsCommentToken())
+                    {
+                        return prev;
+                    }
+                }
+                return null;
+            }
+
+            [CanBeNull]
+            private static ITreeNode NextSyntaxSibling([NotNull] ITreeNode n)
+            {
+                var next = n;
+                while ((next = next.NextSibling) != null)
+                {
+                    if (!next.IsWhitespaceToken() && !next.IsCommentToken())
+                    {
+                        return next;
+                    }
+                }
+                return null;
+            }
+
+            [CanBeNull]
+            private static ITreeNode AssertSyntaxTokenOrUsePrev([NotNull] ITreeNode n,
+                params TokenNodeType[] ignoreTokens)
+            {
+                return IsSyntaxToken(n, ignoreTokens) ? n : PrevSyntaxSibling(n);
+            }
+
+            [CanBeNull]
+            private static ITreeNode AssertSyntaxTokenOrUseNext([NotNull] ITreeNode n,
+                params TokenNodeType[] ignoreTokens)
+            {
+                return IsSyntaxToken(n, ignoreTokens) ? n : NextSyntaxSibling(n);
+            }
+
+            private static bool IsSyntaxToken(ITreeNode n, params TokenNodeType[] ignoreTokens)
+            {
+                var isIgnoredToken = ignoreTokens.Contains(n.GetTokenType());
+                return !isIgnoredToken && !n.IsWhitespaceToken() && !n.IsCommentToken();
+            }
+
+            private static T FindInParent<T>(ITreeNode node, params Type[] abortTypes) where T : ITreeNode
+            {
+                if (node == null)
+                {
+                    return default(T);
+                }
+                var nodeType = node.GetType();
+                if (abortTypes.Any(abortType => abortType.IsAssignableFrom(nodeType)))
+                {
+                    return default(T);
+                }
+                if (node is T)
+                {
+                    return (T) node;
+                }
+                return FindInParent<T>(node.Parent, abortTypes);
+            }
+
+            #endregion
         }
     }
 }
