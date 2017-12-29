@@ -90,7 +90,6 @@
     </Reference>
     <Reference Include="JetBrains.MSBuild.Logger, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1982a8b0ca24c5dc, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Platform.MSBuild.Logger.1.0.20170331.0\lib\net\JetBrains.MSBuild.Logger.dll</HintPath>
-      <Private>True</Private>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="JetBrains.System.Reflection.Metadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4fea49dae943e013, processorArchitecture=MSIL">
@@ -98,14 +97,13 @@
     </Reference>
     <Reference Include="JetBrains.Toolset.ScriptSourcesCompiler.Interface, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1982a8b0ca24c5dc, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Toolset.ScriptSourcesCompiler.Interface.1.0.20170420.0\lib\net\JetBrains.Toolset.ScriptSourcesCompiler.Interface.dll</HintPath>
-      <Private>True</Private>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="KaVE.Commons, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KaVE.Commons.1.0.0-v20171211-185724\lib\KaVE.Commons.dll</HintPath>
+    <Reference Include="KaVE.Commons, Version=0.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KaVE.Commons.0.0.3-Experimental\lib\KaVE.Commons.dll</HintPath>
     </Reference>
-    <Reference Include="KaVE.VS.Commons, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KaVE.VS.Commons.1.0.0-v20171211-185724\lib\KaVE.VS.Commons.dll</HintPath>
+    <Reference Include="KaVE.VS.Commons, Version=0.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KaVE.VS.Commons.0.0.3-Experimental\lib\KaVE.VS.Commons.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.MahApps.Metro.1.5.0.1\lib\net45\MahApps.Metro.dll</HintPath>
