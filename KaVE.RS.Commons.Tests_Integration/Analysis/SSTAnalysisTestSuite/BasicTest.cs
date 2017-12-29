@@ -332,9 +332,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
                 $
             ");
 
-            // TODO think about this simplification, perhaps it is better to create an artificial "no match" ITreeNode
-            Assert.IsNull(LastCompletionMarker.HandlingNode);
-            AssertCompletionCase(CompletionCase.Undefined);
+            AssertCompletionMarker<IMethodDeclaration>(CompletionCase.EmptyCompletionAfter);
         }
 
         [Test]

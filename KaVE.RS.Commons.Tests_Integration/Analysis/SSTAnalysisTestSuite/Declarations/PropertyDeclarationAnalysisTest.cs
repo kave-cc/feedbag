@@ -22,6 +22,7 @@ using KaVE.Commons.Model.SSTs.Impl.Declarations;
 using KaVE.Commons.Model.SSTs.Impl.Expressions.Assignable;
 using KaVE.Commons.Model.SSTs.Impl.Statements;
 using KaVE.Commons.Utils.Collections;
+using KaVE.RS.Commons.Analysis.CompletionTarget;
 using NUnit.Framework;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;
 
@@ -32,7 +33,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Declar
         [Test]
         public void SimpleCase()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public int P {get; set;}
                 $
             ");
@@ -47,7 +49,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Declar
         [Test]
         public void ImplementedGetterAndSetter()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public int P {
                     get { return 1; }
                     set { int i = value; }
@@ -74,13 +77,14 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Declar
         [Test]
         public void CompletionInEmptyGetter()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public int P {
                     get { $ }
                     set;
                 }
             ");
-
+            AssertCompletionMarker<global::JetBrains.ReSharper.Psi.CSharp.Tree.IPropertyDeclaration>(CompletionCase.InGetBody);
             AssertProperties(
                 new PropertyDeclaration
                 {
@@ -95,13 +99,15 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Declar
         [Test]
         public void CompletionInEmptySetter()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public int P {
                     get;
                     set { $ }
                 }
             ");
 
+            AssertCompletionMarker<global::JetBrains.ReSharper.Psi.CSharp.Tree.IPropertyDeclaration>(CompletionCase.InSetBody);
             AssertProperties(
                 new PropertyDeclaration
                 {

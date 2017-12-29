@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using KaVE.Commons.Model.SSTs.Expressions.Assignable;
 using KaVE.Commons.Model.SSTs.Impl.Blocks;
 using KaVE.Commons.Model.SSTs.Impl.Expressions.Assignable;
 using KaVE.Commons.Model.SSTs.Impl.Expressions.Simple;
 using KaVE.Commons.Model.SSTs.Impl.Statements;
+using KaVE.RS.Commons.Analysis.CompletionTarget;
 using NUnit.Framework;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;
 
@@ -236,6 +238,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Blocks
                         break;
                 }");
 
+            AssertCompletionMarker<ISwitchStatement>(CompletionCase.Undefined);
             AssertBody(
                 new SwitchBlock
                 {

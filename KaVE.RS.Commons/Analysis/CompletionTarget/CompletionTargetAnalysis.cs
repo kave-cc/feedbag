@@ -415,6 +415,18 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 var ss = Result.HandlingNode as ISwitchSection;
                 if (ss != null)
                 {
+                    // trigger in dead space before first label?
+                    if (tNode.IsWhitespaceToken() && tNode.Parent is ISwitchBlock)
+                    {
+                        var prev = AssertSyntaxTokenOrUsePrev(tNode);
+                        if (prev != null && CSharpTokenType.LBRACE == prev.GetTokenType())
+                        {
+                            Result.HandlingNode = tNode.Parent.Parent;
+                            Result.Case = CompletionCase.Undefined;
+                            return;
+                        }
+                    }
+
                     var lastCase = ss.CaseLabels.LastOrDefault();
                     if (lastCase != null)
                     {

@@ -254,7 +254,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer
                 };
                 context.Methods.Add(sstDecl);
 
-                if (decl == _marker.HandlingNode)
+                if (decl == _marker.HandlingNode && _marker.Case == CompletionCase.InBody)
                 {
                     sstDecl.Body.Add(new ExpressionStatement {Expression = new CompletionExpression()});
                 }
@@ -347,6 +347,19 @@ namespace KaVE.RS.Commons.Analysis.Transformer
 
                 var propDecl = new PropertyDeclaration {Name = name};
                 context.Properties.Add(propDecl);
+
+                if (decl == _marker.HandlingNode)
+                {
+                    var emptyCompletion = new ExpressionStatement {Expression = new CompletionExpression()};
+                    if (_marker.Case == CompletionCase.InGetBody)
+                    {
+                        propDecl.Get.Add(emptyCompletion);
+                    }
+                    if (_marker.Case == CompletionCase.InSetBody)
+                    {
+                        propDecl.Set.Add(emptyCompletion);
+                    }
+                }
 
                 AddAccessorDecl(decl, propDecl);
             }
