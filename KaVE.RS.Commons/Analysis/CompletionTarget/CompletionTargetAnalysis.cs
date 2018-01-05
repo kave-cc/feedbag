@@ -126,6 +126,105 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
                 DetectTriggerInParametersOfCatchClause(tNode);
                 HandleTriggerBetweenCatchBlocks(tNode);
                 HandleEmptyCompletionAfterTryBlock(tNode);
+                // assignments
+                HandleTriggerInAssignments(tNode);
+            }
+
+            private void HandleTriggerInAssignments(ITreeNode tNode)
+            {
+                var isWhitespaceToken = tNode.IsWhitespaceToken();
+                var prev = isWhitespaceToken
+                    ? FindPrevNonWhitespaceNode(tNode)
+                    : PrevSyntaxSibling(tNode);
+                var next = isWhitespaceToken
+                    ? FindNextNonWhitespaceNode(tNode)
+                    : NextSyntaxSibling(tNode);
+
+                var prevRef = prev as IReferenceExpression;
+                var isPrevVarKeyword = prevRef != null && "var".Equals(prevRef.NameIdentifier.Name);
+                var thisRef = tNode as IReferenceExpression;
+                var isVarKeyword = thisRef != null && "var".Equals(thisRef.NameIdentifier.Name);
+                var isVarIsh = isVarKeyword || (isWhitespaceToken && isPrevVarKeyword);
+
+                if (isWhitespaceToken && tNode.PrevSibling is IDeclarationStatement)
+                {
+                    var lastChild = ((IDeclarationStatement) tNode.PrevSibling).Children().LastOrDefault();
+                    Result.Case = lastChild is IErrorElement
+                        ? CompletionCase.InBody // e.g., "var o = $"
+                        : CompletionCase.EmptyCompletionAfter; // e.g., "int i; i = 0;"
+                    return;
+                }
+
+                if (isWhitespaceToken && (prev != null || next != null))
+                {
+                    tNode = prev ?? next;
+                }
+
+                if (Result.HandlingNode is IReferenceExpression && Result.HandlingNode.Parent is IAssignmentExpression)
+                {
+                    var n = FindNextNonWhitespaceNode(Result.HandlingNode.NextSibling);
+                    if (n.GetTokenType() == CSharpTokenType.EQ)
+                    {
+                        Result.HandlingNode = Result.HandlingNode.Parent;
+                        Result.Case = CompletionCase.InSignature;
+                    }
+
+                    if (tNode.GetTokenType() == CSharpTokenType.EQ && tNode.NextSibling is IErrorElement)
+                    {
+                        Result.Case = CompletionCase.InBody;
+                    }
+                }
+
+                var asgn = Result.HandlingNode as IAssignmentExpression;
+                if (asgn != null)
+                {
+                    if (isVarIsh && next != null && next.GetTokenType() == CSharpTokenType.EQ)
+                    {
+                        // e.g., "var $ = 1;"
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                }
+
+                var lvd = Result.HandlingNode as ILocalVariableDeclaration;
+                if (lvd != null)
+                {
+                    if (tNode.GetTokenType() == CSharpTokenType.VAR_KEYWORD)
+                    {
+                        // e.g., "var$ i = 1;"
+                        Result.Case = CompletionCase.InSignature;
+                    }
+
+                    if (isPrevVarKeyword && next is ILocalVariableDeclaration)
+                    {
+                        // e.g., "var $ = 1;"
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                    if (next != null && next.GetTokenType() == CSharpTokenType.EQ)
+                    {
+                        // e.g., "var i$ = 1;"
+                        Result.Case = CompletionCase.InSignature;
+                    }
+                }
+
+                if (asgn != null || lvd != null)
+                {
+                    var ne = AssertSyntaxTokenOrUseNext(tNode.NextSibling);
+                    if (ne is IErrorElement)
+                    {
+                        var firstChild = ne.Children().FirstOrDefault();
+                        if (firstChild != null && firstChild.GetTokenType() == CSharpTokenType.EQ)
+                        {
+                            // e.g., "var i = $ = 1;" or  "int i,j; i = $ = 1;"
+                            Result.Case = CompletionCase.InSignature;
+                        }
+                    }
+                }
+
+                if (Result.HandlingNode is ILocalVariableDeclaration && Result.Case == CompletionCase.Undefined)
+                {
+                    // TODO: get rid of this "catch all" handling
+                    Result.Case = CompletionCase.InBody;
+                }
             }
 
             private void HandleEmptyCompletionAfterTryBlock(ITreeNode tNode)
@@ -278,7 +377,8 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
 
             private void HandleMissingCodeAtEndOfStmtLeadsToNewEmptyStmt(ITreeNode tNode)
             {
-                if (Result.Case == CompletionCase.EmptyCompletionAfter)
+                // TODO: get rid of special handling for throw
+                if (Result.Case == CompletionCase.EmptyCompletionAfter && !(Result.HandlingNode is IThrowStatement))
                 {
                     var lastChild = Result.HandlingNode.Children().LastOrDefault();
                     if (lastChild is IErrorElement)
@@ -1091,23 +1191,31 @@ namespace KaVE.RS.Commons.Analysis.CompletionTarget
             }
 
             [CanBeNull]
-            private static ITreeNode AssertSyntaxTokenOrUsePrev([NotNull] ITreeNode n,
+            private static ITreeNode AssertSyntaxTokenOrUsePrev(ITreeNode n,
                 params TokenNodeType[] ignoreTokens)
             {
+                if (n == null)
+                {
+                    return null;
+                }
                 return IsSyntaxToken(n, ignoreTokens) ? n : PrevSyntaxSibling(n);
             }
 
             [CanBeNull]
-            private static ITreeNode AssertSyntaxTokenOrUseNext([NotNull] ITreeNode n,
+            private static ITreeNode AssertSyntaxTokenOrUseNext(ITreeNode n,
                 params TokenNodeType[] ignoreTokens)
             {
+                if (n == null)
+                {
+                    return null;
+                }
                 return IsSyntaxToken(n, ignoreTokens) ? n : NextSyntaxSibling(n);
             }
 
-            private static bool IsSyntaxToken(ITreeNode n, params TokenNodeType[] ignoreTokens)
+            private static bool IsSyntaxToken([NotNull] ITreeNode n, params TokenNodeType[] ignoreTokens)
             {
                 var isIgnoredToken = ignoreTokens.Contains(n.GetTokenType());
-                return !isIgnoredToken && !n.IsWhitespaceToken() && !n.IsCommentToken();
+                return!isIgnoredToken && !n.IsWhitespaceToken() && !n.IsCommentToken();
             }
 
             private static T FindInParent<T>(ITreeNode node, params Type[] abortTypes) where T : ITreeNode

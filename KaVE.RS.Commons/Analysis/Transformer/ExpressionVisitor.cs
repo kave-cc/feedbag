@@ -930,6 +930,14 @@ namespace KaVE.RS.Commons.Analysis.Transformer
         {
             var lambdaName = expr.GetName();
             var lambdaBody = new KaVEList<IStatement>();
+
+            var isCompletionTarget = expr == _marker.HandlingNode && CompletionCase.InBody == _marker.Case;
+            if (isCompletionTarget)
+            {
+                var stmt = new ExpressionStatement { Expression = new CompletionExpression() };
+                lambdaBody.Add(stmt);
+            }
+
             var bodyVisitor = new StatementVisitor(_nameGen, _marker);
 
             expr.Body.Accept(bodyVisitor, lambdaBody);

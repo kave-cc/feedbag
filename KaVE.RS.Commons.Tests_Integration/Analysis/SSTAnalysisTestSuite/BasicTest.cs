@@ -220,7 +220,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
             ");
 
             AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
-            AssertCompletionCase(CompletionCase.Undefined);
+            AssertCompletionCase(CompletionCase.InBody);
 
             AssertBody(
                 VarDecl("i", Fix.Int),
@@ -238,7 +238,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
             ");
 
             AssertNodeIsVariableDeclaration("i", LastCompletionMarker.HandlingNode);
-            AssertCompletionCase(CompletionCase.Undefined);
+            AssertCompletionCase(CompletionCase.InBody);
 
             AssertBody(
                 VarDecl("i", Fix.Int),
@@ -276,7 +276,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite
             ");
 
             AssertNodeIsAssignment("i", LastCompletionMarker.HandlingNode);
-            AssertCompletionCase(CompletionCase.Undefined);
+            AssertCompletionCase(CompletionCase.InBody);
 
             AssertBody(
                 VarDecl("i", Fix.Int),

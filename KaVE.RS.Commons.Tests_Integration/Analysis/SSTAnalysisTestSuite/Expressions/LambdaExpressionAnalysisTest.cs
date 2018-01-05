@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Model.SSTs.Expressions.Assignable;
 using KaVE.Commons.Model.SSTs.Impl.Expressions.Assignable;
 using KaVE.Commons.Model.SSTs.Impl.Expressions.Simple;
 using KaVE.Commons.Model.SSTs.Impl.Statements;
+using KaVE.RS.Commons.Analysis.CompletionTarget;
 using NUnit.Framework;
 using Fix = KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.SSTAnalysisFixture;
+using ILambdaExpression = JetBrains.ReSharper.Psi.CSharp.Tree.ILambdaExpression;
 using NFix = KaVE.Commons.TestUtils.Model.Naming.NameFixture;
 
 namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expressions
@@ -30,7 +33,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         [Test]
         public void StandardAction_EmptyBody()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 Action<int> a = (int i) => {  };
                 $");
 
@@ -48,7 +52,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         [Test]
         public void StandardAction()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 Action<int> a = (int i) => { return; };
                 $");
 
@@ -67,7 +72,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         [Test]
         public void StandardFunc()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 Func<int, int> a = (int i) => { return i + 1; };
                 $");
 
@@ -102,7 +108,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         [Test]
         public void StandardFunc_ShorthandSyntax()
         {
-            CompleteInMethod(@"
+            CompleteInMethod(
+                @"
                 Func<int, int> a = i => i + 1;
                 $");
 
@@ -172,6 +179,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         {
             CompleteInMethod(@"Action<int> a = delegate { $ };");
 
+            AssertCompletionMarker<IAnonymousMethodExpression>(CompletionCase.InBody);
             AssertBody(
                 VarDecl("a", Fix.ActionOfInt),
                 Assign(
@@ -186,7 +194,8 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         [Test]
         public void AssignMethodToActionVariable()
         {
-            CompleteInClass(@"
+            CompleteInClass(
+                @"
                 public void L(int i) { }
                 public void M() { Action<int> a = L; $ }");
 
@@ -207,6 +216,7 @@ namespace KaVE.RS.Commons.Tests_Integration.Analysis.SSTAnalysisTestSuite.Expres
         {
             CompleteInMethod(@"Action<int> a = delegate { $ }; Action<int> b = a;");
 
+            AssertCompletionMarker<IAnonymousMethodExpression>(CompletionCase.InBody);
             AssertBody(
                 VarDecl("a", Fix.ActionOfInt),
                 Assign(

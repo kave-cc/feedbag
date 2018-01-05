@@ -111,7 +111,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer.StatementVisitorParts
             {
                 initializer = _exprVisitor.ToAssignableExpr(decl.Initial, body);
             }
-            else if (_marker.HandlingNode == decl && _marker.Case == CompletionCase.Undefined)
+            else if (_marker.HandlingNode == decl && _marker.Case == CompletionCase.InBody)
             {
                 initializer = new CompletionExpression();
             }
@@ -204,7 +204,7 @@ namespace KaVE.RS.Commons.Analysis.Transformer.StatementVisitorParts
                 body.Add(EmptyCompletionExpression);
             }
 
-            var isTarget = IsTargetMatch(expr, CompletionCase.Undefined);
+            var isTarget = IsTargetMatch(expr, CompletionCase.InBody);
 
             var sstRef = _exprVisitor.ToAssignableRef(expr.Dest, body) ?? new UnknownReference();
 

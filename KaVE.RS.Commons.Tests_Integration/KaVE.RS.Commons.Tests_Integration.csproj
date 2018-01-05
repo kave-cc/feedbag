@@ -266,6 +266,7 @@
     <Compile Include="Analysis\CompletionTargetTestSuite\MethodSignatures.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\Blocks\SwitchBlock.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\Mixed\CaseAfterParantheses.cs" />
+    <Compile Include="Analysis\CompletionTargetTestSuite\Mixed\EmptyAndAssignments.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\Mixed\OnClosingBrace.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\TypeSignatures.cs" />
     <Compile Include="Analysis\CompletionTargetTestSuite\Annotations.cs" />
