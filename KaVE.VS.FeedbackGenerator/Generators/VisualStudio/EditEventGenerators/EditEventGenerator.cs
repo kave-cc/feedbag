@@ -19,6 +19,7 @@ using EnvDTE;
 using JetBrains.Application.Threading;
 using JetBrains.ProjectModel;
 using JetBrains.Threading;
+using KaVE.Commons.Model.Events;
 using KaVE.Commons.Model.Events.CompletionEvents;
 using KaVE.Commons.Model.Events.VisualStudio;
 using KaVE.Commons.Utils;
@@ -29,7 +30,7 @@ using KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators.Even
 namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
 {
     [SolutionComponent]
-    internal class EditEventGenerator : EventGeneratorBase
+    internal class EditEventGenerator : EventGeneratorBase, IDisposable
     {
         // TODO evaluate good threshold value
         private static readonly TimeSpan InactivityPeriodToCompleteEditAction = TimeSpan.FromSeconds(3);
@@ -61,48 +62,64 @@ namespace KaVE.VS.FeedbackGenerator.Generators.VisualStudio.EditEventGenerators
             // this generator also to file save/close events
         }
 
+        public void Dispose()
+        {
+            _textEditorEvents.LineChanged -= TextEditorEvents_LineChanged;
+        }
+
         private void TextEditorEvents_LineChanged(TextPoint startPoint, TextPoint endPoint, int hint)
         {
-            ReentrancyGuard.Current.ExecuteOrQueue(
-                "KaVE.EditEventGenerator",
-                () =>
-                {
-                    _numChanges++;
-
-                    // prevent storage of tiny deltas
-                    var timeSinceLastFire = _dateUtils.Now - _lastFired;
-                    if (timeSinceLastFire < InactivityPeriodToCompleteEditAction)
+            try
+            {
+                ReentrancyGuard.Current.ExecuteOrQueue(
+                    "KaVE.EditEventGenerator",
+                    () =>
                     {
-                        return;
-                    }
+                        _numChanges++;
 
-                    var ctx = Context.Default;
+                        // prevent storage of tiny deltas
+                        var timeSinceLastFire = _dateUtils.Now - _lastFired;
+                        if (timeSinceLastFire < InactivityPeriodToCompleteEditAction)
+                        {
+                            return;
+                        }
 
-                    var activeDocument = startPoint.DTE.ActiveDocument;
-                    if (activeDocument != null)
-                    {
-                        ctx = _contextGenerator.RunContextAnalysis() ?? Context.Default;
-                    }
+                        var ctx = Context.Default;
 
-                    // prevent edits that are unreflected in SSTs (e.g., whitespace)
-                    if (ctx.Equals(_lastCtx))
-                    {
-                        return;
-                    }
+                        var activeDocument = startPoint.DTE.ActiveDocument;
+                        if (activeDocument != null)
+                        {
+                            ctx = _contextGenerator.RunContextAnalysis() ?? Context.Default;
+                        }
 
-                    var e = Create<EditEvent>();
-                    e.NumberOfChanges = _numChanges;
-                    e.Context2 = _lastCtx = ctx;
+                        // prevent edits that are unreflected in SSTs (e.g., whitespace)
+                        if (ctx.Equals(_lastCtx))
+                        {
+                            return;
+                        }
 
-                    FireNow(e);
+                        var e = Create<EditEvent>();
+                        e.NumberOfChanges = _numChanges;
+                        e.Context2 = _lastCtx = ctx;
 
-                    if (e.TriggeredAt.HasValue)
-                    {
-                        _lastFired = e.TriggeredAt.Value;
-                    }
-                    _lastCtx = e.Context2;
-                    _numChanges = 0;
-                });
+                        FireNow(e);
+
+                        if (e.TriggeredAt.HasValue)
+                        {
+                            _lastFired = e.TriggeredAt.Value;
+                        }
+                        _lastCtx = e.Context2;
+                        _numChanges = 0;
+                    });
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // TODO check if this is a recurring problem and whether disposing is a better handling
+                var e = Create<ErrorEvent>();
+                e.Content = "unexpected ObjectDisposedException, ignoring it for now";
+                e.StackTrace = ex.StackTrace.Split('\n');
+                FireNow(e);
+            }
         }
     }
 }
