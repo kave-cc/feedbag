@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Drawing;
 using JetBrains.DataFlow;
 using JetBrains.Interop.WinApi;
@@ -77,8 +78,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.Navigation
 
             // navigation utils
             _navigationUtils = Mock.Of<INavigationUtils>();
-            SetTarget(_testTarget);
-            SetLocation(_method1);
+            SetTargetAndLocation(_testTarget,_method1);
 
             _uut = new NavigationEventGenerator(
                 TestRSEnv,
@@ -165,7 +165,7 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.Navigation
         [Test]
         public void ShouldNotFireKeyboardEventAfterCtrlClick()
         {
-            SetTarget(_method2);
+            SetTargetAndLocation(_method2,null);
             CtrlClick();
             DropAllEvents();
 
@@ -195,15 +195,19 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.Navigation
         private void SetLocation(IName value)
         {
             Mock.Get(_navigationUtils)
-                .Setup(navigationUtils => navigationUtils.GetLocation(_textControl))
-                .Returns(value);
+                .Setup(navigationUtils => navigationUtils.GetLocation(_textControl, It.IsAny<Action<IName>>()))
+                .Callback<object, Action<IName>>((ctrl, cb) => { cb(value); });
         }
 
-        private void SetTarget(IName value)
+        private void SetTargetAndLocation(IName target, IName loc)
         {
             Mock.Get(_navigationUtils)
-                .Setup(navigationUtils => navigationUtils.GetTarget(_textControl))
-                .Returns(value);
+                .Setup(navigationUtils => navigationUtils.GetLocation(_textControl, It.IsAny<Action<IName>>()))
+                .Callback<object, Action<IName>>((ctrl, cb) => { cb(loc); });
+
+            Mock.Get(_navigationUtils)
+                .Setup(navigationUtils => navigationUtils.GetTargetAndLocation(_textControl, It.IsAny<Action<IName,IName>>()))
+                .Callback<object, Action<IName, IName>>((ctrl, cb) => { cb(target,loc); });
         }
 
         #endregion

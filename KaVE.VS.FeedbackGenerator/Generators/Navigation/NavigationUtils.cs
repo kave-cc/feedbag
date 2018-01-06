@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+using System;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Util;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Threading;
 using KaVE.Commons.Model.Naming;
@@ -30,17 +30,14 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
 {
     public interface INavigationUtils
     {
-        [NotNull]
-        IName GetTarget([NotNull] ITextControl textControl);
+        // [NotNull]
+        // IName GetLocation([NotNull] ITextControl textControl);
 
-        [NotNull]
-        IName GetLocation([NotNull] ITextControl textControl);
+        // [NotNull]
+        // IName GetLocation([NotNull] ITreeNode psiNode);
 
-        [NotNull]
-        IName GetTarget([NotNull] ITreeNode psiNode);
-
-        [NotNull]
-        IName GetLocation([NotNull] ITreeNode psiNode);
+        void GetLocation(ITextControl textControl, Action<IName> cb);
+        void GetTargetAndLocation(ITextControl textControl, Action<IName, IName> cb);
     }
 
     [SolutionComponent]
@@ -54,21 +51,51 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
             _solution = solution;
         }
 
-        [Pure]
-        public IName GetTarget(ITextControl textControl)
+        public void GetLocation(ITextControl textControl, Action<IName> cb)
         {
-            var treeNode = GetTreeNode(textControl);
-            return treeNode != null ? GetTarget(treeNode) : Names.UnknownGeneral;
+            ReentrancyGuard.Current.ExecuteOrQueue(
+                "NavigationUtils.GetLocation",
+                () =>
+                {
+                    var treeNode = GetTreeNode(textControl);
+                    if (treeNode != null)
+                    {
+                        var loc = GetLocation(treeNode);
+                        cb(loc);
+                    }
+                });
         }
 
-        [Pure]
-        public IName GetLocation(ITextControl textControl)
+        public void GetTargetAndLocation(ITextControl textControl, Action<IName, IName> cb)
         {
-            var treeNode = GetTreeNode(textControl);
-            return treeNode != null ? GetLocation(treeNode) : Names.UnknownGeneral;
+            ReentrancyGuard.Current.ExecuteOrQueue(
+                "NavigationUtils.GetTargetAndLocation",
+                () =>
+                {
+                    var treeNode = GetTreeNode(textControl);
+                    if (treeNode != null)
+                    {
+                        var target = GetTarget(treeNode);
+                        var loc = GetLocation(treeNode);
+                        cb(target, loc);
+                    }
+                });
         }
 
-        [Pure]
+        [CanBeNull]
+        private ITreeNode GetTreeNode([NotNull] ITextControl textControl)
+        {
+            /* ITreeNode treeNode = null;
+             if (ReentrancyGuard.Current.CanExecuteNow)
+             {
+                 ReadLockCookie.GuardedExecute(
+                     () => { treeNode = TextControlToPsi.GetElement<ITreeNode>(_solution, textControl); });
+             }*/
+            var treeNode = TextControlToPsi.GetElement<ITreeNode>(_solution, textControl);
+
+            return treeNode;
+        }
+
         public IName GetTarget(ITreeNode psiNode)
         {
             var declaredElement = TryGetDeclaredElement(psiNode);
@@ -94,7 +121,6 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
                 : declaredElement.GetName<IName>(declaredElement.GetIdSubstitutionSafe());
         }
 
-        [Pure]
         public IName GetLocation(ITreeNode psiNode)
         {
             var locationName = Names.UnknownGeneral;
@@ -114,20 +140,6 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
             }
 
             return locationName;
-        }
-
-        [Pure, CanBeNull]
-        private ITreeNode GetTreeNode([NotNull] ITextControl textControl)
-        {
-            ITreeNode treeNode = null;
-
-            if (ReentrancyGuard.Current.CanExecuteNow)
-            {
-                ReadLockCookie.GuardedExecute(
-                    () => { treeNode = TextControlToPsi.GetElement<ITreeNode>(_solution, textControl); });
-            }
-
-            return treeNode;
         }
 
         [Pure]

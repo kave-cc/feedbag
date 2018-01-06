@@ -21,7 +21,6 @@ using JetBrains.DataFlow;
 using JetBrains.Interop.WinApi;
 using JetBrains.ProjectModel;
 using JetBrains.TextControl;
-using JetBrains.Threading;
 using KaVE.Commons.Model.Events;
 using KaVE.Commons.Model.Naming;
 using KaVE.Commons.Utils;
@@ -55,54 +54,56 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
         {
             var oldLocation = _currentLocation;
             var ctrlIsPressed = args.KeysAndButtons == KeyStateMasks.MK_CONTROL;
-            IName curLocation = null;
-            IName target = null;
 
-            ReentrancyGuard.Current.ExecuteOrQueue(
-                "KaVE.EditEventGenerator",
-                () =>
+            _navigationUtils.GetTargetAndLocation(
+                args.TextControl,
+                (target, curLocation) =>
                 {
-                    curLocation = _currentLocation = _navigationUtils.GetLocation(args.TextControl);
-                    target = ctrlIsPressed ? _navigationUtils.GetTarget(args.TextControl) : null;
+                    _currentLocation = curLocation;
+
+                    if (ctrlIsPressed)
+                    {
+                        var ctrlClickEvent = Create<NavigationEvent>();
+                        ctrlClickEvent.Target = target;
+                        ctrlClickEvent.Location = curLocation;
+                        ctrlClickEvent.TypeOfNavigation = NavigationType.CtrlClick;
+                        ctrlClickEvent.TriggeredBy = EventTrigger.Click;
+
+                        _currentLocation = ctrlClickEvent.Target;
+
+                        Fire(ctrlClickEvent);
+                    }
+                    else if (IsNewLocation(oldLocation, curLocation))
+                    {
+                        var clickNavigationEvent = Create<NavigationEvent>();
+                        clickNavigationEvent.Location = curLocation;
+                        clickNavigationEvent.TypeOfNavigation = NavigationType.Click;
+                        clickNavigationEvent.TriggeredBy = EventTrigger.Click;
+                        Fire(clickNavigationEvent);
+                    }
                 });
-
-            if (ctrlIsPressed)
-            {
-                var ctrlClickEvent = Create<NavigationEvent>();
-                ctrlClickEvent.Target = target;
-                ctrlClickEvent.Location = curLocation;
-                ctrlClickEvent.TypeOfNavigation = NavigationType.CtrlClick;
-                ctrlClickEvent.TriggeredBy = EventTrigger.Click;
-
-                _currentLocation = ctrlClickEvent.Target;
-
-                Fire(ctrlClickEvent);
-            }
-            else if (IsNewLocation(oldLocation, curLocation))
-            {
-                var clickNavigationEvent = Create<NavigationEvent>();
-                clickNavigationEvent.Location = curLocation;
-                clickNavigationEvent.TypeOfNavigation = NavigationType.Click;
-                clickNavigationEvent.TriggeredBy = EventTrigger.Click;
-                Fire(clickNavigationEvent);
-            }
         }
 
         public void OnKeyPress(EventArgs<ITextControl> args)
         {
             var oldLocation = _currentLocation;
-            var newLocation = _currentLocation = _navigationUtils.GetLocation(args.Value);
+            _navigationUtils.GetLocation(
+                args.Value,
+                curLocation =>
+                {
+                    var newLocation = _currentLocation = curLocation;
 
-            if (!IsNewLocation(oldLocation, newLocation))
-            {
-                return;
-            }
+                    if (!IsNewLocation(oldLocation, newLocation))
+                    {
+                        return;
+                    }
 
-            var keyboardNavigationEvent = Create<NavigationEvent>();
-            keyboardNavigationEvent.Location = newLocation;
-            keyboardNavigationEvent.TypeOfNavigation = NavigationType.Keyboard;
-            keyboardNavigationEvent.TriggeredBy = EventTrigger.Typing;
-            Fire(keyboardNavigationEvent);
+                    var keyboardNavigationEvent = Create<NavigationEvent>();
+                    keyboardNavigationEvent.Location = newLocation;
+                    keyboardNavigationEvent.TypeOfNavigation = NavigationType.Keyboard;
+                    keyboardNavigationEvent.TriggeredBy = EventTrigger.Typing;
+                    Fire(keyboardNavigationEvent);
+                });
         }
 
         private static bool IsNewLocation(IName location, IName newLocation)
