@@ -69,12 +69,15 @@ KaVE specific events (make sure the following actions create command events)
 
 -- attach to an application
 
-* attach to a running process (and do the steps above) -- e.g., console application with read
+* attach to a running process (and do the steps above) -- e.g., console application with Console.ReadLine
 * detach from a running process
+
 
 ## Document ##
 
 * open/close/save a document
+* close several files at once and lookup for multiple Document.Close
+
 
 ## Edit Events ##
 
@@ -84,6 +87,8 @@ KaVE specific events (make sure the following actions create command events)
 * change SST relevant stuff 
 * add whitespace
 * combine with code completion selection
+* change a file, close the solution, change the same file... should work without slowdown/exception
+
 
 ## Find Events ##
 
@@ -96,10 +101,10 @@ KaVE specific events (make sure the following actions create command events)
 
 * quit IDE
 * start IDE
-* kill IDE (alt-f4)
-* kill IDE (task manager)
-* close while multiple windows are open (should appear in list)
-* start by opening a specific file (should appear in list)
+* kill IDE (alt-f4) -- has an event
+* kill IDE (task manager) -- no event
+* close while multiple windows are open (should appear in "OpenWindows")
+* start by opening a specific file (should appear in "OpenDocuments") -- don't know how to test with experimental instance
 
 
 ## Solution Event ##
