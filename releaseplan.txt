@@ -1,0 +1,13 @@
+before scheduling a new release (aka push on master), check the following:
+
+* build of master-dev was successful as experimental build
+* FeedBaG uses the most up-to-date KaVE-Commons release
+* experimental version can be installed in experimental instance
+* follow the test plan to identify issues that are not detected in our test suite
+* merge master-dev into master only if all the above points were checked
+
+after publishing the new release
+
+* upload all locally stored events
+* upgrade ReSharper (if necessary)
+* upgrade FeedBaG
