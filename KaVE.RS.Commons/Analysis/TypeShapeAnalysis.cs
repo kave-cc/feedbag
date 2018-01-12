@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.CSharp.Util;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using KaVE.Commons.Model.Naming;
@@ -97,10 +96,6 @@ namespace KaVE.RS.Commons.Analysis
                 var field = typeMember as IField;
                 if (field != null)
                 {
-                    if (field.IsAutoPropertyBackingField())
-                    {
-                        continue;
-                    }
                     var fieldName = field.GetName<IFieldName>();
                     if (field.IsEnumMember)
                     {

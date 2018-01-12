@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
-using JetBrains.Psi.Features.UIInteractive.Core.CodeCompletion.Lookup;
+using JetBrains.PsiFeatures.UIInteractive.Core.CodeCompletion.Lookup;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Lookup;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.LookupItems;

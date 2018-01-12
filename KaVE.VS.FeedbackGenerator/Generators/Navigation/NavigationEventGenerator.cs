@@ -53,7 +53,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
         public void OnClick(TextControlMouseEventArgs args)
         {
             var oldLocation = _currentLocation;
-            var ctrlIsPressed = args.KeysAndButtons == KeyStateMasks.MK_CONTROL;
+            var ctrlIsPressed = args.KeysAndButtons == KeyStateMasks.ControlKey;
 
             _navigationUtils.GetTargetAndLocation(
                 args.TextControl,

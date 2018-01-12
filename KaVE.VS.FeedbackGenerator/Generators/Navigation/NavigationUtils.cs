@@ -18,6 +18,7 @@ using System;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Util;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
@@ -85,19 +86,25 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
         [CanBeNull]
         private ITreeNode GetTreeNode([NotNull] ITextControl textControl)
         {
-            /* ITreeNode treeNode = null;
-             if (ReentrancyGuard.Current.CanExecuteNow)
-             {
-                 ReadLockCookie.GuardedExecute(
-                     () => { treeNode = TextControlToPsi.GetElement<ITreeNode>(_solution, textControl); });
-             }*/
             var treeNode = TextControlToPsi.GetElement<ITreeNode>(_solution, textControl);
-
+            if (treeNode.IsWhitespaceToken() && treeNode.NextSibling != null)
+            {
+                treeNode = treeNode.NextSibling;
+            }
+            if (treeNode != null && CSharpTokenType.DOT == treeNode.GetTokenType())
+            {
+                treeNode = treeNode.NextSibling;
+            }
             return treeNode;
         }
 
         public IName GetTarget(ITreeNode psiNode)
         {
+            if (CSharpTokenType.SEMICOLON == psiNode.GetTokenType())
+            {
+                return Names.UnknownGeneral;
+            }
+
             var declaredElement = TryGetDeclaredElement(psiNode);
 
             if (declaredElement == null && psiNode.Parent != null)
@@ -170,6 +177,16 @@ namespace KaVE.VS.FeedbackGenerator.Generators.Navigation
             {
                 var resolvedReference = invocationInfo.Reference.Resolve();
                 return resolvedReference.DeclaredElement;
+            }
+
+            var exprStmt = psiNode as IExpressionStatement;
+            if (exprStmt != null)
+            {
+                var invExpr = exprStmt.Expression as IInvocationExpression;
+                if (invExpr != null)
+                {
+                    return invExpr.InvocationExpressionReference.Resolve().DeclaredElement;
+                }
             }
 
             return null;

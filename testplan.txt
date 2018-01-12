@@ -122,6 +122,7 @@ KaVE specific events (make sure the following actions create command events)
 * switch between files and several open windows in visual studio
 * detach a tool window (e.g., test runs) and switch to the external window
 * test VS focus loose/gain events
+* move a window
 
 ## Version Control Event ##
 

@@ -179,12 +179,12 @@ namespace KaVE.VS.FeedbackGenerator.Tests.Generators.Navigation
 
         private void Click()
         {
-            _uut.OnClick(new TextControlMouseEventArgs(_textControl, KeyStateMasks.MK_LBUTTON, Point.Empty));
+            _uut.OnClick(new TextControlMouseEventArgs(_textControl, KeyStateMasks.LeftButton, Point.Empty, 0));
         }
 
         private void CtrlClick()
         {
-            _uut.OnClick(new TextControlMouseEventArgs(_textControl, KeyStateMasks.MK_CONTROL, Point.Empty));
+            _uut.OnClick(new TextControlMouseEventArgs(_textControl, KeyStateMasks.ControlKey, Point.Empty, 0));
         }
 
         private void PressKey()
