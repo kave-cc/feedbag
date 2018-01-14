@@ -290,39 +290,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiStatisticsRunner.cs" />
     <Compile Include="BaseSolutionAnalysis.cs" />
     <Compile Include="CommandLineLogger.cs" />
     <Compile Include="CompletionEventFilter.cs" />
-    <Compile Include="CompletionEventStatistics\CompletionEventStatisticsIo.cs" />
-    <Compile Include="CompletionEventStatistics\CompletionEventStatisticsLogger.cs" />
-    <Compile Include="CompletionEventStatistics\CompletionEventStatisticsRunner.cs" />
     <Compile Include="CompletionEventToMicroCommits\CompletionEventToMicroCommitRunner.cs" />
     <Compile Include="CompletionEventToMicroCommits\IoHelper.cs" />
     <Compile Include="CompletionEventToMicroCommits\MicroCommitGenerator.cs" />
-    <Compile Include="CSharpVsFSharp\FileSetExtractionRunner.cs" />
     <Compile Include="Episodes\Event.cs" />
     <Compile Include="Episodes\EventStreamGenerator.cs" />
     <Compile Include="EventsExportRunner.cs" />
     <Compile Include="FailingRepoFinder.cs" />
-    <Compile Include="JustReadRunner.cs" />
-    <Compile Include="LocCounter.cs" />
     <Compile Include="NameGrabber.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SanityCheck.cs" />
     <Compile Include="TypeShapeSolutionAnalysis.cs" />
     <Compile Include="ContextSolutionAnalysis.cs" />
-    <Compile Include="StatisticsForPapers\StatisticsIo.cs" />
-    <Compile Include="StatisticsForPapers\StatisticsPrinter.cs" />
-    <Compile Include="StatisticsForPapers\StatisticsForPaperRunner.cs" />
     <Compile Include="UsageExportRunner.cs" />
     <Compile Include="UserProfileExports\UserProfileExportHelper.cs" />
     <Compile Include="UserProfileExports\UserProfileExportRunner.cs" />
     <Compile Include="UserProfileExports\UserProfilePrinter.cs" />
-    <Compile Include="UserStatistics\UserStats.cs" />
-    <Compile Include="UserStatistics\UserStatsIo.cs" />
-    <Compile Include="UserStatistics\UserStatsRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

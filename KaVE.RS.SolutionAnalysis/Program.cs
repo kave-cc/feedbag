@@ -18,12 +18,8 @@ using System;
 using System.IO;
 using KaVE.Commons.Utils.IO;
 using KaVE.Commons.Utils.ObjectUsageExport;
-using KaVE.RS.SolutionAnalysis.CompletionEventStatistics;
 using KaVE.RS.SolutionAnalysis.CompletionEventToMicroCommits;
-using KaVE.RS.SolutionAnalysis.CSharpVsFSharp;
-using KaVE.RS.SolutionAnalysis.StatisticsForPapers;
 using KaVE.RS.SolutionAnalysis.UserProfileExports;
-using KaVE.RS.SolutionAnalysis.UserStatistics;
 
 // ReSharper disable InconsistentNaming
 
@@ -53,16 +49,8 @@ namespace KaVE.RS.SolutionAnalysis
 
         private static void Main(string[] args)
         {
-            //Console.WriteLine(@"{0} start", DateTime.Now);
-
-
-            // new JustReadRunner(DirEventsAll).Run();
-            //new JavaNamingTestGenerator().Run();
-
             /* data preparation */
             //RunFailingRepoFinder();
-            //RunApiStatisticsRunner();
-            //RunCompletionEventStatistics();
             //RunUsageExport(DirContexts, DirUsages);
             //RunUsageExport(DirContexts_Inlined, DirUsages_Inlined);
             RunCompletionEventFilter(CompletionEventFilter.NoTriggerPointOption.Keep);
@@ -75,10 +63,7 @@ namespace KaVE.RS.SolutionAnalysis
             //new EditLocationRunner(DirEventsCompletion_KeepNoTrigger).Run();
             //new EditLocationRunner(DirEventsCompletion_KeepNoTriggerInlined).Run();
             //RunUserProfileExport();
-            //RunStatisticsForPaperCreation();
-            //RunCShaspVsFSharpStats();
-            RunUserStats(); // used to export positions used in the Demographic generator on Java
-
+            
             RunNameGrabber();
 
             Console.WriteLine();
@@ -86,50 +71,15 @@ namespace KaVE.RS.SolutionAnalysis
             Console.WriteLine(@"{0} finish", DateTime.Now);
         }
 
-        private static void RunUserStats()
-        {
-            new UserStatsRunner(new UserStatsIo(DirEventsAll_Clean, "")).Run();
-        }
-
-        private static void RunCShaspVsFSharpStats()
-        {
-            new FileSetExtractionRunner(DirEventsAll_Clean).Run();
-        }
-
         private static void RunNameGrabber()
         {
             new NameGrabber(DirRoot, DirRoot, -1, -1, true).Run();
-        }
-
-        private static void RunQuickSanityCheck()
-        {
-            new SanityCheck(DirEventsCompletion_KeepNoTrigger).Run();
-        }
-
-        private static void RunCompletionEventStatistics()
-        {
-            var io = new CompletionEventStatisticsIo(DirEventsAll_Clean);
-            var log = new CompletionEventStatisticsLogger();
-            new CompletionEventStatisticsRunner(io, log).Run();
-        }
-
-        private static void RunApiStatisticsRunner()
-        {
-            new ApiStatisticsRunner().Run(DirContexts_Github);
-            //new LocCounter().Run(DirContexts_Github);
         }
 
         private static void RunFailingRepoFinder()
         {
             var log = new FailingRepoLogger();
             new FailingRepoFinder(log).Run(DirContexts_Github);
-        }
-
-        private static void RunStatisticsForPaperCreation()
-        {
-            var printer = new StatisticsPrinter();
-            var io = new StatisticsIo(DirEventsCompletion_KeepNoTrigger, DirEventsAll);
-            new StatisticsForPaperRunner(io, printer).Run();
         }
 
         private static void RunUserProfileExport()
