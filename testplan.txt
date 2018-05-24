@@ -24,7 +24,10 @@ KaVE specific events (make sure the following actions create command events)
 * delete multiple events
 * delete one day
 * delete multiple days
-* open eventManager from reminder popup
+(proke reminder by changing AppData\Roaming\JetBrains\Shared\vAny\GlobalSettingsStorage.DotSettings)
+* open export window from reminder popup (3 days)
+* open export window from strong reminder popup (7 days)
+* open manual upload site from export window
 
 ## CodeCompletions ##
 
@@ -103,7 +106,7 @@ KaVE specific events (make sure the following actions create command events)
 * start IDE
 * kill IDE (alt-f4) -- has an event
 * kill IDE (task manager) -- no event
-* close while multiple windows are open (should appear in "OpenWindows")
+* close while multiple windows(!) are open (should appear in "OpenWindows")
 * start by opening a specific file (should appear in "OpenDocuments") -- don't know how to test with experimental instance
 
 
@@ -157,8 +160,10 @@ export zip locally and assert existence of event
 ## Test Run Event ##
 
 * run a testsuite with all possible outcomes
+* abort a test
 * run a single test
 * debug a test
+* make sure that the events are not thrown twice during testing (e.g., aborted/finished)
 * Analyze esp. the timing information in all cases
 
 ########################
@@ -172,4 +177,4 @@ export zip locally and assert existence of event
 
 ## KaVE Settings
 
-* assert that settings are preserved throughout the update
+* assert that settings (esp. user id!) are preserved throughout the update
