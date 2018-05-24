@@ -109,17 +109,29 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
                     {
                         switch (args.New)
                         {
-                            case UnitTestLaunchStatus.Building:
-                            case UnitTestLaunchStatus.Starting:
+                            // marking the start of the build
+                            case UnitTestLaunchStatus.Pending:
                             case UnitTestLaunchStatus.Running:
                                 aborted = false;
                                 break;
-                            case UnitTestLaunchStatus.Stopping:
+
+                            // marking aborted cases
+                            case UnitTestLaunchStatus.Cancelling:
+                            case UnitTestLaunchStatus.Aborting:
+                                aborted = true;
+                                break;
+
+                            // handle finishing caes
+                            case UnitTestLaunchStatus.Finished:
+                            case UnitTestLaunchStatus.Aborted:
+                            case UnitTestLaunchStatus.Cancelled:
+                            case UnitTestLaunchStatus.Faulted:
                                 // This will happen if the build failed.
                                 if (session.Launch.Value == null)
                                 {
                                     break;
                                 }
+
                                 // These need to be declared here because session.Launch.Value is null by 
                                 // the time the Dispatcher executes the action.
                                 var relevantTestElements =
@@ -143,15 +155,12 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
                                             });
                                     });
                                 break;
-                            case UnitTestLaunchStatus.Aborting:
-                                aborted = true;
-                                break;
                         }
                     }
                 });
         }
 
-        private void CreateAndFireTestRunEvent(DateTime launchTime,
+        private void CreateAndFireTestRunEvent(DateTimeOffset launchTime,
             bool aborted,
             IDictionary<IUnitTestElement, UnitTestResult> results)
         {
@@ -196,6 +205,7 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
             {
                 return "";
             }
+
             var end = shortName.LastIndexOf(")", StringComparison.Ordinal);
             return shortName.Substring(beginning, end - beginning);
         }
@@ -206,18 +216,22 @@ namespace KaVE.VS.FeedbackGenerator.Generators.ReSharper
             {
                 return TestResult.Success;
             }
+
             if (status == UnitTestStatus.Failed)
             {
                 return TestResult.Failed;
             }
+
             if (status == UnitTestStatus.Ignored)
             {
                 return TestResult.Ignored;
             }
+
             if (status == UnitTestStatus.Inconclusive)
             {
                 return TestResult.Error;
             }
+
             return TestResult.Unknown;
         }
     }

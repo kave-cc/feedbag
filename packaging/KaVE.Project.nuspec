@@ -8,7 +8,7 @@
         <description>Support research and share information about how you use Visual Studio.</description>
         <authors>KaVE Team</authors>
         <owners>KaVE Team</owners>
-        <copyright>Copyright 2011-2017</copyright>
+        <copyright>Copyright 2011-2018</copyright>
 
         <projectUrl>http://kave.cc/</projectUrl>
         <iconUrl>https://raw.githubusercontent.com/kave-cc/resources/master/images/logo-nuget.png</iconUrl>
@@ -16,7 +16,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
 
         <dependencies>
-            <dependency id="Wave" version="[11.0]" />
+            <dependency id="Wave" version="[12.0]" />
         </dependencies>
     </metadata>
     <files>
