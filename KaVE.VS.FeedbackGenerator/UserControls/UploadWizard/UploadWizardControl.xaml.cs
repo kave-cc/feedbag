@@ -138,7 +138,7 @@ namespace KaVE.VS.FeedbackGenerator.UserControls.UploadWizard
 
         private void OnClickManualUpload(object sender, RoutedEventArgs e)
         {
-            OpenWebsite("http://kave.st.informatik.tu-darmstadt.de/");
+            OpenWebsite("http://upload.kave.cc/");
         }
 
         private void OpenWebsite(string url)
